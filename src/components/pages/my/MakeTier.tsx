@@ -4,10 +4,6 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import html2canvas from 'html2canvas';
 import styled from '@emotion/styled';
-import Button from '@mui/material/Button';
-import LinkIcon from '@mui/icons-material/Link';
-import SaveIcon from '@mui/icons-material/Save';
-import ArticleIcon from '@mui/icons-material/Article';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import { getContributeCount } from '@/utils/github';
@@ -17,7 +13,6 @@ import { firestore } from '../../../../firebase/firebase';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { UserData } from '@/types/api';
-import { Color } from '@/styles/color';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
@@ -72,11 +67,11 @@ export const MakeTier = () => {
         scrollY: -window.scrollY,
         windowWidth: document.documentElement.offsetWidth,
         windowHeight: document.documentElement.offsetHeight,
-        scale: 1, // 스케일을 1로 제한해서 크기 줄이기
+        scale: 1,
         useCORS: true,
       });
 
-      const base64Image = canvas.toDataURL('image/jpeg', 0.8); // 80% 품질로 압축
+      const base64Image = canvas.toDataURL('image/jpeg', 0.8);
 
       const imageSizeInBytes = (base64Image.length * 3) / 4;
       if (imageSizeInBytes > 900000) {
@@ -97,7 +92,7 @@ export const MakeTier = () => {
             contributeCount,
           },
         },
-        { merge: true }
+        { merge: true },
       );
 
       const baseUrl = window.location.origin;
@@ -115,7 +110,7 @@ export const MakeTier = () => {
   const copyToClipboard = () => {
     if (userImageUrl) {
       navigator.clipboard.writeText(
-        `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`
+        `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
       );
       toast.success('Image tag copied to clipboard!');
     }
@@ -156,10 +151,11 @@ export const MakeTier = () => {
   }, [session?.loginId]);
 
   return (
-    <S.Wrapper>
-      <p>
-        Total Contributions: <b>{contributeCount || 0}</b>
-      </p>
+    <S.Card>
+      <S.ContribLabel>
+        Total Contributions <S.ContribCount>{contributeCount || 0}</S.ContribCount>
+      </S.ContribLabel>
+
       <S.TierWrap>
         <TierImage
           isMode={isMode}
@@ -179,73 +175,122 @@ export const MakeTier = () => {
         />
       </S.TierWrap>
 
-      <S.ButtonWrap>
-        <Button
-          sx={{
-            background: Color.Primary,
-          }}
-          startIcon={<SaveIcon />}
-          variant="contained"
-          onClick={handleSaveImage}
-          disabled={saveLoading}
-          color="primary">
+      <S.Actions>
+        <S.PrimaryButton onClick={handleSaveImage} disabled={saveLoading}>
           {saveLoading ? 'Saving...' : 'Save Image'}
-        </Button>
-        <Button
-          sx={{
-            color: Color.Primary,
-            borderColor: Color.Primary,
-          }}
-          startIcon={<LinkIcon />}
-          variant="outlined"
-          size="medium"
-          onClick={copyToClipboard}>
+        </S.PrimaryButton>
+        <S.SecondaryButton onClick={copyToClipboard}>
           Copy Tag
-        </Button>
-      </S.ButtonWrap>
-      <Link
-        href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
-        rel="noopener noreferrer"
-        target="_blank">
-        <Button
-          sx={{
-            color: Color.Primary,
-            borderColor: Color.Primary,
-          }}
-          startIcon={<ArticleIcon />}>
-          Tiers Table
-        </Button>
-      </Link>
+        </S.SecondaryButton>
+      </S.Actions>
+
+      <S.TableLink>
+        <Link
+          href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
+          rel="noopener noreferrer"
+          target="_blank">
+          View Tier Table &rarr;
+        </Link>
+      </S.TableLink>
 
       <LoadingSpinner loading={loading} />
-    </S.Wrapper>
+    </S.Card>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
+  Card: styled.div`
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     text-align: center;
 
-    p {
-      font-size: 20px;
-      margin-top: 10px;
+    @media (max-width: 768px) {
+      padding: 24px;
     }
   `,
+
+  ContribLabel: styled.p`
+    font-size: 17px;
+    font-weight: 400;
+    color: #86868b;
+  `,
+
+  ContribCount: styled.span`
+    font-weight: 700;
+    color: #1d1d1f;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  `,
+
   TierWrap: styled.div`
-    margin: 0 auto;
-    padding: 30px;
+    margin: 24px auto;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
   `,
 
-  ButtonWrap: styled.div`
+  Actions: styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  `,
+
+  PrimaryButton: styled.button`
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: #0071e3;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #0077ed;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  `,
+
+  SecondaryButton: styled.button`
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #86868b;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 980px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.25);
+      color: #1d1d1f;
+    }
+  `,
+
+  TableLink: styled.div`
+    a {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0071e3;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   `,
 };

@@ -30,7 +30,7 @@ const S = {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 99;
+    z-index: 1100;
     background-color: rgba(0, 0, 0, 0.7);
     > div {
       position: absolute;

@@ -1,15 +1,9 @@
 import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
 import styled from '@emotion/styled';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LogoutIcon from '@mui/icons-material/Logout';
-
-import { Color } from '@/styles/color';
 
 export const Profile = () => {
   const { data: session } = useSession();
@@ -19,115 +13,161 @@ export const Profile = () => {
   };
 
   return (
-    <S.Wrapper>
-      <S.ProfileImg alt="profile-image" src={session?.user.image} />
-      <p>{session?.user.name || ''}</p>
-      <h5>{session?.loginId || ''}</h5>
-      <span>{session?.user.bio || '-'}</span>
-      <S.SmallBox>
-        <span>
-          <ApartmentIcon /> {session?.user.company || '-'}
-        </span>
-        <span>
-          <AlternateEmailIcon /> {session?.user.email || '-'}
-        </span>
-        <span>
-          <LocationOnIcon /> {session?.user.location || '-'}
-        </span>
-      </S.SmallBox>
-      <S.ButtonWrap>
-        <Link
+    <S.Card>
+      <S.Top>
+        <S.ProfileImg alt="profile-image" src={session?.user.image} />
+        <S.Info>
+          <S.Name>{session?.user.name || ''}</S.Name>
+          <S.LoginId>{session?.loginId || ''}</S.LoginId>
+          <S.Bio>{session?.user.bio || '-'}</S.Bio>
+        </S.Info>
+      </S.Top>
+
+      <S.Meta>
+        <S.MetaItem>
+          <ApartmentIcon sx={{ fontSize: 16, color: '#86868b' }} />
+          <span>{session?.user.company || '-'}</span>
+        </S.MetaItem>
+        <S.MetaItem>
+          <AlternateEmailIcon sx={{ fontSize: 16, color: '#86868b' }} />
+          <span>{session?.user.email || '-'}</span>
+        </S.MetaItem>
+        <S.MetaItem>
+          <LocationOnIcon sx={{ fontSize: 16, color: '#86868b' }} />
+          <span>{session?.user.location || '-'}</span>
+        </S.MetaItem>
+      </S.Meta>
+
+      <S.Actions>
+        <S.PrimaryButton
+          as="a"
           href={`https://github.com/${session?.loginId}`}
           target="_blank"
           rel="noopener noreferrer">
-          <Button
-            sx={{
-              background: Color.Primary,
-            }}
-            startIcon={<GitHubIcon />}
-            variant="contained"
-            color="primary">
-            My GitHub
-          </Button>
-        </Link>
-        <Button
-          sx={{
-            color: Color.Primary,
-            borderColor: Color.Primary,
-          }}
-          startIcon={<LogoutIcon />}
-          variant="outlined"
-          onClick={handleGitLogout}>
+          My GitHub
+        </S.PrimaryButton>
+        <S.SecondaryButton onClick={handleGitLogout}>
           Logout
-        </Button>
-      </S.ButtonWrap>
-    </S.Wrapper>
+        </S.SecondaryButton>
+      </S.Actions>
+    </S.Card>
   );
 };
 
 const S = {
-  Wrapper: styled.div`
-    padding: 30px 50px 30px 0;
-    border-right: 1px solid ${Color.Gray200};
+  Card: styled.div`
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 
-    p {
-      font-size: 24px;
-      margin-top: 20px;
-      font-weight: 600;
-    }
-
-    h5 {
-      font-size: 20px;
-      margin-top: 6px;
-      font-weight: 400;
-      color: ${Color.Black200};
-    }
-
-    > span {
-      font-size: 14px;
-      margin-top: 20px;
-      display: block;
+    @media (max-width: 768px) {
+      padding: 24px;
     }
   `,
-  ProfileImg: styled(Avatar)`
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid ${Color.Primary};
 
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  `,
-  SmallBox: styled.div`
-    margin-top: 20px;
-
-    span {
-      font-size: 12px;
-      margin-top: 8px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-
-      svg {
-        font-size: 16px;
-        margin-right: 8px;
-      }
-    }
-  `,
-  ButtonWrap: styled.div`
-    margin-top: 20px;
+  Top: styled.div`
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
 
-    button {
-      width: 100%;
+    @media (max-width: 480px) {
+      flex-direction: column;
+      text-align: center;
     }
+  `,
 
-    > button {
-      margin-top: 10px;
+  ProfileImg: styled(Avatar)`
+    width: 80px !important;
+    height: 80px !important;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+  `,
+
+  Info: styled.div`
+    min-width: 0;
+  `,
+
+  Name: styled.p`
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
+  `,
+
+  LoginId: styled.p`
+    font-size: 15px;
+    font-weight: 400;
+    color: #86868b;
+    margin-top: 2px;
+  `,
+
+  Bio: styled.p`
+    font-size: 14px;
+    font-weight: 400;
+    color: #424245;
+    margin-top: 8px;
+    line-height: 1.5;
+  `,
+
+  Meta: styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+  `,
+
+  MetaItem: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #86868b;
+  `,
+
+  Actions: styled.div`
+    display: flex;
+    gap: 10px;
+  `,
+
+  PrimaryButton: styled.a`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: #0071e3;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #0077ed;
+    }
+  `,
+
+  SecondaryButton: styled.button`
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #86868b;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 980px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.25);
+      color: #1d1d1f;
     }
   `,
 };

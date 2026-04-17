@@ -3,71 +3,70 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Avatar from '@mui/material/Avatar';
 import styled from '@emotion/styled';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
-import { Color } from '@/styles/color';
-import { Title } from '@/components/common/Title';
 import { Profile } from '@/components/pages/my/Profile';
 import { MakeTier } from '@/components/pages/my/MakeTier';
 
 export default function MyPage() {
   const { status } = useSession();
-
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/');
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (status === 'unauthenticated') {
+  //     router.push('/');
+  //   }
+  // }, [status, router]);
 
   return (
     <S.Wrapper>
-      <Title
-        title="My Page"
-        icon={<PersonRoundedIcon style={{ fontSize: '30px' }} />}
-      />
-      <S.FlexBox>
+      <S.PageLabel>Account</S.PageLabel>
+      <S.PageTitle>My Page</S.PageTitle>
+      <S.Content>
         <Profile />
         <MakeTier />
-      </S.FlexBox>
+      </S.Content>
     </S.Wrapper>
   );
 }
 
 const S = {
   Wrapper: styled.div`
-    width: 80%;
+    max-width: 720px;
+    width: 100%;
     margin: 0 auto;
+    padding: 40px 24px 0;
+
+    @media (max-width: 768px) {
+      padding: 24px 20px 0;
+    }
   `,
-  FlexBox: styled.div`
+
+  PageLabel: styled.p`
+    font-size: 14px;
+    font-weight: 600;
+    color: #86868b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  `,
+
+  PageTitle: styled.h2`
+    font-size: 36px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.03em;
+    margin-bottom: 40px;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+      margin-bottom: 32px;
+    }
+  `,
+
+  Content: styled.div`
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-top: 10px;
-
-    > div {
-      &:first-of-type {
-        width: auto;
-      }
-
-      &:last-child {
-        width: 70%;
-      }
-    }
-  `,
-  ProfileImg: styled(Avatar)`
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid ${Color.Primary};
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
+    flex-direction: column;
+    gap: 24px;
   `,
 };

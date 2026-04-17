@@ -1,11 +1,5 @@
 import React from 'react';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import styled from '@emotion/styled';
-import { Color } from '@/styles/color';
 
 type TProps = {
   isCard: string;
@@ -16,6 +10,29 @@ type TProps = {
   setIsMode: React.Dispatch<React.SetStateAction<string>>;
 };
 
+interface SegmentOption {
+  readonly value: string;
+  readonly label: string;
+}
+
+const TYPE_OPTIONS: readonly SegmentOption[] = [
+  { value: 'image', label: 'Simple' },
+  { value: 'card', label: 'Card' },
+];
+
+const TEXT_OPTIONS: readonly SegmentOption[] = [
+  { value: 'exist', label: 'Show' },
+  { value: 'delete', label: 'Hide' },
+];
+
+const BG_OPTIONS: readonly SegmentOption[] = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'blue', label: 'Blue' },
+  { value: 'green', label: 'Green' },
+  { value: 'red', label: 'Red' },
+];
+
 export const TierController = ({
   isCard,
   isText,
@@ -24,110 +41,104 @@ export const TierController = ({
   setIsText,
   setIsMode,
 }: TProps) => {
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsCard(event.target.value);
-  };
-  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsText(event.target.value);
-  };
-  const handleModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsMode(event.target.value);
-  };
-
   return (
     <S.Controller>
-      <FormControl>
-        <FormLabel id="form-group-label">Type</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="form-group-label"
-          defaultValue={isCard}
-          name="form-group"
-          value={isCard}
-          onChange={handleFormChange}
-          sx={{
-            '& .MuiRadio-root': {
-              color: Color.Gray300,
-              '&.Mui-checked': {
-                color: Color.Primary,
-              },
-            },
-          }}>
-          <FormControlLabel value="image" control={<Radio />} label="SIMPLE" />
-          <FormControlLabel value="card" control={<Radio />} label="CARD" />
-        </RadioGroup>
-      </FormControl>
-      <FormControl>
-        <FormLabel id="text-group-label">Tier Text</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="text-group-label"
-          defaultValue={isText}
-          name="text-group"
-          value={isText}
-          onChange={handleTextChange}
-          sx={{
-            '& .MuiRadio-root': {
-              color: Color.Gray300,
-              '&.Mui-checked': {
-                color: Color.Primary,
-              },
-            },
-          }}>
-          <FormControlLabel value="exist" control={<Radio />} label="EXIST" />
-          <FormControlLabel value="delete" control={<Radio />} label="DELETE" />
-        </RadioGroup>
-      </FormControl>
-      <FormControl>
-        <FormLabel id="mode-group-label">Background</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="mode-group-label"
-          defaultValue={isMode}
-          name="mode-group"
-          value={isMode}
-          onChange={handleModeChange}
-          sx={{
-            '& .MuiRadio-root': {
-              color: Color.Gray300,
-              '&.Mui-checked': {
-                color: Color.Primary,
-              },
-            },
-          }}>
-          <FormControlLabel value="light" control={<Radio />} label="LIGHT" />
-          <FormControlLabel value="dark" control={<Radio />} label="DARK" />
-          <FormControlLabel value="blue" control={<Radio />} label="BLUE" />
-          <FormControlLabel value="green" control={<Radio />} label="GREEN" />
-          <FormControlLabel value="red" control={<Radio />} label="RED" />
-        </RadioGroup>
-      </FormControl>
+      <S.Group>
+        <S.GroupLabel>Type</S.GroupLabel>
+        <S.Segment>
+          {TYPE_OPTIONS.map((opt) => (
+            <S.SegmentButton
+              key={opt.value}
+              data-active={isCard === opt.value}
+              onClick={() => setIsCard(opt.value)}>
+              {opt.label}
+            </S.SegmentButton>
+          ))}
+        </S.Segment>
+      </S.Group>
+
+      <S.Group>
+        <S.GroupLabel>Tier Text</S.GroupLabel>
+        <S.Segment>
+          {TEXT_OPTIONS.map((opt) => (
+            <S.SegmentButton
+              key={opt.value}
+              data-active={isText === opt.value}
+              onClick={() => setIsText(opt.value)}>
+              {opt.label}
+            </S.SegmentButton>
+          ))}
+        </S.Segment>
+      </S.Group>
+
+      <S.Group>
+        <S.GroupLabel>Background</S.GroupLabel>
+        <S.Segment>
+          {BG_OPTIONS.map((opt) => (
+            <S.SegmentButton
+              key={opt.value}
+              data-active={isMode === opt.value}
+              onClick={() => setIsMode(opt.value)}>
+              {opt.label}
+            </S.SegmentButton>
+          ))}
+        </S.Segment>
+      </S.Group>
     </S.Controller>
   );
 };
 
 const S = {
   Controller: styled.div`
-    margin-top: 10px;
-    text-align: left;
     display: flex;
-    justify-content: space-between;
-    width: 55%;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  `,
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
+  Group: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `,
 
-      > label {
-        font-size: 12px;
-      }
+  GroupLabel: styled.span`
+    font-size: 13px;
+    font-weight: 600;
+    color: #86868b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  `,
 
-      > div {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-      }
+  Segment: styled.div`
+    display: flex;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+  `,
+
+  SegmentButton: styled.button`
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #86868b;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &[data-active='true'] {
+      background: #fff;
+      color: #1d1d1f;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    &:hover:not([data-active='true']) {
+      color: #1d1d1f;
     }
   `,
 };
