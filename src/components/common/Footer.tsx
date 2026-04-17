@@ -1,30 +1,51 @@
+'use client';
+
 import React from 'react';
 import styled from '@emotion/styled';
-
-import { Color } from '@/styles/color';
 
 export const Footer = () => {
   return (
     <S.Footer>
-      <p>
-        Git TIERS <span>by devwoodie</span>
-      </p>
+      <S.Inner>
+        <S.Brand>Git TIERS</S.Brand>
+        <S.Divider />
+        <S.Credit>by devwoodie</S.Credit>
+      </S.Inner>
     </S.Footer>
   );
 };
 
 const S = {
-  Footer: styled.div`
-    background-color: ${Color.Black};
-    padding: 30px 0;
-    color: ${Color.White};
+  Footer: styled.footer`
+    background: #f5f5f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 20px 24px;
+  `,
 
-    p {
-      font-size: 24px;
+  Inner: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 980px;
+    margin: 0 auto;
+  `,
 
-      span {
-        font-size: 16px;
-      }
-    }
+  Brand: styled.span`
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+  `,
+
+  Divider: styled.span`
+    width: 1px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.2);
+  `,
+
+  Credit: styled.span`
+    font-size: 12px;
+    font-weight: 400;
+    color: #86868b;
   `,
 };

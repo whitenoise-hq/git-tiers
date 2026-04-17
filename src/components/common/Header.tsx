@@ -3,38 +3,30 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-import { Color } from '@/styles/color';
 import { Logo } from '@/components/common/Logo';
+
+const COLLAPSE_THRESHOLD = 200;
 
 export const Header = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, status } = useSession();
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [userImg, setUserImg] = useState<string>('');
+  const [isLogin, setIsLogin] = useState(false);
+  const [userImg, setUserImg] = useState('');
+  const [collapsed, setCollapsed] = useState(false);
+
+  const isLanding = pathname === '/';
 
   const handleGitLogin = async () => {
     await signIn('github', { callbackUrl: '/my' });
-  };
-
-  const handleNotice = () => {
-    router.push('/notice');
-  };
-
-  const handleMyPage = () => {
-    router.push('/my');
   };
 
   useEffect(() => {
@@ -46,80 +38,264 @@ export const Header = () => {
     } else {
       setIsLogin(false);
     }
-  }, [status]);
+  }, [status, session]);
 
-  // pc
-  return (
-    <S.Header>
-      <CssBaseline />
-      <AppBar
-        component="nav"
-        style={{
-          background: Color.White,
-          padding: '4px 10px',
-          boxShadow: 'rgba(0, 0, 0, 0.25) 0px 0px 6px',
-        }}>
-        <Toolbar>
-          <div className="flex-box space-between">
-            <Logo />
-            <S.Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              {/*notification*/}
-              <IconButton onClick={handleNotice}>
+  useEffect(() => {
+    if (!isLanding) return;
+
+    const handleScroll = () => setCollapsed(window.scrollY > COLLAPSE_THRESHOLD);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLanding]);
+
+  // Landing page: collapsible floating pill
+  if (isLanding) {
+    return (
+      <S.LandingNav data-collapsed={collapsed}>
+        <S.LandingInner data-collapsed={collapsed}>
+          {/* Full header — visible before collapse */}
+          <S.FullRow data-collapsed={collapsed}>
+            <Logo dark />
+            <S.Actions>
+              <IconButton onClick={() => router.push('/notice')} size="small">
                 <Badge badgeContent={1} color="error">
-                  <NotificationsIcon sx={{ color: Color.Black }} />
+                  <NotificationsIcon sx={{ color: '#f5f5f7', fontSize: 20 }} />
                 </Badge>
               </IconButton>
-
-              {/*github*/}
               <Link
                 href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
                 rel="noopener noreferrer"
                 target="_blank">
-                <IconButton>
-                  <GitHubIcon sx={{ color: Color.Black }} />
+                <IconButton size="small">
+                  <GitHubIcon sx={{ color: '#f5f5f7', fontSize: 20 }} />
                 </IconButton>
               </Link>
-              {/*language*/}
-              {/*<IconButton*/}
-              {/*  onClick={() => {}}*/}
-              {/*>*/}
-              {/*  <LanguageIcon />*/}
-              {/*</IconButton>*/}
-              {/*login*/}
               {isLogin ? (
-                <IconButton onClick={handleMyPage}>
-                  <Avatar alt="user-profile" src={userImg} />
+                <IconButton onClick={() => router.push('/my')} size="small">
+                  <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
                 </IconButton>
               ) : (
-                <Button onClick={handleGitLogin} style={{ color: 'black' }}>
-                  Login
-                </Button>
+                <S.HeaderCTA onClick={handleGitLogin}>Get Started</S.HeaderCTA>
               )}
-            </S.Box>
-          </div>
-        </Toolbar>
-      </AppBar>
-    </S.Header>
+            </S.Actions>
+          </S.FullRow>
+
+          {/* Collapsed pill — visible after collapse */}
+          <S.PillRow data-collapsed={collapsed}>
+            <S.PillName onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              Git TIERS
+            </S.PillName>
+            <S.PillActions>
+              {isLogin ? (
+                <S.PillCTA onClick={() => router.push('/my')}>My Page</S.PillCTA>
+              ) : (
+                <S.PillCTA onClick={handleGitLogin}>Get Started</S.PillCTA>
+              )}
+            </S.PillActions>
+          </S.PillRow>
+        </S.LandingInner>
+      </S.LandingNav>
+    );
+  }
+
+  // Default header for other pages
+  return (
+    <S.Nav>
+      <S.Inner>
+        <Logo />
+        <S.Actions>
+          <IconButton onClick={() => router.push('/notice')} size="small">
+            <Badge badgeContent={1} color="error">
+              <NotificationsIcon sx={{ color: '#1d1d1f', fontSize: 20 }} />
+            </Badge>
+          </IconButton>
+          <Link
+            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
+            rel="noopener noreferrer"
+            target="_blank">
+            <IconButton size="small">
+              <GitHubIcon sx={{ color: '#1d1d1f', fontSize: 20 }} />
+            </IconButton>
+          </Link>
+          {isLogin ? (
+            <IconButton onClick={() => router.push('/my')} size="small">
+              <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
+            </IconButton>
+          ) : (
+            <S.LoginButton onClick={handleGitLogin}>Login</S.LoginButton>
+          )}
+        </S.Actions>
+      </S.Inner>
+    </S.Nav>
   );
 };
 
 const S = {
-  Header: styled(Box)``,
-  Box: styled(Box)`
-    > button {
-      color: #fff;
-      margin-right: 10px;
+  /* ── Landing header (dark, collapsible) ── */
+  LandingNav: styled.nav`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    padding: 0 24px;
+    transition: padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 
-      &:last-child {
-        margin: 0;
-      }
+    &[data-collapsed='true'] {
+      padding: 10px 24px;
     }
+  `,
 
-    > a {
-      button {
-        color: #fff;
-        margin-right: 10px;
-      }
+  LandingInner: styled.div`
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 52px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid transparent;
+    border-radius: 0;
+
+    &[data-collapsed='true'] {
+      max-width: 420px;
+      height: 44px;
+      border-radius: 980px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(30, 30, 30, 0.85);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+  `,
+
+  FullRow: styled.div`
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+
+    &[data-collapsed='true'] {
+      opacity: 0;
+      pointer-events: none;
+    }
+  `,
+
+  PillRow: styled.div`
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px 0 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s;
+    pointer-events: none;
+
+    &[data-collapsed='true'] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  `,
+
+  PillName: styled.button`
+    font-size: 14px;
+    font-weight: 600;
+    color: #f5f5f7;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  `,
+
+  PillActions: styled.div`
+    display: flex;
+    align-items: center;
+  `,
+
+  PillCTA: styled.button`
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: #0071e3;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #0077ed;
+    }
+  `,
+
+  HeaderCTA: styled.button`
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: #0071e3;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #0077ed;
+    }
+  `,
+
+  /* ── Default header (light, static) ── */
+  Nav: styled.nav`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 24px;
+    background: rgba(251, 251, 253, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  `,
+
+  Inner: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 52px;
+  `,
+
+  Actions: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  `,
+
+  LoginButton: styled.button`
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1d1d1f;
+    background: transparent;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
     }
   `,
 };

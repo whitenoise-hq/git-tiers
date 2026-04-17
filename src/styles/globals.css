@@ -5,11 +5,12 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
-  padding: 0;
+  padding: 0 !important;
+  padding-bottom: 0 !important;
   margin: 0;
   font-family: -apple-system, Poppins, sans-serif;
 }

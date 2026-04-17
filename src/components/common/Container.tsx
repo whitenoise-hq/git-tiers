@@ -1,28 +1,33 @@
 'use client';
 
 import React from 'react';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+import { usePathname } from 'next/navigation';
 import styled from '@emotion/styled';
 
 import { Color } from '@/styles/color';
 
+const FULL_BLEED_PATHS = ['/'];
+
 export const Container = ({ children }: { children: React.ReactNode }) => {
-  return(
-    <Box component="main">
-      <S.Inner>
-        <Toolbar />
-        {children}
-      </S.Inner>
-    </Box>
-  )
-}
+  const pathname = usePathname();
+  const isFullBleed = FULL_BLEED_PATHS.includes(pathname);
+
+  if (isFullBleed) {
+    return <>{children}</>;
+  }
+
+  return (
+    <S.Inner>
+      {children}
+    </S.Inner>
+  );
+};
 
 const S = {
-  Inner: styled.div`
+  Inner: styled.main`
     position: relative;
-    padding: 32px 0 0;
+    padding-top: 84px;
     min-height: 100vh;
     background-color: ${Color.Bg100};
-  `
-}
+  `,
+};

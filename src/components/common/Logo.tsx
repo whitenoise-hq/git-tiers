@@ -1,17 +1,33 @@
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import { Color } from '@/styles/color';
 
-export const Logo = () => {
+interface LogoProps {
+  readonly dark?: boolean;
+}
+
+export const Logo = ({ dark = false }: LogoProps) => {
   const router = useRouter();
 
-  return <S.Logo onClick={() => router.push('/')}>Git TIERS</S.Logo>;
+  return (
+    <S.Logo onClick={() => router.push('/')} data-dark={dark}>
+      Git TIERS
+    </S.Logo>
+  );
 };
 
 const S = {
   Logo: styled.h1`
-    font-size: 24px;
-    color: ${Color.Black};
+    font-size: 20px;
+    font-weight: 700;
     cursor: pointer;
+    letter-spacing: -0.02em;
+
+    &[data-dark='true'] {
+      color: #f5f5f7;
+    }
+
+    &[data-dark='false'] {
+      color: #1d1d1f;
+    }
   `,
 };
