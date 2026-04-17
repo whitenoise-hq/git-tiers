@@ -2,12 +2,7 @@
 
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { Title } from '@/components/common/Title';
-import { Color } from '@/styles/color';
 import noticeData from '../../data/notice.json';
 
 type TNotice = {
@@ -20,7 +15,7 @@ type TNotice = {
 
 export default function NoticePage() {
   const [openItems, setOpenItems] = useState<Set<number>>(
-    new Set(noticeData.length > 0 ? [noticeData[0].id] : [])
+    new Set(noticeData.length > 0 ? [noticeData[0].id] : []),
   );
 
   const toggleItem = (id: number) => {
@@ -37,144 +32,189 @@ export default function NoticePage() {
 
   return (
     <S.Wrapper>
-      <Title
-        title="Notice"
-        icon={<NotificationsIcon style={{ fontSize: '24px' }} />}
-      />
-      <S.NoticeWrap>
-        {noticeData?.map((notice: TNotice) => (
-          <S.NoticeItem key={notice.id} $isOpen={openItems.has(notice.id)}>
-            <S.NoticeHeader onClick={() => toggleItem(notice.id)}>
-              <S.TitleSection>
-                <span
-                  style={{
-                    display: 'block',
-                    width: '30px',
-                    color: Color.Gray300,
-                  }}>
-                  {notice.id + 1}
-                </span>
-                {notice.isNew && <S.NewBadge>New</S.NewBadge>}
-                <S.NoticeTitle $isOpen={openItems.has(notice.id)}>
-                  {notice.title}
-                </S.NoticeTitle>
-              </S.TitleSection>
-              <S.HeaderRight>
-                <S.NoticeDate>{notice.date}</S.NoticeDate>
-                <S.IconWrapper>
-                  {openItems.has(notice.id) ? (
-                    <KeyboardArrowUpIcon />
-                  ) : (
-                    <KeyboardArrowDownIcon />
-                  )}
-                </S.IconWrapper>
-              </S.HeaderRight>
-            </S.NoticeHeader>
-            <S.NoticeContent $isOpen={openItems.has(notice.id)}>
-              <S.ContentInner>{notice.content}</S.ContentInner>
-            </S.NoticeContent>
-          </S.NoticeItem>
-        ))}
-      </S.NoticeWrap>
+      <S.PageLabel>Announcements</S.PageLabel>
+      <S.PageTitle>Notice</S.PageTitle>
+
+      <S.List>
+        {noticeData?.map((notice: TNotice) => {
+          const isOpen = openItems.has(notice.id);
+          return (
+            <S.Item key={notice.id} $isOpen={isOpen}>
+              <S.Header onClick={() => toggleItem(notice.id)}>
+                <S.TitleRow>
+                  {notice.isNew && <S.NewBadge>N</S.NewBadge>}
+                  <S.ItemTitle $isOpen={isOpen}>{notice.title}</S.ItemTitle>
+                </S.TitleRow>
+                <S.HeaderRight>
+                  <S.Date>{notice.date}</S.Date>
+                  <S.Chevron $isOpen={isOpen} />
+                </S.HeaderRight>
+              </S.Header>
+              <S.Content $isOpen={isOpen}>
+                <S.ContentInner>{notice.content}</S.ContentInner>
+              </S.Content>
+            </S.Item>
+          );
+        })}
+      </S.List>
     </S.Wrapper>
   );
 }
 
 const S = {
   Wrapper: styled.div`
-    width: 60%;
-    margin: 30px auto;
-  `,
-
-  NoticeWrap: styled.ul`
+    max-width: 720px;
+    width: 100%;
     margin: 0 auto;
-    padding: 40px 0;
-  `,
+    padding: 40px 24px 0;
 
-  NoticeItem: styled.li<{ $isOpen: boolean }>`
-    border-bottom: 1px solid ${Color.Gray200};
-    background-color: ${Color.White};
-    overflow: hidden;
-    transition: all 0.2s ease;
-
-    &:last-child {
-      margin-bottom: 0;
+    @media (max-width: 768px) {
+      padding: 24px 20px 0;
     }
-
-    ${({ $isOpen }) =>
-      $isOpen &&
-      `
-      border-color: ${Color.Primary || '#1976d2'};
-    `}
   `,
 
-  NoticeHeader: styled.div`
+  PageLabel: styled.p`
+    font-size: 14px;
+    font-weight: 600;
+    color: #86868b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  `,
+
+  PageTitle: styled.h2`
+    font-size: 36px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.03em;
+    margin-bottom: 48px;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+      margin-bottom: 32px;
+    }
+  `,
+
+  List: styled.ul`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+  `,
+
+  Item: styled.li<{ $isOpen: boolean }>`
+    background: ${({ $isOpen }) => ($isOpen ? '#fff' : 'rgba(0, 0, 0, 0.02)')};
+    border: 1px solid ${({ $isOpen }) => ($isOpen ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.06)')};
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: ${({ $isOpen }) => ($isOpen ? '0 2px 12px rgba(0, 0, 0, 0.06)' : 'none')};
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+  `,
+
+  Header: styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 10px;
+    padding: 20px 24px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    gap: 16px;
 
-    &:hover {
-      background-color: ${Color.Bg200 || '#f5f5f5'};
+    @media (max-width: 768px) {
+      padding: 16px 20px;
     }
   `,
 
-  TitleSection: styled.div`
+  TitleRow: styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    min-width: 0;
   `,
 
   NewBadge: styled.span`
-    color: ${Color.Red100};
-    font-weight: 600;
-    font-size: 12px;
-    background-color: ${Color.Red100}10;
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: 1px solid ${Color.Red100}30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
   `,
 
-  NoticeTitle: styled.span<{ $isOpen: boolean }>`
-    font-size: 16px;
+  ItemTitle: styled.span<{ $isOpen: boolean }>`
+    font-size: 17px;
     font-weight: 600;
-    color: ${({ $isOpen }) => ($isOpen ? Color.Primary : Color.Black)};
+    color: ${({ $isOpen }) => ($isOpen ? '#0071e3' : '#1d1d1f')};
+    letter-spacing: -0.01em;
+    transition: color 0.3s ease;
   `,
 
   HeaderRight: styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
   `,
 
-  NoticeDate: styled.small`
-    color: ${Color.Gray300 || '#666'};
-    font-size: 14px;
+  Date: styled.span`
+    font-size: 13px;
+    font-weight: 400;
+    color: #86868b;
   `,
 
-  IconWrapper: styled.div`
-    display: flex;
-    align-items: center;
-    color: ${Color.Gray300 || '#666'};
-    transition: transform 0.2s ease;
+  Chevron: styled.span<{ $isOpen: boolean }>`
+    width: 20px;
+    height: 20px;
+    position: relative;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 4px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid #86868b;
+      border-bottom: 2px solid #86868b;
+      transform: rotate(45deg);
+    }
   `,
 
-  NoticeContent: styled.div<{ $isOpen: boolean }>`
+  Content: styled.div<{ $isOpen: boolean }>`
     overflow: hidden;
-    transition:
-      max-height 0.3s ease,
-      padding 0.3s ease;
     max-height: ${({ $isOpen }) => ($isOpen ? '500px' : '0')};
+    opacity: ${({ $isOpen }) => ($isOpen ? '1' : '0')};
+    transition:
+      max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s ease,
+      padding 0.3s ease;
   `,
 
   ContentInner: styled.p`
-    font-size: 14px;
+    font-size: 15px;
     white-space: pre-wrap;
-    line-height: 1.5;
+    line-height: 1.7;
     margin: 0;
-    padding: 10px 10px 20px;
-    color: ${Color.Black || '#555'};
+    padding: 0 24px 24px;
+    color: #424245;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding-top: 20px;
+
+    @media (max-width: 768px) {
+      padding: 0 20px 20px;
+      padding-top: 16px;
+    }
   `,
 };

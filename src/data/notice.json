@@ -1,10 +1,17 @@
 [
   {
+    "id": 3,
+    "title": "Design renewal",
+    "content": "The Git TIERS landing page has been completely redesigned.\nWe hope you enjoy the new look.\nThank you for your continued interest and support.",
+    "date": "2026.04.17",
+    "isNew": true
+  },
+  {
     "id": 2,
     "title": "Function update information",
     "content": "Instead of downloading and attaching images, \na feature has been added that allows you to simply copy the code and paste it into README. \nThis change is simpler and more convenient, \nso we hope you enjoy it.",
     "date": "2025.07.09",
-    "isNew": true
+    "isNew": false
   },
   {
     "id": 1,

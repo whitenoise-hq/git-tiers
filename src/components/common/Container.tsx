@@ -4,8 +4,6 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import styled from '@emotion/styled';
 
-import { Color } from '@/styles/color';
-
 const FULL_BLEED_PATHS = ['/'];
 
 export const Container = ({ children }: { children: React.ReactNode }) => {
@@ -27,7 +25,8 @@ const S = {
   Inner: styled.main`
     position: relative;
     padding-top: 84px;
+    padding-bottom: 80px;
     min-height: 100vh;
-    background-color: ${Color.Bg100};
+    background-color: #fbfbfd;
   `,
 };

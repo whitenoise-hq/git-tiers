@@ -122,7 +122,7 @@ export const Header = () => {
               <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
             </IconButton>
           ) : (
-            <S.LoginButton onClick={handleGitLogin}>Login</S.LoginButton>
+            <S.DefaultCTA onClick={handleGitLogin}>Get Started</S.DefaultCTA>
           )}
         </S.Actions>
       </S.Inner>
@@ -176,7 +176,7 @@ const S = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 24px;
     opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: auto;
@@ -283,19 +283,20 @@ const S = {
     gap: 12px;
   `,
 
-  LoginButton: styled.button`
-    padding: 6px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #1d1d1f;
-    background: transparent;
+  DefaultCTA: styled.button`
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: #0071e3;
     border: none;
     border-radius: 980px;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 0.2s ease;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: #0077ed;
     }
   `,
 };
