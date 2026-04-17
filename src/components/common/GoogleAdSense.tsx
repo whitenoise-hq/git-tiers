@@ -3,12 +3,12 @@
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 
-const EXCLUDED_PATHS = ['/'];
+const ALLOWED_PATHS = ['/my'];
 
 export const GoogleAdSense = () => {
   const pathname = usePathname();
 
-  if (EXCLUDED_PATHS.includes(pathname)) {
+  if (!ALLOWED_PATHS.includes(pathname)) {
     return null;
   }
 

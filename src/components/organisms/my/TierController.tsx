@@ -143,6 +143,7 @@ const S = {
     color: #86868b;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    text-align: left;
   `,
 
   BgRow: styled.div`

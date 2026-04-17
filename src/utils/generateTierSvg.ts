@@ -49,6 +49,7 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
     const gap = 10;
     const textX = padX + iconSize + gap;
 
+    const tierLabel = tierText.toUpperCase();
     const width = 222;
     const height = iconSize + pad * 2;
     const centerY = height / 2;

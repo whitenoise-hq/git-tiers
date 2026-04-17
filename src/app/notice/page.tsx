@@ -17,7 +17,7 @@ export default function NoticePage() {
   const { t } = useLanguage();
   const noticeList = t.noticeData as TNotice[];
   const [openItems, setOpenItems] = useState<Set<number>>(
-    new Set(noticeList.length > 0 ? [noticeList[0].id] : []),
+    new Set(noticeList.length > 0 ? [noticeList[0].id] : [])
   );
 
   const toggleItem = (id: number) => {
@@ -59,7 +59,6 @@ export default function NoticePage() {
           );
         })}
       </S.List>
-
     </S.Wrapper>
   );
 }
@@ -107,11 +106,14 @@ const S = {
 
   Item: styled.li<{ $isOpen: boolean }>`
     background: ${({ $isOpen }) => ($isOpen ? '#fff' : 'rgba(0, 0, 0, 0.02)')};
-    border: 1px solid ${({ $isOpen }) => ($isOpen ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.06)')};
+    border: 1px solid
+      ${({ $isOpen }) =>
+        $isOpen ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.06)'};
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: ${({ $isOpen }) => ($isOpen ? '0 2px 12px rgba(0, 0, 0, 0.06)' : 'none')};
+    box-shadow: ${({ $isOpen }) =>
+      $isOpen ? '0 2px 12px rgba(0, 0, 0, 0.06)' : 'none'};
 
     &:hover {
       border-color: rgba(0, 0, 0, 0.1);
@@ -180,7 +182,8 @@ const S = {
     position: relative;
     flex-shrink: 0;
     transition: transform 0.3s ease;
-    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) =>
+      $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 
     &::before {
       content: '';
@@ -220,5 +223,4 @@ const S = {
       padding-top: 16px;
     }
   `,
-
 };
