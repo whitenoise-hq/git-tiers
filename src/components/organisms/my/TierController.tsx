@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { HexColorPicker } from 'react-colorful';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -22,7 +22,14 @@ export const TierController = ({
 }: TProps) => {
   const { t } = useLanguage();
   const isCustomColor = isMode.startsWith('#');
-  const [pickerOpen, setPickerOpen] = useState(isCustomColor);
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  // Firebase에서 커스텀 색이 로드되면 피커 자동 오픈
+  useEffect(() => {
+    if (isMode.startsWith('#')) {
+      setPickerOpen(true);
+    }
+  }, [isMode]);
 
   const typeOptions = [
     { value: 'image', label: t.tierController.simple },

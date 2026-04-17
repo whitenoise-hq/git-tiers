@@ -39,30 +39,41 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
 
   const contribFormatted = contributeCount.toLocaleString();
 
+  // Card mode — match TierImage.tsx: padding 6px 12px, icon 88px, gap 10px
   if (isCard === 'card') {
-    const width = 280;
-    const height = 100;
-    const iconSize = 72;
+    const pad = 6;
+    const padX = 12;
+    const iconSize = 88;
+    const gap = 10;
+    const textX = padX + iconSize + gap;
+    const textWidth = 120;
+    const width = textX + textWidth + padX;
+    const height = iconSize + pad * 2;
+
+    const tierLabelY = isText === 'exist' ? pad + 28 : pad + 38;
+    const contribY = isText === 'exist' ? pad + 48 : pad + 38;
 
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <rect width="${width}" height="${height}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
-  <image href="${iconBase64}" x="12" y="${(height - iconSize) / 2}" width="${iconSize}" height="${iconSize}" />
-  ${isText === 'exist' ? `<text x="96" y="32" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${subColor}" letter-spacing="0.06em" text-transform="uppercase">${tierText.toUpperCase()}</text>` : ''}
-  <text x="96" y="${isText === 'exist' ? 52 : 42}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="${subColor}">
+  <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
+  ${isText === 'exist' ? `<text x="${textX}" y="${tierLabelY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${subColor}" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}
+  <text x="${textX}" y="${contribY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="${subColor}">
     <tspan font-weight="700" fill="${mainColor}">${contribFormatted}</tspan> contributions
   </text>
 </svg>`;
   }
 
-  // Simple mode
-  const iconSize = 80;
+  // Simple mode — match TierImage.tsx: padding 6px 12px, icon 88px
+  const pad = 6;
+  const padX = 12;
+  const iconSize = 88;
   const hasText = isText === 'exist';
-  const width = iconSize + 24;
-  const height = hasText ? iconSize + 36 : iconSize + 16;
+  const width = iconSize + padX * 2;
+  const height = hasText ? iconSize + pad + 24 : iconSize + pad * 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <rect width="${width}" height="${height}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
-  <image href="${iconBase64}" x="${(width - iconSize) / 2}" y="8" width="${iconSize}" height="${iconSize}" />
-  ${hasText ? `<text x="${width / 2}" y="${iconSize + 26}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${mainColor}" text-anchor="middle" letter-spacing="0.06em">${tierText.toUpperCase()}</text>` : ''}
+  <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
+  ${hasText ? `<text x="${width / 2}" y="${iconSize + pad + 16}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${mainColor}" text-anchor="middle" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}
 </svg>`;
 }
