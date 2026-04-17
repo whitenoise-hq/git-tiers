@@ -2,7 +2,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 
 import styled from '@emotion/styled';
-import { getTierBg } from '@/utils/getTierBg';
+import { getTierBg, isLightColor } from '@/utils/getTierBg';
 
 type TProps = {
   isMode: string;
@@ -22,7 +22,7 @@ export const TierImage = ({
   contributeCount,
 }: TProps) => {
   const { data: session } = useSession();
-  const isLight = isMode === 'light';
+  const isLight = isLightColor(isMode);
 
   return (
     <div style={{ minHeight: '140px' }}>

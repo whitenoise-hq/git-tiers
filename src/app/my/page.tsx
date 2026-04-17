@@ -14,15 +14,16 @@ export default function MyPage() {
   const router = useRouter();
   const { t } = useLanguage();
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/');
-    }
-  }, [status, router]);
+  // TODO: 확인 후 복원
+  // useEffect(() => {
+  //   if (status === 'unauthenticated') {
+  //     router.push('/');
+  //   }
+  // }, [status, router]);
 
-  if (status !== 'authenticated') {
-    return null;
-  }
+  // if (status !== 'authenticated') {
+  //   return null;
+  // }
 
   return (
     <S.Wrapper>

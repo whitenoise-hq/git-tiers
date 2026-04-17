@@ -12,13 +12,15 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const firebase = initializeApp(firebaseConfig);
+const hasConfig = Boolean(firebaseConfig.projectId);
+
+const firebase = hasConfig ? initializeApp(firebaseConfig) : null;
 
 let analytics;
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && firebase) {
   analytics = getAnalytics(firebase);
 }
-const firestore = getFirestore(firebase);
+const firestore = firebase ? getFirestore(firebase) : (null as any);
 
 export default firebase;
 export { analytics, firestore };
