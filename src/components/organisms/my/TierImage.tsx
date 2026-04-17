@@ -1,6 +1,4 @@
 import React from 'react';
-import { useSession } from 'next-auth/react';
-
 import styled from '@emotion/styled';
 import { getTierBg, isLightColor } from '@/utils/getTierBg';
 
@@ -21,7 +19,6 @@ export const TierImage = ({
   tierText,
   contributeCount,
 }: TProps) => {
-  const { data: session } = useSession();
   const isLight = isLightColor(isMode);
 
   return (
@@ -38,9 +35,9 @@ export const TierImage = ({
             {isText === 'exist' && (
               <S.TierLabel $light={isLight}>{tierText}</S.TierLabel>
             )}
-            <S.LoginId $light={isLight}>{session?.loginId}</S.LoginId>
             <S.Contributions $light={isLight}>
-              <strong>{(contributeCount || 0).toLocaleString()}</strong> contributions
+              <strong>{(contributeCount || 0).toLocaleString()}</strong>{' '}
+              contributions
             </S.Contributions>
           </S.Info>
         )}
@@ -52,12 +49,15 @@ export const TierImage = ({
 const S = {
   Card: styled.div<{ $form?: string; $mode?: string }>`
     background-color: ${(props) => getTierBg(props.$mode || 'light')};
-    border: 1px solid ${(props) =>
-      props.$mode === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.15)'};
-    padding: 16px 20px;
+    border: 1px solid
+      ${(props) =>
+        props.$mode === 'light'
+          ? 'rgba(0, 0, 0, 0.1)'
+          : 'rgba(255, 255, 255, 0.15)'};
+    padding: 6px 12px;
     display: inline-flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     position: relative;
   `,
 
@@ -95,7 +95,7 @@ const S = {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: ${(props) => (props.$light ? '#424245' : 'rgba(255, 255, 255, 0.7)')};
+    color: ${(props) => (props.$light ? '#424245' : 'rgba(255, 255, 255)')};
   `,
 
   LoginId: styled.p<{ $light: boolean }>`
@@ -107,13 +107,13 @@ const S = {
 
   Contributions: styled.p<{ $light: boolean }>`
     font-size: 11px;
-    margin-top: 12px;
-    color: ${(props) => (props.$light ? '#424245' : 'rgba(255, 255, 255, 0.7)')};
+    margin-top: 5px;
+    color: ${(props) =>
+      props.$light ? '#424245' : 'rgba(255, 255, 255, 0.7)'};
 
     strong {
       font-weight: 700;
       color: ${(props) => (props.$light ? '#1d1d1f' : '#f5f5f7')};
     }
   `,
-
 };

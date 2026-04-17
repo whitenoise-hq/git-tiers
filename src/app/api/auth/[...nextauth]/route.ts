@@ -11,7 +11,7 @@ const handler = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
       authorization: {
         params: {
-          scope: "read:user repo",
+          scope: "read:user",
         },
       },
     }),
@@ -41,7 +41,6 @@ const handler = NextAuth({
                 if(!userDoc.exists()){
                   await setDoc(userRef, {
                     login_id: userData.login,
-                    access_token: account.access_token,
                     first_login: new Date().toISOString(),
                     last_login: new Date().toISOString(),
                   })
@@ -51,19 +50,18 @@ const handler = NextAuth({
                   }, { merge: true });
                 }
 
-              }catch(firebaseError){
-                console.error('Firebase 처리 중 오류:', firebaseError);
+              }catch{
+                // Firebase write failed, continue without persisting
               }
             }
-          } catch (error) {
-            console.error('Failed to parse user data:', error);
+          } catch {
+            // GitHub user data parse failed, continue with partial token
           }
         }
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
       session.loginId = token.loginId as string;
       session.user = {
         ...session.user,

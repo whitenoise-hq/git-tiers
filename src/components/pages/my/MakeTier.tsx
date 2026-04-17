@@ -4,15 +4,11 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import html2canvas from 'html2canvas';
 import styled from '@emotion/styled';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-import { getContributeCount } from '@/utils/github';
 import { getTierImage, getTierText } from '@/utils/getTier';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { firestore } from '../../../../firebase/firebase';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
-import { UserData } from '@/types/api';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 export const MakeTier = () => {
@@ -29,27 +25,22 @@ export const MakeTier = () => {
   const [userImageUrl, setUserImageUrl] = useState<string>('');
 
   const handleGithubData = async () => {
-    if (session?.accessToken && session?.loginId) {
+    if (session?.loginId) {
       setLoading(true);
-      const res = await getContributeCount({
-        accessToken: session?.accessToken,
-        loginId: session?.loginId,
-      });
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
-      if (res === 'ERROR') {
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
+      try {
+        const res = await fetch('/api/github/contributions');
+        if (!res.ok) {
+          throw new Error('Failed to fetch');
+        }
+        const data = await res.json();
+        setContributeCount(data.contributions);
+      } catch {
         toast.error(t.toast.error);
-
-        await signOut({
-          callbackUrl: '/',
-        });
+        await signOut({ callbackUrl: '/' });
         return;
+      } finally {
+        setTimeout(() => setLoading(false), 500);
       }
-      setContributeCount(res);
     }
   };
 
@@ -81,28 +72,29 @@ export const MakeTier = () => {
         return;
       }
 
-      const userRef = doc(firestore, 'users', session.loginId);
-      await setDoc(
-        userRef,
-        {
+      const res = await fetch('/api/tier/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           tierImageBase64: base64Image,
-          lastUpdated: new Date().toISOString(),
           imageSettings: {
             isCard,
             isText,
             isMode,
             contributeCount,
           },
-        },
-        { merge: true },
-      );
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save');
+      }
 
       const baseUrl = window.location.origin;
       setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
 
       toast.success(t.toast.imageSaved);
-    } catch (error) {
-      console.error('Error saving image:', error);
+    } catch {
       toast.error(t.toast.saveFailed);
     } finally {
       setSaveLoading(false);
@@ -119,21 +111,25 @@ export const MakeTier = () => {
   };
 
   const handleController = async () => {
-    const userRef = doc(firestore, 'users', session?.loginId || '');
-    const userDoc = await getDoc(userRef);
-    const userData: UserData = userDoc.data() as UserData;
-    const controller = userData.imageSettings;
+    try {
+      const res = await fetch('/api/tier/settings');
+      if (!res.ok) return;
+      const data = await res.json();
+      const settings = data.imageSettings;
 
-    if (controller) {
-      setIsCard(controller?.isCard);
-      setIsText(controller?.isText);
-      setIsMode(controller?.isMode);
+      if (settings) {
+        setIsCard(settings.isCard);
+        setIsText(settings.isText);
+        setIsMode(settings.isMode);
+      }
+    } catch {
+      // Settings load failure is non-critical, use defaults
     }
   };
 
   useEffect(() => {
     handleGithubData();
-  }, [session?.accessToken]);
+  }, [session?.loginId]);
 
   useEffect(() => {
     if (contributeCount) {

@@ -9,7 +9,6 @@ export interface UserData {
   tierImageBase64?: string;
   lastUpdated?: string;
   imageSettings?: ImageSettings;
-  access_token?: string;
   loginId?: string;
   first_login?: string;
   last_login?: string;

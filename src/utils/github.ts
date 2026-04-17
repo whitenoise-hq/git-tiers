@@ -21,8 +21,8 @@ export const getContributeCount = async ({
   if (!accessToken) return "ERROR";
   const graphqlQuery = JSON.stringify({
     query: `
-      query {
-        user(login: "${loginId}") {
+      query($login: String!) {
+        user(login: $login) {
           contributionsCollection {
             contributionCalendar {
               totalContributions
@@ -31,6 +31,7 @@ export const getContributeCount = async ({
         }
       }
     `,
+    variables: { login: loginId },
   });
 
   try {
@@ -51,8 +52,7 @@ export const getContributeCount = async ({
 
     return statsData.data.user.contributionsCollection.contributionCalendar.totalContributions;
 
-  } catch (error) {
-    console.log(error);
+  } catch {
     return "ERROR";
   }
 };
