@@ -19,18 +19,23 @@ export const Profile = () => {
   return (
     <S.Card>
       <S.Header onClick={() => setOpen((prev) => !prev)}>
-        <S.HeaderLeft>
-          <S.ProfileImg alt="profile-image" src={session?.user.image} />
-          <S.Name>{session?.user.name || ''}</S.Name>
-        </S.HeaderLeft>
+        {!open && (
+          <S.HeaderLeft>
+            <S.ProfileImg alt="profile-image" src={session?.user.image} />
+            <S.Name>{session?.user.name || ''}</S.Name>
+          </S.HeaderLeft>
+        )}
+        {open && <S.HeaderLabel>Profile</S.HeaderLabel>}
         <S.HeaderRight>
-          <S.GitHubLink
-            href={`https://github.com/${session?.loginId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}>
-            {t.myPage.myGithub}
-          </S.GitHubLink>
+          {!open && (
+            <S.GitHubLink
+              href={`https://github.com/${session?.loginId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}>
+              {t.myPage.myGithub}
+            </S.GitHubLink>
+          )}
           <S.Chevron $isOpen={open} />
         </S.HeaderRight>
       </S.Header>
@@ -103,6 +108,12 @@ const S = {
     @media (max-width: 768px) {
       padding: 14px 20px;
     }
+  `,
+
+  HeaderLabel: styled.span`
+    font-size: 14px;
+    font-weight: 600;
+    color: #86868b;
   `,
 
   HeaderLeft: styled.div`
