@@ -2,7 +2,6 @@ import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import html2canvas from 'html2canvas';
 import styled from '@emotion/styled';
 
 import { getTierImage, getTierText } from '@/utils/getTier';
@@ -52,31 +51,10 @@ export const MakeTier = () => {
 
     setSaveLoading(true);
     try {
-      const element = document.getElementById('tierCard');
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
-        scrollX: 0,
-        scrollY: -window.scrollY,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight,
-        scale: 1,
-        useCORS: true,
-      });
-
-      const base64Image = canvas.toDataURL('image/jpeg', 0.8);
-
-      const imageSizeInBytes = (base64Image.length * 3) / 4;
-      if (imageSizeInBytes > 900000) {
-        toast.error(t.toast.imageTooLarge);
-        return;
-      }
-
       const res = await fetch('/api/tier/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tierImageBase64: base64Image,
           imageSettings: {
             isCard,
             isText,

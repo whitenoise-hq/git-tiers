@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../../../../../firebase/firebase';
 import { UserData } from '@/types/api';
+import { generateTierSvg } from '@/utils/generateTierSvg';
 
 const GITHUB_USERNAME_REGEX = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/;
 
@@ -24,20 +25,22 @@ export async function GET(
     }
 
     const userData: UserData = userDoc.data() as UserData;
-    const base64Image = userData.tierImageBase64;
+    const settings = userData.imageSettings;
 
-    if (!base64Image) {
-      return new NextResponse('Tier image not found', { status: 404 });
+    if (!settings) {
+      return new NextResponse('Tier settings not found', { status: 404 });
     }
 
-    const base64Data = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
-    const imageBuffer = Buffer.from(base64Data, 'base64');
+    const svg = generateTierSvg({
+      contributeCount: settings.contributeCount || 0,
+      settings,
+    });
 
     const allowedOrigin = process.env.NEXTAUTH_URL || 'https://git-tiers.devwoodie.com';
 
-    return new NextResponse(imageBuffer, {
+    return new NextResponse(svg, {
       headers: {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': 'image/svg+xml',
         'Cache-Control': 'public, max-age=3600',
         'Access-Control-Allow-Origin': allowedOrigin,
       },

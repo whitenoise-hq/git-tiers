@@ -14,24 +14,18 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { tierImageBase64, imageSettings } = body;
+    const { imageSettings } = body;
 
-    if (!tierImageBase64 || typeof tierImageBase64 !== 'string') {
-      return NextResponse.json({ error: 'Invalid image data' }, { status: 400 });
-    }
-
-    const imageSizeInBytes = (tierImageBase64.length * 3) / 4;
-    if (imageSizeInBytes > 900000) {
-      return NextResponse.json({ error: 'Image too large' }, { status: 413 });
+    if (!imageSettings) {
+      return NextResponse.json({ error: 'Invalid settings' }, { status: 400 });
     }
 
     const userRef = doc(firestore, 'users', loginId);
     await setDoc(
       userRef,
       {
-        tierImageBase64,
         lastUpdated: new Date().toISOString(),
-        imageSettings: imageSettings || {},
+        imageSettings,
       },
       { merge: true },
     );

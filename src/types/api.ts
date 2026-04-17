@@ -6,7 +6,6 @@ export interface ImageSettings {
 }
 
 export interface UserData {
-  tierImageBase64?: string;
   lastUpdated?: string;
   imageSettings?: ImageSettings;
   loginId?: string;
