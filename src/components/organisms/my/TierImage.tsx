@@ -42,7 +42,6 @@ export const TierImage = ({
             <S.Contributions $light={isLight}>
               <strong>{(contributeCount || 0).toLocaleString()}</strong> contributions
             </S.Contributions>
-            <S.Footer $light={isLight}>Created by Git TIERS</S.Footer>
           </S.Info>
         )}
       </S.Card>
@@ -117,11 +116,4 @@ const S = {
     }
   `,
 
-  Footer: styled.p<{ $light: boolean }>`
-    font-size: 9px;
-    font-weight: 400;
-    margin-top: 10px;
-    color: ${(props) => (props.$light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)')};
-    letter-spacing: 0.02em;
-  `,
 };

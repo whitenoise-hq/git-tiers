@@ -26,9 +26,9 @@ export default function RootLayout({
           <Container>
             {children}
           </Container>
+          <GoogleAdSense />
         </Providers>
       </body>
-    <GoogleAdSense />
     </html>
   );
 }
