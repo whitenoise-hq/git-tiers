@@ -12,11 +12,15 @@ export default function MyPage() {
   const { status } = useSession();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (status === 'unauthenticated') {
-  //     router.push('/');
-  //   }
-  // }, [status, router]);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/');
+    }
+  }, [status, router]);
+
+  if (status !== 'authenticated') {
+    return null;
+  }
 
   return (
     <S.Wrapper>
