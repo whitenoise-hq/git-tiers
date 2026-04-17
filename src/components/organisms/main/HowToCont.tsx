@@ -5,46 +5,32 @@ import Link from 'next/link';
 import styled from '@emotion/styled';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
-
-const STEPS = [
-  {
-    number: '01',
-    title: 'Login',
-    description: 'Sign in with your GitHub account.',
-  },
-  {
-    number: '02',
-    title: 'Check Tier',
-    description: 'View your current tier on My Page.',
-  },
-  {
-    number: '03',
-    title: 'Customize',
-    description: 'Set your font and background color, then save.',
-  },
-  {
-    number: '04',
-    title: 'Share',
-    description: 'Copy the code and paste it into your GitHub README.',
-  },
-] as const;
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const HowToCont = () => {
   const titleFade = useScrollFadeIn({ delay: 0 });
   const gridFade = useScrollFadeIn({ delay: 200 });
   const ctaFade = useScrollFadeIn({ delay: 400 });
+  const { t } = useLanguage();
+
+  const steps = [
+    { number: '01', title: t.howTo.step1Title, description: t.howTo.step1Desc },
+    { number: '02', title: t.howTo.step2Title, description: t.howTo.step2Desc },
+    { number: '03', title: t.howTo.step3Title, description: t.howTo.step3Desc },
+    { number: '04', title: t.howTo.step4Title, description: t.howTo.step4Desc },
+  ];
 
   return (
     <S.Section>
       <S.Inner>
         <S.Label ref={titleFade.ref} data-visible={titleFade.isVisible}>
-          Getting Started
+          {t.howTo.label}
         </S.Label>
         <S.Title ref={titleFade.ref} data-visible={titleFade.isVisible}>
-          Simple as 1, 2, 3, 4.
+          {t.howTo.title}
         </S.Title>
         <S.Grid ref={gridFade.ref} data-visible={gridFade.isVisible}>
-          {STEPS.map((step) => (
+          {steps.map((step) => (
             <S.Card key={step.number}>
               <S.StepNumber>{step.number}</S.StepNumber>
               <S.StepTitle>{step.title}</S.StepTitle>
@@ -57,7 +43,7 @@ export const HowToCont = () => {
             href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#how-to-use"
             rel="noopener noreferrer"
             target="_blank">
-            Learn more &rarr;
+            {t.howTo.learnMore} &rarr;
           </Link>
         </S.LinkButton>
       </S.Inner>

@@ -4,53 +4,36 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
+import { useLanguage } from '@/i18n/LanguageContext';
 
-const CONTRIBUTION_TYPES = [
-  {
-    icon: '⟐',
-    title: 'Commits',
-    description: 'Push code changes to any repository.',
-  },
-  {
-    icon: '⊕',
-    title: 'Issues',
-    description: 'Report bugs or suggest new features.',
-  },
-  {
-    icon: '⇆',
-    title: 'Pull Requests',
-    description: 'Propose and merge code improvements.',
-  },
-  {
-    icon: '✓',
-    title: 'Code Reviews',
-    description: 'Review and approve others\u2019 code.',
-  },
-  {
-    icon: '❖',
-    title: 'Wikis',
-    description: 'Write documentation and guides.',
-  },
-] as const;
+const ICONS = ['⟐', '⊕', '⇆', '✓', '❖'] as const;
+const KEYS = ['commits', 'issues', 'pullRequests', 'codeReviews', 'wikis'] as const;
 
 export const WhatCounts = () => {
   const titleFade = useScrollFadeIn({ delay: 0 });
+  const { t } = useLanguage();
+
+  const contributionTypes = KEYS.map((key, i) => ({
+    icon: ICONS[i],
+    title: t.whatCounts[key],
+    description: t.whatCounts[`${key}Desc` as keyof typeof t.whatCounts],
+  }));
 
   return (
     <S.Section>
       <S.Inner>
         <S.Label ref={titleFade.ref} data-visible={titleFade.isVisible}>
-          Contributions
+          {t.whatCounts.label}
         </S.Label>
         <S.Title ref={titleFade.ref} data-visible={titleFade.isVisible}>
-          Everything counts.
+          {t.whatCounts.title}
         </S.Title>
         <S.Subtitle ref={titleFade.ref} data-visible={titleFade.isVisible}>
-          Five types of GitHub activity power your tier.
+          {t.whatCounts.subtitle}
         </S.Subtitle>
 
         <S.Grid>
-          {CONTRIBUTION_TYPES.map((type, index) => (
+          {contributionTypes.map((type, index) => (
             <WhatCountsItem key={type.title} item={type} index={index} />
           ))}
         </S.Grid>
@@ -63,7 +46,7 @@ const WhatCountsItem = ({
   item,
   index,
 }: {
-  readonly item: (typeof CONTRIBUTION_TYPES)[number];
+  readonly item: { icon: string; title: string; description: string };
   readonly index: number;
 }) => {
   const fade = useScrollFadeIn({ delay: index * 100 });

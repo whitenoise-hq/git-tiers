@@ -1,0 +1,125 @@
+{
+  "hero": {
+    "subtitle1": "Prove your skills with daily commits.",
+    "subtitle2": "The more you contribute, the more splendid your tier becomes.",
+    "myPage": "My Page",
+    "getStarted": "Get Started",
+    "learnMore": "Learn more"
+  },
+  "tierGrid": {
+    "label": "9 Tiers",
+    "title": "From Iron to Challenger.",
+    "viewTable": "View Tier Table"
+  },
+  "tierProgression": {
+    "label": "Tier Progression",
+    "title": "Every commit takes you higher.",
+    "contributions": "contributions"
+  },
+  "whatCounts": {
+    "label": "Contributions",
+    "title": "Everything counts.",
+    "subtitle": "Five types of GitHub activity power your tier.",
+    "commits": "Commits",
+    "commitsDesc": "Push code changes to any repository.",
+    "issues": "Issues",
+    "issuesDesc": "Report bugs or suggest new features.",
+    "pullRequests": "Pull Requests",
+    "pullRequestsDesc": "Propose and merge code improvements.",
+    "codeReviews": "Code Reviews",
+    "codeReviewsDesc": "Review and approve others\u2019 code.",
+    "wikis": "Wikis",
+    "wikisDesc": "Write documentation and guides."
+  },
+  "showcase": {
+    "label": "Showcase",
+    "title": "Show it off on GitHub.",
+    "subtitle": "Generate a beautiful tier badge and embed it in your README.",
+    "mockBio": "Full-stack developer who loves open source.",
+    "techStack": "Tech Stack"
+  },
+  "howTo": {
+    "label": "Getting Started",
+    "title": "Simple as 1, 2, 3, 4.",
+    "step1Title": "Login",
+    "step1Desc": "Sign in with your GitHub account.",
+    "step2Title": "Check Tier",
+    "step2Desc": "View your current tier on My Page.",
+    "step3Title": "Customize",
+    "step3Desc": "Set your font and background color, then save.",
+    "step4Title": "Share",
+    "step4Desc": "Copy the code and paste it into your GitHub README.",
+    "learnMore": "Learn more"
+  },
+  "header": {
+    "myPage": "My Page",
+    "getStarted": "Get Started"
+  },
+  "notice": {
+    "label": "Announcements",
+    "title": "Notice"
+  },
+  "myPage": {
+    "label": "Account",
+    "title": "My Page",
+    "myGithub": "My GitHub",
+    "logout": "Logout",
+    "totalContributions": "Total Contributions",
+    "saving": "Saving...",
+    "saveImage": "Save Image",
+    "copyTag": "Copy Tag",
+    "viewTierTable": "View Tier Table"
+  },
+  "tierController": {
+    "type": "Type",
+    "simple": "Simple",
+    "card": "Card",
+    "tierText": "Tier Text",
+    "show": "Show",
+    "hide": "Hide",
+    "background": "Background",
+    "light": "Light",
+    "dark": "Dark",
+    "blue": "Blue",
+    "green": "Green",
+    "red": "Red"
+  },
+  "toast": {
+    "error": "An error occurred. Please try again later.",
+    "loginFirst": "Please log in first.",
+    "imageTooLarge": "Image is too large. Please try with simpler settings.",
+    "imageSaved": "Image saved successfully!",
+    "saveFailed": "Failed to save image. Please try again.",
+    "tagCopied": "Image tag copied to clipboard!"
+  },
+  "noticeData": [
+    {
+      "id": 3,
+      "title": "Git TIERS Renewal",
+      "content": "The Git TIERS page has been completely redesigned.\n\nWhat's new:\n- Full landing page redesign (dark theme)\n- Scroll-driven tier progression animation\n- Improved tier image design\n- My Page UI improvements\n- Notice page redesign\n- Korean/English language support\n\nWe will continue to improve the service.\nThank you for your continued interest and support.",
+      "date": "2026.04.17",
+      "isNew": true
+    },
+    {
+      "id": 2,
+      "title": "Function update information",
+      "content": "Instead of downloading and attaching images, \na feature has been added that allows you to simply copy the code and paste it into README. \nThis change is simpler and more convenient, \nso we hope you enjoy it.",
+      "date": "2025.07.09",
+      "isNew": false
+    },
+    {
+      "id": 1,
+      "title": "Service Launch",
+      "content": "Git TIERS service has been launched.\nPlease use it a lot.\nPlease refer to GitHub for more details.\nIf you have any inconveniences or improvements, please email us.",
+      "date": "2025.01.24",
+      "isNew": false
+    },
+    {
+      "id": 0,
+      "title": "Service development in progress",
+      "content": "Development of the Git Tier service is in progress.\nWe ask for your interest.",
+      "date": "2025.01.06",
+      "isNew": false
+    }
+  ]
+}

@@ -8,12 +8,14 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
 import { TIERS } from '@/constants/tiers';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 const ChallengerIcon = TIERS[8].src;
 
 export const HeroCont = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
   const [heroProgress, setHeroProgress] = useState(0);
 
@@ -45,23 +47,23 @@ export const HeroCont = () => {
             <S.TitleAccent>Your Tier.</S.TitleAccent>
           </S.Title>
           <S.Subtitle>
-            Prove your skills with daily commits.
+            {t.hero.subtitle1}
             <br />
-            The more you contribute, the more splendid your tier becomes.
+            {t.hero.subtitle2}
           </S.Subtitle>
           <S.CTAGroup>
             {session ? (
               <S.CTAPrimary onClick={() => router.push('/my')}>
-                My Page
+                {t.hero.myPage}
               </S.CTAPrimary>
             ) : (
-              <S.CTAPrimary onClick={handleGitLogin}>Get Started</S.CTAPrimary>
+              <S.CTAPrimary onClick={handleGitLogin}>{t.hero.getStarted}</S.CTAPrimary>
             )}
             <S.CTASecondary
               href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
               target="_blank"
               rel="noopener noreferrer">
-              Learn more &rarr;
+              {t.hero.learnMore} &rarr;
             </S.CTASecondary>
           </S.CTAGroup>
         </S.HeroInner>

@@ -5,8 +5,10 @@ import Image from 'next/image';
 import styled from '@emotion/styled';
 
 import { TIERS } from '@/constants/tiers';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const TierProgression = () => {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [rawProgress, setRawProgress] = useState(0);
   const [displayProgress, setDisplayProgress] = useState(0);
@@ -54,8 +56,8 @@ export const TierProgression = () => {
   return (
     <S.Section ref={sectionRef}>
       <S.Sticky>
-        <S.Label>Tier Progression</S.Label>
-        <S.Title>Every commit takes you higher.</S.Title>
+        <S.Label>{t.tierProgression.label}</S.Label>
+        <S.Title>{t.tierProgression.title}</S.Title>
 
         <S.Showcase>
           <S.TierIcon key={activeTier.name}>
@@ -64,7 +66,7 @@ export const TierProgression = () => {
           <S.TierInfo>
             <S.TierLabel>{activeTier.name}</S.TierLabel>
             <S.Counter>{displayCount.toLocaleString()}</S.Counter>
-            <S.CounterSub>contributions</S.CounterSub>
+            <S.CounterSub>{t.tierProgression.contributions}</S.CounterSub>
           </S.TierInfo>
         </S.Showcase>
 

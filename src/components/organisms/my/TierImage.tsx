@@ -2,7 +2,6 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 
 import styled from '@emotion/styled';
-import { Color } from '@/styles/color';
 import { getTierBg } from '@/utils/getTierBg';
 
 type TProps = {
@@ -23,88 +22,106 @@ export const TierImage = ({
   contributeCount,
 }: TProps) => {
   const { data: session } = useSession();
+  const isLight = isMode === 'light';
 
   return (
-    <div style={{ minHeight: '220px' }}>
-      <div>
-        <S.ImgWrap id="tierCard" form={isCard} text={isText} mode={isMode}>
-          <div>
-            {tierImage && <img src={tierImage} alt="tier-image" />}
-            {isText === 'exist' && isCard === 'image' && (
-              <span>{tierText}</span>
-            )}
-          </div>
-          {isCard === 'card' && (
-            <div className="right">
-              {isText === 'exist' && <p className="tier-text">{tierText}</p>}
-              <p className="login-id">{session?.loginId}</p>
-              <p className="total">
-                Total Contributions <b>{contributeCount || 0}</b>
-              </p>
-              <p className="footer">Created by Git TIERS</p>
-            </div>
+    <div style={{ minHeight: '140px' }}>
+      <S.Card id="tierCard" $form={isCard} $mode={isMode}>
+        <S.IconWrap>
+          {tierImage && <img src={tierImage} alt="tier-image" />}
+          {isText === 'exist' && isCard === 'image' && (
+            <S.SimpleLabel $light={isLight}>{tierText}</S.SimpleLabel>
           )}
-        </S.ImgWrap>
-      </div>
+        </S.IconWrap>
+        {isCard === 'card' && (
+          <S.Info>
+            {isText === 'exist' && (
+              <S.TierLabel $light={isLight}>{tierText}</S.TierLabel>
+            )}
+            <S.LoginId $light={isLight}>{session?.loginId}</S.LoginId>
+            <S.Contributions $light={isLight}>
+              <strong>{(contributeCount || 0).toLocaleString()}</strong> contributions
+            </S.Contributions>
+            <S.Footer $light={isLight}>Created by Git TIERS</S.Footer>
+          </S.Info>
+        )}
+      </S.Card>
     </div>
   );
 };
 
 const S = {
-  ImgWrap: styled.div<{ form?: string; text?: string; mode?: string }>`
-    color: ${(props) => (props.mode === 'light' ? '#0d1117' : '#ffffff')};
-    background-color: ${(props) => getTierBg(props.mode || 'light')};
-    min-width: 170px;
-    min-height: 170px;
-    border: 1px solid ${Color.Gray300};
-    border-color: ${(props) =>
-      props.mode === 'light' ? '#0d1117' : '#ffffff'};
-    padding: 20px 30px;
-    display: flex;
-    justify-content: space-between;
+  Card: styled.div<{ $form?: string; $mode?: string }>`
+    background-color: ${(props) => getTierBg(props.$mode || 'light')};
+    border: 1px solid ${(props) =>
+      props.$mode === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.15)'};
+    padding: 16px 20px;
+    display: inline-flex;
     align-items: center;
+    gap: 20px;
     position: relative;
+  `,
+
+  IconWrap: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 
     img {
-      width: 130px;
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
     }
+  `,
 
-    span {
-      display: block;
-      font-weight: 600;
-      font-size: 14px;
+  SimpleLabel: styled.span<{ $light: boolean }>`
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: ${(props) => (props.$light ? '#1d1d1f' : '#f5f5f7')};
+  `,
+
+  Info: styled.div`
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  `,
+
+  TierLabel: styled.p<{ $light: boolean }>`
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: ${(props) => (props.$light ? '#424245' : 'rgba(255, 255, 255, 0.7)')};
+  `,
+
+  LoginId: styled.p<{ $light: boolean }>`
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: ${(props) => (props.$light ? '#1d1d1f' : '#f5f5f7')};
+  `,
+
+  Contributions: styled.p<{ $light: boolean }>`
+    font-size: 11px;
+    margin-top: 12px;
+    color: ${(props) => (props.$light ? '#424245' : 'rgba(255, 255, 255, 0.7)')};
+
+    strong {
+      font-weight: 700;
+      color: ${(props) => (props.$light ? '#1d1d1f' : '#f5f5f7')};
     }
+  `,
 
-    .right {
-      text-align: left;
-      margin-left: 30px;
-
-      p {
-        font-size: 14px;
-        margin-bottom: 6px;
-      }
-
-      p.tier-text {
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      p.login-id {
-        font-size: 20px;
-        font-weight: 600;
-      }
-
-      p.total {
-        margin-top: 20px;
-      }
-
-      p.footer {
-        position: absolute;
-        right: 30px;
-        bottom: 14px;
-        font-size: 10px;
-        font-weight: 300;
-      }
-    }
+  Footer: styled.p<{ $light: boolean }>`
+    font-size: 9px;
+    font-weight: 400;
+    margin-top: 10px;
+    color: ${(props) => (props.$light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)')};
+    letter-spacing: 0.02em;
   `,
 };

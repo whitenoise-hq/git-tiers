@@ -7,10 +7,12 @@ import styled from '@emotion/styled';
 
 import { Profile } from '@/components/pages/my/Profile';
 import { MakeTier } from '@/components/pages/my/MakeTier';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export default function MyPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -24,8 +26,8 @@ export default function MyPage() {
 
   return (
     <S.Wrapper>
-      <S.PageLabel>Account</S.PageLabel>
-      <S.PageTitle>My Page</S.PageTitle>
+      <S.PageLabel>{t.myPage.label}</S.PageLabel>
+      <S.PageTitle>{t.myPage.title}</S.PageTitle>
       <S.Content>
         <Profile />
         <MakeTier />

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
 
-import noticeData from '../../data/notice.json';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 type TNotice = {
   id: number;
@@ -14,8 +14,10 @@ type TNotice = {
 };
 
 export default function NoticePage() {
+  const { t } = useLanguage();
+  const noticeList = t.noticeData as TNotice[];
   const [openItems, setOpenItems] = useState<Set<number>>(
-    new Set(noticeData.length > 0 ? [noticeData[0].id] : []),
+    new Set(noticeList.length > 0 ? [noticeList[0].id] : []),
   );
 
   const toggleItem = (id: number) => {
@@ -32,11 +34,11 @@ export default function NoticePage() {
 
   return (
     <S.Wrapper>
-      <S.PageLabel>Announcements</S.PageLabel>
-      <S.PageTitle>Notice</S.PageTitle>
+      <S.PageLabel>{t.notice.label}</S.PageLabel>
+      <S.PageTitle>{t.notice.title}</S.PageTitle>
 
       <S.List>
-        {noticeData?.map((notice: TNotice) => {
+        {noticeList.map((notice: TNotice) => {
           const isOpen = openItems.has(notice.id);
           return (
             <S.Item key={notice.id} $isOpen={isOpen}>
@@ -57,6 +59,7 @@ export default function NoticePage() {
           );
         })}
       </S.List>
+
     </S.Wrapper>
   );
 }
@@ -217,4 +220,5 @@ const S = {
       padding-top: 16px;
     }
   `,
+
 };

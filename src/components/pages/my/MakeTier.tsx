@@ -13,9 +13,11 @@ import { firestore } from '../../../../firebase/firebase';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { UserData } from '@/types/api';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [contributeCount, setContributeCount] = useState<number>(0);
   const [tierImage, setTierImage] = useState<string>('');
   const [tierText, setTierText] = useState<string>('');
@@ -40,7 +42,7 @@ export const MakeTier = () => {
         setTimeout(() => {
           setLoading(false);
         }, 500);
-        toast.error('An error occurred. Please try again later.');
+        toast.error(t.toast.error);
 
         await signOut({
           callbackUrl: '/',
@@ -53,7 +55,7 @@ export const MakeTier = () => {
 
   const handleSaveImage = async () => {
     if (!session?.loginId) {
-      toast.error('Please log in first.');
+      toast.error(t.toast.loginFirst);
       return;
     }
 
@@ -75,7 +77,7 @@ export const MakeTier = () => {
 
       const imageSizeInBytes = (base64Image.length * 3) / 4;
       if (imageSizeInBytes > 900000) {
-        toast.error('Image is too large. Please try with simpler settings.');
+        toast.error(t.toast.imageTooLarge);
         return;
       }
 
@@ -98,10 +100,10 @@ export const MakeTier = () => {
       const baseUrl = window.location.origin;
       setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
 
-      toast.success('Image saved successfully!');
+      toast.success(t.toast.imageSaved);
     } catch (error) {
       console.error('Error saving image:', error);
-      toast.error('Failed to save image. Please try again.');
+      toast.error(t.toast.saveFailed);
     } finally {
       setSaveLoading(false);
     }
@@ -112,7 +114,7 @@ export const MakeTier = () => {
       navigator.clipboard.writeText(
         `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
       );
-      toast.success('Image tag copied to clipboard!');
+      toast.success(t.toast.tagCopied);
     }
   };
 
@@ -153,7 +155,7 @@ export const MakeTier = () => {
   return (
     <S.Card>
       <S.ContribLabel>
-        Total Contributions <S.ContribCount>{contributeCount || 0}</S.ContribCount>
+        {t.myPage.totalContributions} <S.ContribCount>{contributeCount || 0}</S.ContribCount>
       </S.ContribLabel>
 
       <S.TierWrap>
@@ -177,10 +179,10 @@ export const MakeTier = () => {
 
       <S.Actions>
         <S.PrimaryButton onClick={handleSaveImage} disabled={saveLoading}>
-          {saveLoading ? 'Saving...' : 'Save Image'}
+          {saveLoading ? t.myPage.saving : t.myPage.saveImage}
         </S.PrimaryButton>
         <S.SecondaryButton onClick={copyToClipboard}>
-          Copy Tag
+          {t.myPage.copyTag}
         </S.SecondaryButton>
       </S.Actions>
 
@@ -189,7 +191,7 @@ export const MakeTier = () => {
           href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
           rel="noopener noreferrer"
           target="_blank">
-          View Tier Table &rarr;
+          {t.myPage.viewTierTable} &rarr;
         </Link>
       </S.TableLink>
 

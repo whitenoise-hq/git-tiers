@@ -1,27 +1,28 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import styled from '@emotion/styled';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
-import ChallengerIcon from '@/assets/images/tiers/9_challenger.png';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { TierImage } from '@/components/organisms/my/TierImage';
 
 export const Showcase = () => {
   const labelFade = useScrollFadeIn({ delay: 0 });
   const cardFade = useScrollFadeIn({ delay: 200 });
+  const { t } = useLanguage();
 
   return (
     <S.Section>
       <S.Inner>
         <S.Label ref={labelFade.ref} data-visible={labelFade.isVisible}>
-          Showcase
+          {t.showcase.label}
         </S.Label>
         <S.Title ref={labelFade.ref} data-visible={labelFade.isVisible}>
-          Show it off on GitHub.
+          {t.showcase.title}
         </S.Title>
         <S.Subtitle ref={labelFade.ref} data-visible={labelFade.isVisible}>
-          Generate a beautiful tier badge and embed it in your README.
+          {t.showcase.subtitle}
         </S.Subtitle>
 
         <S.CardWrapper ref={cardFade.ref} data-visible={cardFade.isVisible}>
@@ -37,28 +38,22 @@ export const Showcase = () => {
             <S.ReadmeBody>
               <S.ReadmeH1>devwoodie</S.ReadmeH1>
               <S.ReadmeText>
-                Full-stack developer who loves open source.
+                {t.showcase.mockBio}
               </S.ReadmeText>
 
-              {/* Mock tier badge */}
+              {/* Tier badge */}
               <S.BadgeWrap>
-                <S.Badge>
-                  <S.BadgeInner>
-                    <Image
-                      src={ChallengerIcon}
-                      alt="tier"
-                      width={56}
-                      height={56}
-                    />
-                    <S.BadgeInfo>
-                      <S.BadgeRank>Challenger 1</S.BadgeRank>
-                      <S.BadgeContrib>6,300+ contributions</S.BadgeContrib>
-                    </S.BadgeInfo>
-                  </S.BadgeInner>
-                </S.Badge>
+                <TierImage
+                  isMode="dark"
+                  isCard="card"
+                  isText="exist"
+                  tierImage="/tiers/9_challenger.png"
+                  tierText="Challenger 1"
+                  contributeCount={6300}
+                />
               </S.BadgeWrap>
 
-              <S.ReadmeH2>Tech Stack</S.ReadmeH2>
+              <S.ReadmeH2>{t.showcase.techStack}</S.ReadmeH2>
               <S.TagRow>
                 <S.Tag>TypeScript</S.Tag>
                 <S.Tag>React</S.Tag>
@@ -202,46 +197,6 @@ const S = {
 
   BadgeWrap: styled.div`
     margin-bottom: 28px;
-  `,
-
-  Badge: styled.div`
-    display: inline-block;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 113, 227, 0.12),
-      rgba(100, 172, 255, 0.08)
-    );
-    border: 1px solid rgba(0, 113, 227, 0.3);
-    border-radius: 12px;
-    padding: 16px 24px;
-  `,
-
-  BadgeInner: styled.div`
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    img {
-      display: block;
-      object-fit: contain;
-    }
-  `,
-
-  BadgeInfo: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  `,
-
-  BadgeRank: styled.span`
-    font-size: 18px;
-    font-weight: 700;
-    color: #f0f6fc;
-  `,
-
-  BadgeContrib: styled.span`
-    font-size: 13px;
-    color: #8b949e;
   `,
 
   ReadmeH2: styled.h4`

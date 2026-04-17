@@ -1,5 +1,6 @@
 import { signOut, useSession } from 'next-auth/react';
 import styled from '@emotion/styled';
+import { useLanguage } from '@/i18n/LanguageContext';
 import Avatar from '@mui/material/Avatar';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -7,6 +8,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 export const Profile = () => {
   const { data: session } = useSession();
+  const { t } = useLanguage();
 
   const handleGitLogout = async () => {
     await signOut();
@@ -44,10 +46,10 @@ export const Profile = () => {
           href={`https://github.com/${session?.loginId}`}
           target="_blank"
           rel="noopener noreferrer">
-          My GitHub
+          {t.myPage.myGithub}
         </S.PrimaryButton>
         <S.SecondaryButton onClick={handleGitLogout}>
-          Logout
+          {t.myPage.logout}
         </S.SecondaryButton>
       </S.Actions>
     </S.Card>

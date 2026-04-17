@@ -8,15 +8,17 @@ import { keyframes } from '@emotion/react';
 
 import { TIERS } from '@/constants/tiers';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const TierGridCont = () => {
   const fade = useScrollFadeIn({ threshold: 0.1 });
+  const { t } = useLanguage();
 
   return (
     <S.Section ref={fade.ref} data-visible={fade.isVisible}>
       <S.Inner>
-        <S.Label>9 Tiers</S.Label>
-        <S.Title>From Iron to Challenger.</S.Title>
+        <S.Label>{t.tierGrid.label}</S.Label>
+        <S.Title>{t.tierGrid.title}</S.Title>
         <S.Grid>
           {TIERS.map((tier, i) => (
             <S.Card key={tier.name} style={{ '--idx': i } as React.CSSProperties}>
@@ -30,7 +32,7 @@ export const TierGridCont = () => {
             href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
             rel="noopener noreferrer"
             target="_blank">
-            View Tier Table &rarr;
+            {t.tierGrid.viewTable} &rarr;
           </Link>
         </S.LinkWrap>
       </S.Inner>

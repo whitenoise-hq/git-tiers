@@ -6,10 +6,12 @@ import styled from '@emotion/styled';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const FloatingActions = () => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
+  const { lang, toggleLang } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setVisible(window.scrollY > 400);
@@ -31,6 +33,9 @@ export const FloatingActions = () => {
         aria-label="GitHub">
         <GitHubIcon sx={{ fontSize: 18 }} />
       </S.LinkButton>
+      <S.LangButton onClick={toggleLang} aria-label="Toggle language">
+        {lang === 'en' ? 'KO' : 'EN'}
+      </S.LangButton>
       <S.Button onClick={scrollToTop} aria-label="Back to top">
         <KeyboardArrowUpIcon sx={{ fontSize: 18 }} />
       </S.Button>
@@ -77,6 +82,30 @@ const S = {
     -webkit-backdrop-filter: blur(12px);
     color: #f5f5f7;
     cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background: rgba(60, 60, 60, 0.9);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  `,
+
+  LangButton: styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    background: rgba(30, 30, 30, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #f5f5f7;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     transition: background 0.2s ease, border-color 0.2s ease;
 
     &:hover {

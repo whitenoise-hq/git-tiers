@@ -1,0 +1,125 @@
+{
+  "hero": {
+    "subtitle1": "매일의 커밋으로 실력을 증명하세요.",
+    "subtitle2": "기여가 많을수록, 더 빛나는 티어를 얻게 됩니다.",
+    "myPage": "마이페이지",
+    "getStarted": "시작하기",
+    "learnMore": "자세히 보기"
+  },
+  "tierGrid": {
+    "label": "9 Tiers",
+    "title": "Iron에서 Challenger까지.",
+    "viewTable": "티어 표 보기"
+  },
+  "tierProgression": {
+    "label": "티어 성장",
+    "title": "모든 커밋이 당신을 높여줍니다.",
+    "contributions": "기여"
+  },
+  "whatCounts": {
+    "label": "기여 항목",
+    "title": "모든 활동이 반영됩니다.",
+    "subtitle": "5가지 GitHub 활동이 티어에 반영됩니다.",
+    "commits": "Commits",
+    "commitsDesc": "리포지토리에 코드 변경사항을 푸시합니다.",
+    "issues": "Issues",
+    "issuesDesc": "버그를 제보하거나 새로운 기능을 제안합니다.",
+    "pullRequests": "Pull Requests",
+    "pullRequestsDesc": "코드 개선을 제안하고 병합합니다.",
+    "codeReviews": "Code Reviews",
+    "codeReviewsDesc": "다른 사람의 코드를 리뷰하고 승인합니다.",
+    "wikis": "Wikis",
+    "wikisDesc": "문서와 가이드를 작성합니다."
+  },
+  "showcase": {
+    "label": "쇼케이스",
+    "title": "GitHub에서 자랑하세요.",
+    "subtitle": "티어 뱃지를 생성하고 README에 삽입하세요.",
+    "mockBio": "오픈소스를 사랑하는 풀스택 개발자.",
+    "techStack": "기술 스택"
+  },
+  "howTo": {
+    "label": "시작하기",
+    "title": "간단한 4단계.",
+    "step1Title": "로그인",
+    "step1Desc": "GitHub 계정으로 로그인하세요.",
+    "step2Title": "티어 확인",
+    "step2Desc": "마이페이지에서 현재 티어를 확인하세요.",
+    "step3Title": "커스터마이즈",
+    "step3Desc": "폰트와 배경색을 설정한 후 저장하세요.",
+    "step4Title": "공유",
+    "step4Desc": "코드를 복사해서 GitHub README에 붙여넣으세요.",
+    "learnMore": "자세히 보기"
+  },
+  "header": {
+    "myPage": "마이페이지",
+    "getStarted": "시작하기"
+  },
+  "notice": {
+    "label": "",
+    "title": "공지사항"
+  },
+  "myPage": {
+    "label": "계정",
+    "title": "마이페이지",
+    "myGithub": "내 GitHub",
+    "logout": "로그아웃",
+    "totalContributions": "총 기여 수",
+    "saving": "저장 중...",
+    "saveImage": "이미지 저장",
+    "copyTag": "태그 복사",
+    "viewTierTable": "티어 표 보기"
+  },
+  "tierController": {
+    "type": "유형",
+    "simple": "심플",
+    "card": "카드",
+    "tierText": "티어 텍스트",
+    "show": "표시",
+    "hide": "숨김",
+    "background": "배경",
+    "light": "라이트",
+    "dark": "다크",
+    "blue": "블루",
+    "green": "그린",
+    "red": "레드"
+  },
+  "toast": {
+    "error": "오류가 발생했습니다. 나중에 다시 시도해주세요.",
+    "loginFirst": "먼저 로그인해주세요.",
+    "imageTooLarge": "이미지가 너무 큽니다. 더 간단한 설정으로 시도해주세요.",
+    "imageSaved": "이미지가 저장되었습니다!",
+    "saveFailed": "이미지 저장에 실패했습니다. 다시 시도해주세요.",
+    "tagCopied": "이미지 태그가 클립보드에 복사되었습니다!"
+  },
+  "noticeData": [
+    {
+      "id": 3,
+      "title": "Git TIERS 리뉴얼 안내",
+      "content": "Git TIERS 페이지가 전면 리뉴얼되었습니다.\n\n주요 변경 사항:\n- 랜딩 페이지 전면 리디자인 (다크 테마)\n- 스크롤 기반 티어 성장 애니메이션 추가\n- 티어 이미지 디자인 개선\n- 마이페이지 UI 개선\n- 공지사항 페이지 리디자인\n- 한국어/영어 다국어 지원 추가\n\n앞으로도 더 나은 서비스를 위해 노력하겠습니다.\n많은 관심과 응원 부탁드립니다.",
+      "date": "2026.04.17",
+      "isNew": true
+    },
+    {
+      "id": 2,
+      "title": "기능 업데이트 안내",
+      "content": "이미지를 다운로드하여 첨부하는 대신,\n코드를 복사해서 README에 바로 붙여넣을 수 있는 기능이 추가되었습니다.\n더 간편하게 이용해보세요.",
+      "date": "2025.07.09",
+      "isNew": false
+    },
+    {
+      "id": 1,
+      "title": "서비스 런칭",
+      "content": "Git TIERS 서비스가 런칭되었습니다.\n많은 이용 부탁드립니다.\n자세한 내용은 GitHub을 참고해주세요.\n불편사항이나 개선사항은 이메일로 보내주세요.",
+      "date": "2025.01.24",
+      "isNew": false
+    },
+    {
+      "id": 0,
+      "title": "서비스 개발 중",
+      "content": "Git TIERS 서비스 개발이 진행 중입니다.\n많은 관심 부탁드립니다.",
+      "date": "2025.01.06",
+      "isNew": false
+    }
+  ]
+}

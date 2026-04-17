@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 type TProps = {
   isCard: string;
@@ -10,29 +11,6 @@ type TProps = {
   setIsMode: React.Dispatch<React.SetStateAction<string>>;
 };
 
-interface SegmentOption {
-  readonly value: string;
-  readonly label: string;
-}
-
-const TYPE_OPTIONS: readonly SegmentOption[] = [
-  { value: 'image', label: 'Simple' },
-  { value: 'card', label: 'Card' },
-];
-
-const TEXT_OPTIONS: readonly SegmentOption[] = [
-  { value: 'exist', label: 'Show' },
-  { value: 'delete', label: 'Hide' },
-];
-
-const BG_OPTIONS: readonly SegmentOption[] = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'blue', label: 'Blue' },
-  { value: 'green', label: 'Green' },
-  { value: 'red', label: 'Red' },
-];
-
 export const TierController = ({
   isCard,
   isText,
@@ -41,12 +19,30 @@ export const TierController = ({
   setIsText,
   setIsMode,
 }: TProps) => {
+  const { t } = useLanguage();
+
+  const typeOptions = [
+    { value: 'image', label: t.tierController.simple },
+    { value: 'card', label: t.tierController.card },
+  ];
+  const textOptions = [
+    { value: 'exist', label: t.tierController.show },
+    { value: 'delete', label: t.tierController.hide },
+  ];
+  const bgOptions = [
+    { value: 'light', label: t.tierController.light },
+    { value: 'dark', label: t.tierController.dark },
+    { value: 'blue', label: t.tierController.blue },
+    { value: 'green', label: t.tierController.green },
+    { value: 'red', label: t.tierController.red },
+  ];
+
   return (
     <S.Controller>
       <S.Group>
-        <S.GroupLabel>Type</S.GroupLabel>
+        <S.GroupLabel>{t.tierController.type}</S.GroupLabel>
         <S.Segment>
-          {TYPE_OPTIONS.map((opt) => (
+          {typeOptions.map((opt) => (
             <S.SegmentButton
               key={opt.value}
               data-active={isCard === opt.value}
@@ -58,9 +54,9 @@ export const TierController = ({
       </S.Group>
 
       <S.Group>
-        <S.GroupLabel>Tier Text</S.GroupLabel>
+        <S.GroupLabel>{t.tierController.tierText}</S.GroupLabel>
         <S.Segment>
-          {TEXT_OPTIONS.map((opt) => (
+          {textOptions.map((opt) => (
             <S.SegmentButton
               key={opt.value}
               data-active={isText === opt.value}
@@ -72,9 +68,9 @@ export const TierController = ({
       </S.Group>
 
       <S.Group>
-        <S.GroupLabel>Background</S.GroupLabel>
+        <S.GroupLabel>{t.tierController.background}</S.GroupLabel>
         <S.Segment>
-          {BG_OPTIONS.map((opt) => (
+          {bgOptions.map((opt) => (
             <S.SegmentButton
               key={opt.value}
               data-active={isMode === opt.value}

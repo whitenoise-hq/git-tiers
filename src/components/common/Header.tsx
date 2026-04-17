@@ -12,6 +12,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { Logo } from '@/components/common/Logo';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 const COLLAPSE_THRESHOLD = 200;
 
@@ -24,6 +25,7 @@ export const Header = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const isLanding = pathname === '/';
+  const { lang, t, toggleLang } = useLanguage();
 
   const handleGitLogin = async () => {
     await signIn('github', { callbackUrl: '/my' });
@@ -70,12 +72,15 @@ export const Header = () => {
                   <GitHubIcon sx={{ color: '#f5f5f7', fontSize: 20 }} />
                 </IconButton>
               </Link>
+              <S.LangToggle onClick={toggleLang}>
+                {lang === 'en' ? 'KO' : 'EN'}
+              </S.LangToggle>
               {isLogin ? (
                 <IconButton onClick={() => router.push('/my')} size="small">
                   <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
                 </IconButton>
               ) : (
-                <S.HeaderCTA onClick={handleGitLogin}>Get Started</S.HeaderCTA>
+                <S.HeaderCTA onClick={handleGitLogin}>{t.header.getStarted}</S.HeaderCTA>
               )}
             </S.Actions>
           </S.FullRow>
@@ -87,9 +92,9 @@ export const Header = () => {
             </S.PillName>
             <S.PillActions>
               {isLogin ? (
-                <S.PillCTA onClick={() => router.push('/my')}>My Page</S.PillCTA>
+                <S.PillCTA onClick={() => router.push('/my')}>{t.header.myPage}</S.PillCTA>
               ) : (
-                <S.PillCTA onClick={handleGitLogin}>Get Started</S.PillCTA>
+                <S.PillCTA onClick={handleGitLogin}>{t.header.getStarted}</S.PillCTA>
               )}
             </S.PillActions>
           </S.PillRow>
@@ -117,12 +122,15 @@ export const Header = () => {
               <GitHubIcon sx={{ color: '#1d1d1f', fontSize: 20 }} />
             </IconButton>
           </Link>
+          <S.LangToggleLight onClick={toggleLang}>
+            {lang === 'en' ? 'KO' : 'EN'}
+          </S.LangToggleLight>
           {isLogin ? (
             <IconButton onClick={() => router.push('/my')} size="small">
               <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
             </IconButton>
           ) : (
-            <S.DefaultCTA onClick={handleGitLogin}>Get Started</S.DefaultCTA>
+            <S.DefaultCTA onClick={handleGitLogin}>{t.header.getStarted}</S.DefaultCTA>
           )}
         </S.Actions>
       </S.Inner>
@@ -251,6 +259,40 @@ const S = {
 
     &:hover {
       background: #0077ed;
+    }
+  `,
+
+  LangToggle: styled.button`
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #f5f5f7;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 980px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+  `,
+
+  LangToggleLight: styled.button`
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1d1d1f;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 980px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.08);
     }
   `,
 
