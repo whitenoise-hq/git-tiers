@@ -39,6 +39,11 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
 
   const contribFormatted = contributeCount.toLocaleString();
 
+  const r = 12; // border-radius
+
+  // Estimate text width: ~6.5px per character at font-size 11
+  const charWidth = 6.5;
+
   // Card mode — match TierImage.tsx: padding 6px 12px, icon 88px, gap 10px
   if (isCard === 'card') {
     const pad = 6;
@@ -46,7 +51,15 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
     const iconSize = 88;
     const gap = 10;
     const textX = padX + iconSize + gap;
-    const textWidth = 120;
+
+    // Calculate text width based on longest text line
+    const contribText = `${contribFormatted} contributions`;
+    const tierLabel = tierText.toUpperCase();
+    const longestText = isText === 'exist'
+      ? Math.max(contribText.length, tierLabel.length)
+      : contribText.length;
+    const textWidth = Math.ceil(longestText * charWidth);
+
     const width = textX + textWidth + padX;
     const height = iconSize + pad * 2;
 
@@ -54,9 +67,9 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
     const contribY = isText === 'exist' ? pad + 48 : pad + 38;
 
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <rect width="${width}" height="${height}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
+  <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
   <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
-  ${isText === 'exist' ? `<text x="${textX}" y="${tierLabelY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${subColor}" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}
+  ${isText === 'exist' ? `<text x="${textX}" y="${tierLabelY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${subColor}" letter-spacing="0.7">${tierLabel}</text>` : ''}
   <text x="${textX}" y="${contribY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="${subColor}">
     <tspan font-weight="700" fill="${mainColor}">${contribFormatted}</tspan> contributions
   </text>
@@ -72,7 +85,7 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
   const height = hasText ? iconSize + pad + 24 : iconSize + pad * 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <rect width="${width}" height="${height}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
+  <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
   <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
   ${hasText ? `<text x="${width / 2}" y="${iconSize + pad + 16}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${mainColor}" text-anchor="middle" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}
 </svg>`;

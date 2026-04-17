@@ -59,6 +59,7 @@ const S = {
     align-items: center;
     gap: 10px;
     position: relative;
+    border-radius: 12px;
   `,
 
   IconWrap: styled.div`
