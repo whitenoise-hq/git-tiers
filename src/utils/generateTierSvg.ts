@@ -41,9 +41,6 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
 
   const r = 12; // border-radius
 
-  // Estimate text width: ~6.5px per character at font-size 11
-  const charWidth = 6.5;
-
   // Card mode — match TierImage.tsx: padding 6px 12px, icon 88px, gap 10px
   if (isCard === 'card') {
     const pad = 6;
@@ -52,19 +49,14 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
     const gap = 10;
     const textX = padX + iconSize + gap;
 
-    // Calculate text width based on longest text line
-    const contribText = `${contribFormatted} contributions`;
-    const tierLabel = tierText.toUpperCase();
-    const longestText = isText === 'exist'
-      ? Math.max(contribText.length, tierLabel.length)
-      : contribText.length;
-    const textWidth = Math.ceil(longestText * charWidth);
-
-    const width = textX + textWidth + padX;
+    const width = 222;
     const height = iconSize + pad * 2;
+    const centerY = height / 2;
 
-    const tierLabelY = isText === 'exist' ? pad + 28 : pad + 38;
-    const contribY = isText === 'exist' ? pad + 48 : pad + 38;
+    // 2 lines: tierLabel + contrib, total ~22px block (11px each + 5px gap between)
+    // 1 line: contrib only
+    const tierLabelY = isText === 'exist' ? centerY - 4 : centerY + 4;
+    const contribY = isText === 'exist' ? centerY + 14 : centerY + 4;
 
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
