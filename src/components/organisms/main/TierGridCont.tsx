@@ -9,6 +9,7 @@ import { keyframes } from '@emotion/react';
 import { TIERS } from '@/constants/tiers';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { fadeInStyle } from '@/styles/animations';
 
 export const TierGridCont = () => {
   const fade = useScrollFadeIn({ threshold: 0.1 });
@@ -48,15 +49,6 @@ const tierHighlight = keyframes`
   100% { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); transform: scale(1); }
 `;
 
-const fadeInStyle = `
-  opacity: 0;
-  transform: translateY(30px) scale(0.97);
-  transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  &[data-visible='true'] {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-`;
 
 const S = {
   Section: styled.section`

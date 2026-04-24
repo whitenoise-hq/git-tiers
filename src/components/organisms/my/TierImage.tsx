@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { getTierBg, isLightColor } from '@/utils/getTierBg';
+import { CardType, TextVisibility } from '@/types/api';
 
-type TProps = {
+type TierImageProps = {
   isMode: string;
-  isCard: string;
-  isText: string;
+  isCard: CardType;
+  isText: TextVisibility;
   tierImage: string;
   tierText: string;
   contributeCount: number;
@@ -18,7 +19,7 @@ export const TierImage = ({
   tierImage,
   tierText,
   contributeCount,
-}: TProps) => {
+}: TierImageProps) => {
   const isLight = isLightColor(isMode);
 
   return (

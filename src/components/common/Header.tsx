@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useSession, signIn } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 import Avatar from '@mui/material/Avatar';
@@ -13,34 +12,66 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { Logo } from '@/components/common/Logo';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const COLLAPSE_THRESHOLD = 200;
+const GITHUB_REPO_URL = 'https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers';
+
+const HeaderActions = ({
+  dark,
+  isLogin,
+  userImg,
+  onLogin,
+}: {
+  dark: boolean;
+  isLogin: boolean;
+  userImg: string;
+  onLogin: () => void;
+}) => {
+  const router = useRouter();
+  const { lang, t, toggleLang } = useLanguage();
+  const iconColor = dark ? '#f5f5f7' : '#1d1d1f';
+
+  return (
+    <S.Actions>
+      <IconButton onClick={() => router.push('/notice')} size="small">
+        <Badge badgeContent={1} color="error">
+          <NotificationsIcon sx={{ color: iconColor, fontSize: 20 }} />
+        </Badge>
+      </IconButton>
+      <Link href={GITHUB_REPO_URL} rel="noopener noreferrer" target="_blank">
+        <IconButton size="small">
+          <GitHubIcon sx={{ color: iconColor, fontSize: 20 }} />
+        </IconButton>
+      </Link>
+      {dark ? (
+        <S.LangToggle onClick={toggleLang}>
+          {lang === 'en' ? 'KO' : 'EN'}
+        </S.LangToggle>
+      ) : (
+        <S.LangToggleLight onClick={toggleLang}>
+          {lang === 'en' ? 'KO' : 'EN'}
+        </S.LangToggleLight>
+      )}
+      {isLogin ? (
+        <IconButton onClick={() => router.push('/my')} size="small">
+          <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
+        </IconButton>
+      ) : (
+        <S.CTA onClick={onLogin}>{t.header.getStarted}</S.CTA>
+      )}
+    </S.Actions>
+  );
+};
 
 export const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
-  const [isLogin, setIsLogin] = useState(false);
-  const [userImg, setUserImg] = useState('');
   const [collapsed, setCollapsed] = useState(false);
+  const { isLogin, userImg, handleGitLogin } = useAuth();
+  const { t } = useLanguage();
 
   const isLanding = pathname === '/';
-  const { lang, t, toggleLang } = useLanguage();
-
-  const handleGitLogin = async () => {
-    await signIn('github', { callbackUrl: '/my' });
-  };
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      setIsLogin(true);
-      if (session) {
-        setUserImg(session?.user?.image);
-      }
-    } else {
-      setIsLogin(false);
-    }
-  }, [status, session]);
 
   useEffect(() => {
     if (!isLanding) return;
@@ -50,51 +81,24 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isLanding]);
 
-  // Landing page: collapsible floating pill
   if (isLanding) {
     return (
       <S.LandingNav data-collapsed={collapsed}>
         <S.LandingInner data-collapsed={collapsed}>
-          {/* Full header — visible before collapse */}
           <S.FullRow data-collapsed={collapsed}>
             <Logo dark />
-            <S.Actions>
-              <IconButton onClick={() => router.push('/notice')} size="small">
-                <Badge badgeContent={1} color="error">
-                  <NotificationsIcon sx={{ color: '#f5f5f7', fontSize: 20 }} />
-                </Badge>
-              </IconButton>
-              <Link
-                href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
-                rel="noopener noreferrer"
-                target="_blank">
-                <IconButton size="small">
-                  <GitHubIcon sx={{ color: '#f5f5f7', fontSize: 20 }} />
-                </IconButton>
-              </Link>
-              <S.LangToggle onClick={toggleLang}>
-                {lang === 'en' ? 'KO' : 'EN'}
-              </S.LangToggle>
-              {isLogin ? (
-                <IconButton onClick={() => router.push('/my')} size="small">
-                  <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
-                </IconButton>
-              ) : (
-                <S.HeaderCTA onClick={handleGitLogin}>{t.header.getStarted}</S.HeaderCTA>
-              )}
-            </S.Actions>
+            <HeaderActions dark isLogin={isLogin} userImg={userImg} onLogin={handleGitLogin} />
           </S.FullRow>
 
-          {/* Collapsed pill — visible after collapse */}
           <S.PillRow data-collapsed={collapsed}>
             <S.PillName onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               Git TIERS
             </S.PillName>
             <S.PillActions>
               {isLogin ? (
-                <S.PillCTA onClick={() => router.push('/my')}>{t.header.myPage}</S.PillCTA>
+                <S.CTA onClick={() => router.push('/my')}>{t.header.myPage}</S.CTA>
               ) : (
-                <S.PillCTA onClick={handleGitLogin}>{t.header.getStarted}</S.PillCTA>
+                <S.CTA onClick={handleGitLogin}>{t.header.getStarted}</S.CTA>
               )}
             </S.PillActions>
           </S.PillRow>
@@ -103,43 +107,17 @@ export const Header = () => {
     );
   }
 
-  // Default header for other pages
   return (
     <S.Nav>
       <S.Inner>
         <Logo />
-        <S.Actions>
-          <IconButton onClick={() => router.push('/notice')} size="small">
-            <Badge badgeContent={1} color="error">
-              <NotificationsIcon sx={{ color: '#1d1d1f', fontSize: 20 }} />
-            </Badge>
-          </IconButton>
-          <Link
-            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
-            rel="noopener noreferrer"
-            target="_blank">
-            <IconButton size="small">
-              <GitHubIcon sx={{ color: '#1d1d1f', fontSize: 20 }} />
-            </IconButton>
-          </Link>
-          <S.LangToggleLight onClick={toggleLang}>
-            {lang === 'en' ? 'KO' : 'EN'}
-          </S.LangToggleLight>
-          {isLogin ? (
-            <IconButton onClick={() => router.push('/my')} size="small">
-              <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
-            </IconButton>
-          ) : (
-            <S.DefaultCTA onClick={handleGitLogin}>{t.header.getStarted}</S.DefaultCTA>
-          )}
-        </S.Actions>
+        <HeaderActions dark={false} isLogin={isLogin} userImg={userImg} onLogin={handleGitLogin} />
       </S.Inner>
     </S.Nav>
   );
 };
 
 const S = {
-  /* ── Landing header (dark, collapsible) ── */
   LandingNav: styled.nav`
     position: fixed;
     top: 0;
@@ -228,24 +206,7 @@ const S = {
     align-items: center;
   `,
 
-  PillCTA: styled.button`
-    padding: 7px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    background: #0071e3;
-    border: none;
-    border-radius: 980px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: #0077ed;
-    }
-  `,
-
-  HeaderCTA: styled.button`
+  CTA: styled.button`
     padding: 7px 18px;
     font-size: 13px;
     font-weight: 600;
@@ -296,7 +257,6 @@ const S = {
     }
   `,
 
-  /* ── Default header (light, static) ── */
   Nav: styled.nav`
     position: fixed;
     top: 0;
@@ -323,22 +283,5 @@ const S = {
     display: flex;
     align-items: center;
     gap: 12px;
-  `,
-
-  DefaultCTA: styled.button`
-    padding: 7px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    background: #0071e3;
-    border: none;
-    border-radius: 980px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: #0077ed;
-    }
   `,
 };

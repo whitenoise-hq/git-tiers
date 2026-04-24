@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { fadeInStyle } from '@/styles/animations';
 
 const ICONS = ['⟐', '⊕', '⇆', '✓', '❖'] as const;
 const KEYS = ['commits', 'issues', 'pullRequests', 'codeReviews', 'wikis'] as const;
@@ -60,15 +61,6 @@ const WhatCountsItem = ({
   );
 };
 
-const fadeInStyle = `
-  opacity: 0;
-  transform: translateY(30px) scale(0.97);
-  transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  &[data-visible='true'] {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-`;
 
 const S = {
   Section: styled.section`

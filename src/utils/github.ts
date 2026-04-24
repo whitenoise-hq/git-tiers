@@ -1,8 +1,9 @@
-type TProps = {
+interface ContributeCountParams {
   accessToken: string;
   loginId: string;
 }
-type GithubContributeResponse = {
+
+interface GithubContributeResponse {
   data: {
     user: {
       contributionsCollection: {
@@ -14,45 +15,44 @@ type GithubContributeResponse = {
   };
 }
 
-export const getContributeCount = async ({
-  accessToken,
-  loginId
-}: TProps) => {
-  if (!accessToken) return "ERROR";
-  const graphqlQuery = JSON.stringify({
-    query: `
-      query($login: String!) {
-        user(login: $login) {
-          contributionsCollection {
-            contributionCalendar {
-              totalContributions
-            }
-          }
+const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql';
+
+const CONTRIBUTIONS_QUERY = `
+  query($login: String!) {
+    user(login: $login) {
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
         }
       }
-    `,
-    variables: { login: loginId },
-  });
+    }
+  }
+`;
+
+export const getContributeCount = async ({
+  accessToken,
+  loginId,
+}: ContributeCountParams): Promise<number | 'ERROR'> => {
+  if (!accessToken) return 'ERROR';
 
   try {
-    const statsResponse = await fetch("https://api.github.com/graphql", {
-      method: "POST",
+    const response = await fetch(GITHUB_GRAPHQL_URL, {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: graphqlQuery,
+      body: JSON.stringify({
+        query: CONTRIBUTIONS_QUERY,
+        variables: { login: loginId },
+      }),
     });
 
-    if (!statsResponse.ok) {
-      return "ERROR";
-    }
+    if (!response.ok) return 'ERROR';
 
-    const statsData: GithubContributeResponse = await statsResponse.json();
-
-    return statsData.data.user.contributionsCollection.contributionCalendar.totalContributions;
-
+    const data: GithubContributeResponse = await response.json();
+    return data.data.user.contributionsCollection.contributionCalendar.totalContributions;
   } catch {
-    return "ERROR";
+    return 'ERROR';
   }
 };

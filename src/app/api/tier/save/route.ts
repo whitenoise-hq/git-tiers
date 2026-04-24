@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { doc, setDoc } from 'firebase/firestore';
 import { firestore } from '../../../../../firebase/firebase';
+import { isValidImageSettings } from '@/types/api';
 
 export async function POST(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { imageSettings } = body;
 
-    if (!imageSettings) {
+    if (!isValidImageSettings(imageSettings)) {
       return NextResponse.json({ error: 'Invalid settings' }, { status: 400 });
     }
 

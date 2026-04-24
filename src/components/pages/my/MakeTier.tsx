@@ -9,6 +9,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { CardType, TextVisibility } from '@/types/api';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
@@ -16,8 +17,8 @@ export const MakeTier = () => {
   const [contributeCount, setContributeCount] = useState<number>(0);
   const [tierImage, setTierImage] = useState<string>('');
   const [tierText, setTierText] = useState<string>('');
-  const [isCard, setIsCard] = useState<string>('card');
-  const [isText, setIsText] = useState<string>('exist');
+  const [isCard, setIsCard] = useState<CardType>('card');
+  const [isText, setIsText] = useState<TextVisibility>('exist');
   const [isMode, setIsMode] = useState<string>('light');
   const [loading, setLoading] = useState<boolean>(true);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
@@ -96,8 +97,8 @@ export const MakeTier = () => {
       const settings = data.imageSettings;
 
       if (settings) {
-        setIsCard(settings.isCard);
-        setIsText(settings.isText);
+        setIsCard(settings.isCard as CardType);
+        setIsText(settings.isText as TextVisibility);
         setIsMode(settings.isMode);
       }
     } catch {

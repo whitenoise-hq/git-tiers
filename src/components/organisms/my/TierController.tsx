@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { HexColorPicker } from 'react-colorful';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { CardType, TextVisibility } from '@/types/api';
 
-type TProps = {
-  isCard: string;
-  isText: string;
+type TierControllerProps = {
+  isCard: CardType;
+  isText: TextVisibility;
   isMode: string;
-  setIsCard: React.Dispatch<React.SetStateAction<string>>;
-  setIsText: React.Dispatch<React.SetStateAction<string>>;
+  setIsCard: React.Dispatch<React.SetStateAction<CardType>>;
+  setIsText: React.Dispatch<React.SetStateAction<TextVisibility>>;
   setIsMode: React.Dispatch<React.SetStateAction<string>>;
 };
 
@@ -19,7 +20,7 @@ export const TierController = ({
   setIsCard,
   setIsText,
   setIsMode,
-}: TProps) => {
+}: TierControllerProps) => {
   const { t } = useLanguage();
   const isCustomColor = isMode.startsWith('#');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -65,7 +66,7 @@ export const TierController = ({
             <S.SegmentButton
               key={opt.value}
               data-active={isCard === opt.value}
-              onClick={() => setIsCard(opt.value)}>
+              onClick={() => setIsCard(opt.value as CardType)}>
               {opt.label}
             </S.SegmentButton>
           ))}
@@ -79,7 +80,7 @@ export const TierController = ({
             <S.SegmentButton
               key={opt.value}
               data-active={isText === opt.value}
-              onClick={() => setIsText(opt.value)}>
+              onClick={() => setIsText(opt.value as TextVisibility)}>
               {opt.label}
             </S.SegmentButton>
           ))}

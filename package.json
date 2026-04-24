@@ -11,25 +11,16 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^6.1.6",
-    "@mui/lab": "6.0.0-beta.19",
     "@mui/material": "^6.3.0",
-    "@tanstack/react-query": "^5.59.16",
-    "axios": "^1.7.7",
-    "canvas": "^3.1.0",
-    "eslint-define-config": "^2.1.0",
     "firebase": "^11.10.0",
-    "html2canvas": "^1.4.1",
     "next": "15.1.11",
     "next-auth": "^4.24.10",
     "react": "^19.0.0",
     "react-colorful": "^5.6.1",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.1",
-    "react-spinners": "^0.15.0",
-    "zustand": "^5.0.1"
+    "react-spinners": "^0.15.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -53,6 +44,5 @@
     "prettier": "3.3.3",
     "typescript": "^5",
     "typescript-eslint": "^8.11.0"
-  },
-  "packageManager": "yarn@4.4.1+sha512.f825273d0689cc9ead3259c14998037662f1dcd06912637b21a450e8da7cfeb4b1965bbee73d16927baa1201054126bc385c6f43ff4aa705c8631d26e12460f1"
+  }
 }

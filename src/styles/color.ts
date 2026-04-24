@@ -31,4 +31,11 @@ export const Color = {
   TierBgGreen: '#1a3a2a',
   TierBgRed: '#3d1214',
   TierBgBlue: '#0a1a3a',
+
+  TextPrimary: '#1d1d1f',
+  TextSecondary: '#86868b',
+  TextSubtle: '#424245',
+  TextLight: '#f5f5f7',
+  Link: '#0071e3',
+  LinkHover: '#0077ed',
 };

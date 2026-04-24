@@ -1,22 +1,17 @@
 import { Color } from '@/styles/color';
+import { BackgroundMode } from '@/types/api';
 
-export const getTierBg = (type: string) => {
-  if (type.startsWith('#')) return type;
+const BG_COLOR_MAP: Record<BackgroundMode, string> = {
+  light: Color.TierBgLight,
+  dark: Color.TierBgDark,
+  green: Color.TierBgGreen,
+  red: Color.TierBgRed,
+  blue: Color.TierBgBlue,
+};
 
-  switch (type) {
-    case 'light':
-      return Color.TierBgLight;
-    case 'dark':
-      return Color.TierBgDark;
-    case 'green':
-      return Color.TierBgGreen;
-    case 'red':
-      return Color.TierBgRed;
-    case 'blue':
-      return Color.TierBgBlue;
-    default:
-      return Color.TierBgLight;
-  }
+export const getTierBg = (mode: BackgroundMode | string): string => {
+  if (mode.startsWith('#')) return mode;
+  return BG_COLOR_MAP[mode as BackgroundMode] ?? Color.TierBgLight;
 };
 
 export const isLightColor = (color: string): boolean => {
