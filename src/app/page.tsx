@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
+import { Color } from '@/styles/color';
 
 import { HeroCont } from '@/components/organisms/main/HeroCont';
 import { TierGridCont } from '@/components/organisms/main/TierGridCont';
@@ -30,7 +31,7 @@ export default function MainPage() {
 const S = {
   Page: styled.div`
     background: #000;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     overflow-x: clip;
   `,
 };

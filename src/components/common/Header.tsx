@@ -13,6 +13,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { Logo } from '@/components/common/Logo';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
+import { Color } from '@/styles/color';
 
 const COLLAPSE_THRESHOLD = 200;
 const GITHUB_REPO_URL = 'https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers';
@@ -30,7 +31,7 @@ const HeaderActions = ({
 }) => {
   const router = useRouter();
   const { lang, t, toggleLang } = useLanguage();
-  const iconColor = dark ? '#f5f5f7' : '#1d1d1f';
+  const iconColor = dark ? Color.TextLight : Color.TextPrimary;
 
   return (
     <S.Actions>
@@ -193,7 +194,7 @@ const S = {
   PillName: styled.button`
     font-size: 14px;
     font-weight: 600;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     background: none;
     border: none;
     cursor: pointer;
@@ -211,7 +212,7 @@ const S = {
     font-size: 13px;
     font-weight: 600;
     color: #fff;
-    background: #0071e3;
+    background: ${Color.Link};
     border: none;
     border-radius: 980px;
     cursor: pointer;
@@ -219,7 +220,7 @@ const S = {
     transition: background 0.2s ease;
 
     &:hover {
-      background: #0077ed;
+      background: ${Color.LinkHover};
     }
   `,
 
@@ -227,7 +228,7 @@ const S = {
     padding: 4px 10px;
     font-size: 12px;
     font-weight: 700;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 980px;
@@ -244,7 +245,7 @@ const S = {
     padding: 4px 10px;
     font-size: 12px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     background: rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 980px;

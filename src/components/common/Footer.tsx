@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
+import { Color } from '@/styles/color';
 
 export const Footer = () => {
   return (
@@ -17,7 +18,7 @@ export const Footer = () => {
 
 const S = {
   Footer: styled.footer`
-    background: #f5f5f7;
+    background: ${Color.TextLight};
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding: 20px 24px;
   `,
@@ -34,7 +35,7 @@ const S = {
   Brand: styled.span`
     font-size: 14px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
   `,
 
   Divider: styled.span`
@@ -46,6 +47,6 @@ const S = {
   Credit: styled.span`
     font-size: 12px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 };

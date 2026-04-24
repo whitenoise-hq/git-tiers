@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
+import { Color } from '@/styles/color';
 
 interface LogoProps {
   readonly dark?: boolean;
@@ -23,11 +24,11 @@ const S = {
     letter-spacing: -0.02em;
 
     &[data-dark='true'] {
-      color: #f5f5f7;
+      color: ${Color.TextLight};
     }
 
     &[data-dark='false'] {
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
     }
   `,
 };

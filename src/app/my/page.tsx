@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { Profile } from '@/components/pages/my/Profile';
 import { MakeTier } from '@/components/pages/my/MakeTier';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 
 export default function MyPage() {
   const { status } = useSession();
@@ -51,7 +52,7 @@ const S = {
   PageLabel: styled.p`
     font-size: 14px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 6px;
@@ -60,7 +61,7 @@ const S = {
   PageTitle: styled.h2`
     font-size: 36px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     letter-spacing: -0.03em;
     margin-bottom: 40px;
 

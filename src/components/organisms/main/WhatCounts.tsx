@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
+import { Color } from '@/styles/color';
 
 const ICONS = ['⟐', '⊕', '⇆', '✓', '❖'] as const;
 const KEYS = ['commits', 'issues', 'pullRequests', 'codeReviews', 'wikis'] as const;
@@ -77,7 +78,7 @@ const S = {
   Label: styled.p`
     font-size: 16px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 8px;
@@ -88,7 +89,7 @@ const S = {
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 12px;
     ${fadeInStyle}
 
@@ -99,7 +100,7 @@ const S = {
 
   Subtitle: styled.p`
     font-size: 19px;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     margin-bottom: 72px;
     ${fadeInStyle}
 
@@ -155,20 +156,20 @@ const S = {
 
   CardIcon: styled.span`
     font-size: 32px;
-    color: #0071e3;
+    color: ${Color.Link};
     line-height: 1;
   `,
 
   CardTitle: styled.h3`
     font-size: 17px;
     font-weight: 600;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
   `,
 
   CardDesc: styled.p`
     font-size: 14px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     line-height: 1.4;
   `,
 };

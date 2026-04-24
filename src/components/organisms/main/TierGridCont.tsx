@@ -10,6 +10,7 @@ import { TIERS } from '@/constants/tiers';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
+import { Color } from '@/styles/color';
 
 export const TierGridCont = () => {
   const fade = useScrollFadeIn({ threshold: 0.1 });
@@ -66,7 +67,7 @@ const S = {
   Label: styled.p`
     font-size: 16px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 8px;
@@ -76,7 +77,7 @@ const S = {
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 64px;
 
     @media (max-width: 768px) {
@@ -129,7 +130,7 @@ const S = {
   Name: styled.span`
     font-size: 13px;
     font-weight: 500;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   LinkWrap: styled.div`
@@ -141,13 +142,13 @@ const S = {
       font-size: 17px;
       font-weight: 600;
       color: #fff;
-      background: #0071e3;
+      background: ${Color.Link};
       border-radius: 980px;
       text-decoration: none;
       transition: background 0.3s ease;
 
       &:hover {
-        background: #0077ed;
+        background: ${Color.LinkHover};
       }
     }
   `,

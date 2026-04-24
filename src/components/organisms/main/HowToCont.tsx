@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
+import { Color } from '@/styles/color';
 
 export const HowToCont = () => {
   const titleFade = useScrollFadeIn({ delay: 0 });
@@ -68,7 +69,7 @@ const S = {
   Label: styled.p`
     font-size: 16px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 12px;
@@ -80,7 +81,7 @@ const S = {
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1.1;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 80px;
     ${fadeInStyle}
 
@@ -127,7 +128,7 @@ const S = {
     display: block;
     font-size: 40px;
     font-weight: 700;
-    color: #0071e3;
+    color: ${Color.Link};
     letter-spacing: -0.02em;
     margin-bottom: 16px;
   `,
@@ -135,14 +136,14 @@ const S = {
   StepTitle: styled.h3`
     font-size: 20px;
     font-weight: 600;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 8px;
   `,
 
   StepDesc: styled.p`
     font-size: 15px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     line-height: 1.5;
   `,
 
@@ -153,7 +154,7 @@ const S = {
       display: inline-block;
       font-size: 17px;
       font-weight: 600;
-      color: #0071e3;
+      color: ${Color.Link};
       text-decoration: none;
       transition: color 0.2s ease;
 

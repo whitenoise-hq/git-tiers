@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
+import { Color } from '@/styles/color';
 import { TierImage } from '@/components/organisms/my/TierImage';
 
 export const Showcase = () => {
@@ -86,7 +87,7 @@ const S = {
   Label: styled.p`
     font-size: 16px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 8px;
@@ -97,7 +98,7 @@ const S = {
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 12px;
     ${fadeInStyle}
 
@@ -108,7 +109,7 @@ const S = {
 
   Subtitle: styled.p`
     font-size: 19px;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     margin-bottom: 64px;
     ${fadeInStyle}
 

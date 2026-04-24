@@ -9,6 +9,7 @@ import { keyframes } from '@emotion/react';
 
 import { TIERS } from '@/constants/tiers';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 
 const ChallengerIcon = TIERS[8].src;
 
@@ -127,7 +128,7 @@ const S = {
   Eyebrow: styled.p`
     font-size: 17px;
     font-weight: 600;
-    color: #0071e3;
+    color: ${Color.Link};
     letter-spacing: 0.02em;
     margin-bottom: 16px;
     animation: ${fadeInUp} 0.8s ease-out both;
@@ -138,7 +139,7 @@ const S = {
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.04em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     animation: ${fadeInUp} 0.8s ease-out 0.1s both;
 
     @media (max-width: 768px) {
@@ -149,11 +150,11 @@ const S = {
   TitleAccent: styled.span`
     background: linear-gradient(
       90deg,
-      #0071e3 0%,
+      ${Color.Link} 0%,
       #64acff 25%,
       #a8d8ff 50%,
       #64acff 75%,
-      #0071e3 100%
+      ${Color.Link} 100%
     );
     background-size: 200% 100%;
     -webkit-background-clip: text;
@@ -167,7 +168,7 @@ const S = {
     font-size: 21px;
     font-weight: 400;
     line-height: 1.5;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     animation: ${fadeInUp} 0.8s ease-out 0.25s both;
 
     @media (max-width: 768px) {
@@ -194,21 +195,21 @@ const S = {
     font-size: 17px;
     font-weight: 600;
     color: #fff;
-    background: #0071e3;
+    background: ${Color.Link};
     border: none;
     border-radius: 980px;
     cursor: pointer;
     transition: background 0.3s ease;
 
     &:hover {
-      background: #0077ed;
+      background: ${Color.LinkHover};
     }
   `,
 
   CTASecondary: styled.a`
     font-size: 17px;
     font-weight: 600;
-    color: #0071e3;
+    color: ${Color.Link};
     text-decoration: none;
     transition: color 0.2s ease;
 

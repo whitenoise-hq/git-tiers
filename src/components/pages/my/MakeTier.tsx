@@ -10,6 +10,7 @@ import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { CardType, TextVisibility } from '@/types/api';
+import { Color } from '@/styles/color';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
@@ -192,12 +193,12 @@ const S = {
   ContribLabel: styled.p`
     font-size: 17px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   ContribCount: styled.span`
     font-weight: 700;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     font-size: 20px;
     letter-spacing: -0.02em;
   `,
@@ -224,14 +225,14 @@ const S = {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    background: #0071e3;
+    background: ${Color.Link};
     border: none;
     border-radius: 980px;
     cursor: pointer;
     transition: background 0.2s ease;
 
     &:hover {
-      background: #0077ed;
+      background: ${Color.LinkHover};
     }
 
     &:disabled {
@@ -244,7 +245,7 @@ const S = {
     padding: 10px 28px;
     font-size: 14px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 980px;
@@ -253,7 +254,7 @@ const S = {
 
     &:hover {
       border-color: rgba(0, 0, 0, 0.25);
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
     }
   `,
 
@@ -261,7 +262,7 @@ const S = {
     a {
       font-size: 14px;
       font-weight: 600;
-      color: #0071e3;
+      color: ${Color.Link};
       text-decoration: none;
       transition: color 0.2s ease;
 

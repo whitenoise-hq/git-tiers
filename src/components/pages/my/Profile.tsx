@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import styled from '@emotion/styled';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 import Avatar from '@mui/material/Avatar';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -53,15 +54,15 @@ export const Profile = () => {
 
           <S.Meta>
             <S.MetaItem>
-              <ApartmentIcon sx={{ fontSize: 16, color: '#86868b' }} />
+              <ApartmentIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
               <span>{session?.user.company || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <AlternateEmailIcon sx={{ fontSize: 16, color: '#86868b' }} />
+              <AlternateEmailIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
               <span>{session?.user.email || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <LocationOnIcon sx={{ fontSize: 16, color: '#86868b' }} />
+              <LocationOnIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
               <span>{session?.user.location || '-'}</span>
             </S.MetaItem>
           </S.Meta>
@@ -113,7 +114,7 @@ const S = {
   HeaderLabel: styled.span`
     font-size: 14px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   HeaderLeft: styled.div`
@@ -132,7 +133,7 @@ const S = {
   Name: styled.span`
     font-size: 16px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     letter-spacing: -0.01em;
   `,
 
@@ -147,13 +148,13 @@ const S = {
     font-size: 12px;
     font-weight: 600;
     color: #fff;
-    background: #0071e3;
+    background: ${Color.Link};
     border-radius: 980px;
     text-decoration: none;
     transition: background 0.2s ease;
 
     &:hover {
-      background: #0077ed;
+      background: ${Color.LinkHover};
     }
   `,
 
@@ -172,8 +173,8 @@ const S = {
       left: 3px;
       width: 8px;
       height: 8px;
-      border-right: 2px solid #86868b;
-      border-bottom: 2px solid #86868b;
+      border-right: 2px solid ${Color.TextSecondary};
+      border-bottom: 2px solid ${Color.TextSecondary};
       transform: rotate(45deg);
     }
   `,
@@ -224,21 +225,21 @@ const S = {
   NameLarge: styled.p`
     font-size: 20px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     letter-spacing: -0.02em;
   `,
 
   LoginId: styled.p`
     font-size: 14px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     margin-top: 2px;
   `,
 
   Bio: styled.p`
     font-size: 13px;
     font-weight: 400;
-    color: #424245;
+    color: ${Color.TextSubtle};
     margin-top: 6px;
     line-height: 1.5;
   `,
@@ -257,7 +258,7 @@ const S = {
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   Actions: styled.div`
@@ -273,7 +274,7 @@ const S = {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    background: #0071e3;
+    background: ${Color.Link};
     border: none;
     border-radius: 980px;
     cursor: pointer;
@@ -281,7 +282,7 @@ const S = {
     transition: background 0.2s ease;
 
     &:hover {
-      background: #0077ed;
+      background: ${Color.LinkHover};
     }
   `,
 
@@ -289,7 +290,7 @@ const S = {
     padding: 10px 24px;
     font-size: 14px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 980px;
@@ -298,7 +299,7 @@ const S = {
 
     &:hover {
       border-color: rgba(0, 0, 0, 0.25);
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
     }
   `,
 };

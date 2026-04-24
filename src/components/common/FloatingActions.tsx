@@ -7,6 +7,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 
 export const FloatingActions = () => {
   const router = useRouter();
@@ -80,7 +81,7 @@ const S = {
     background: rgba(30, 30, 30, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
 
@@ -101,7 +102,7 @@ const S = {
     background: rgba(30, 30, 30, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     cursor: pointer;
     font-size: 11px;
     font-weight: 700;
@@ -125,7 +126,7 @@ const S = {
     background: rgba(30, 30, 30, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
 

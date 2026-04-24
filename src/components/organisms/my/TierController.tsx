@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { HexColorPicker } from 'react-colorful';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { CardType, TextVisibility } from '@/types/api';
+import { Color } from '@/styles/color';
 
 type TierControllerProps = {
   isCard: CardType;
@@ -104,7 +105,7 @@ export const TierController = ({
             data-active={isCustomColor}
             onClick={handleCustomClick}>
             <S.ColorDot
-              style={{ background: isCustomColor ? isMode : '#86868b' }}
+              style={{ background: isCustomColor ? isMode : '${Color.TextSecondary}' }}
             />
             Custom
           </S.CustomButton>
@@ -141,7 +142,7 @@ const S = {
   GroupLabel: styled.span`
     font-size: 13px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.04em;
     text-align: left;
@@ -167,7 +168,7 @@ const S = {
     padding: 8px 12px;
     font-size: 13px;
     font-weight: 500;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -177,13 +178,13 @@ const S = {
 
     &[data-active='true'] {
       background: #fff;
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
       font-weight: 600;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     }
 
     &:hover:not([data-active='true']) {
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
     }
   `,
 
@@ -196,7 +197,7 @@ const S = {
     flex-shrink: 0;
     font-size: 13px;
     font-weight: 500;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     background: rgba(0, 0, 0, 0.04);
     border: none;
     border-radius: 10px;
@@ -205,13 +206,13 @@ const S = {
 
     &[data-active='true'] {
       background: #fff;
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
       font-weight: 600;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     }
 
     &:hover:not([data-active='true']) {
-      color: #1d1d1f;
+      color: ${Color.TextPrimary};
       background: rgba(0, 0, 0, 0.06);
     }
   `,
@@ -260,7 +261,7 @@ const S = {
   HexValue: styled.span`
     font-size: 13px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     font-family: monospace;
     letter-spacing: 0.03em;
   `,

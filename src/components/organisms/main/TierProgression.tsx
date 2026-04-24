@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 
 import { TIERS } from '@/constants/tiers';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 
 export const TierProgression = () => {
   const { t } = useLanguage();
@@ -114,7 +115,7 @@ const S = {
   Label: styled.p`
     font-size: 16px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 8px;
@@ -124,7 +125,7 @@ const S = {
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     margin-bottom: 56px;
 
     @media (max-width: 768px) {
@@ -168,7 +169,7 @@ const S = {
   TierLabel: styled.span`
     font-size: 20px;
     font-weight: 600;
-    color: #0071e3;
+    color: ${Color.Link};
     transition: color 0.3s ease;
   `,
 
@@ -176,7 +177,7 @@ const S = {
     font-size: 64px;
     font-weight: 700;
     letter-spacing: -0.04em;
-    color: #f5f5f7;
+    color: ${Color.TextLight};
     font-variant-numeric: tabular-nums;
 
     @media (max-width: 768px) {
@@ -187,7 +188,7 @@ const S = {
   CounterSub: styled.span`
     font-size: 17px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   ProgressTrack: styled.div`
@@ -204,7 +205,7 @@ const S = {
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(90deg, #48484a, #0071e3);
+    background: linear-gradient(90deg, #48484a, ${Color.Link});
     border-radius: 2px;
     will-change: width;
   `,
@@ -228,7 +229,7 @@ const S = {
     background: rgba(255, 255, 255, 0.15);
 
     &[data-active='true'] {
-      background: #0071e3;
+      background: ${Color.Link};
       box-shadow: 0 0 8px rgba(0, 113, 227, 0.5);
     }
   `,

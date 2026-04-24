@@ -3,6 +3,7 @@ import path from 'path';
 import { getTierImage, getTierText } from './getTier';
 import { getTierBg, isLightColor } from './getTierBg';
 import { ImageSettings } from '@/types/api';
+import { Color } from '@/styles/color';
 
 const iconCache = new Map<string, string>();
 
@@ -33,8 +34,8 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
   const tierText = getTierText(contributeCount);
   const iconBase64 = getIconBase64(tierImagePath);
 
-  const mainColor = isLight ? '#1d1d1f' : '#f5f5f7';
-  const subColor = isLight ? '#424245' : 'rgba(255,255,255,0.7)';
+  const mainColor = isLight ? Color.TextPrimary : Color.TextLight;
+  const subColor = isLight ? Color.TextSubtle : 'rgba(255,255,255,0.7)';
   const borderColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.15)';
 
   const contribFormatted = contributeCount.toLocaleString();

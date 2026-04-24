@@ -4,6 +4,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { useLanguage } from '@/i18n/LanguageContext';
+import { Color } from '@/styles/color';
 
 type TNotice = {
   id: number;
@@ -78,7 +79,7 @@ const S = {
   PageLabel: styled.p`
     font-size: 14px;
     font-weight: 600;
-    color: #86868b;
+    color: ${Color.TextSecondary};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 6px;
@@ -87,7 +88,7 @@ const S = {
   PageTitle: styled.h2`
     font-size: 36px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: ${Color.TextPrimary};
     letter-spacing: -0.03em;
     margin-bottom: 48px;
 
@@ -158,7 +159,7 @@ const S = {
   ItemTitle: styled.span<{ $isOpen: boolean }>`
     font-size: 17px;
     font-weight: 600;
-    color: ${({ $isOpen }) => ($isOpen ? '#0071e3' : '#1d1d1f')};
+    color: ${({ $isOpen }) => ($isOpen ? '${Color.Link}' : '${Color.TextPrimary}')};
     letter-spacing: -0.01em;
     transition: color 0.3s ease;
   `,
@@ -173,7 +174,7 @@ const S = {
   Date: styled.span`
     font-size: 13px;
     font-weight: 400;
-    color: #86868b;
+    color: ${Color.TextSecondary};
   `,
 
   Chevron: styled.span<{ $isOpen: boolean }>`
@@ -192,8 +193,8 @@ const S = {
       left: 4px;
       width: 8px;
       height: 8px;
-      border-right: 2px solid #86868b;
-      border-bottom: 2px solid #86868b;
+      border-right: 2px solid ${Color.TextSecondary};
+      border-bottom: 2px solid ${Color.TextSecondary};
       transform: rotate(45deg);
     }
   `,
@@ -214,7 +215,7 @@ const S = {
     line-height: 1.7;
     margin: 0;
     padding: 0 24px 24px;
-    color: #424245;
+    color: ${Color.TextSubtle};
     border-top: 1px solid rgba(0, 0, 0, 0.06);
     padding-top: 20px;
 
