@@ -83,7 +83,7 @@ const S = {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: ${(props) => (props.$light ? '${Color.TextPrimary}' : '${Color.TextLight}')};
+    color: ${(props) => (props.$light ? Color.TextPrimary : Color.TextLight)};
   `,
 
   Info: styled.div`
@@ -98,25 +98,25 @@ const S = {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: ${(props) => (props.$light ? '${Color.TextSubtle}' : 'rgba(255, 255, 255)')};
+    color: ${(props) => (props.$light ? Color.TextSubtle : 'rgba(255, 255, 255)')};
   `,
 
   LoginId: styled.p<{ $light: boolean }>`
     font-size: 17px;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: ${(props) => (props.$light ? '${Color.TextPrimary}' : '${Color.TextLight}')};
+    color: ${(props) => (props.$light ? Color.TextPrimary : Color.TextLight)};
   `,
 
   Contributions: styled.p<{ $light: boolean }>`
     font-size: 11px;
     margin-top: 5px;
     color: ${(props) =>
-      props.$light ? '${Color.TextSubtle}' : 'rgba(255, 255, 255, 0.7)'};
+      props.$light ? Color.TextSubtle : 'rgba(255, 255, 255, 0.7)'};
 
     strong {
       font-weight: 700;
-      color: ${(props) => (props.$light ? '${Color.TextPrimary}' : '${Color.TextLight}')};
+      color: ${(props) => (props.$light ? Color.TextPrimary : Color.TextLight)};
     }
   `,
 };

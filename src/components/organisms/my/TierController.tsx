@@ -105,7 +105,7 @@ export const TierController = ({
             data-active={isCustomColor}
             onClick={handleCustomClick}>
             <S.ColorDot
-              style={{ background: isCustomColor ? isMode : '${Color.TextSecondary}' }}
+              style={{ background: isCustomColor ? isMode : Color.TextSecondary }}
             />
             Custom
           </S.CustomButton>

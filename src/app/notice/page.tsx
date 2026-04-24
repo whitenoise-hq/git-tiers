@@ -159,7 +159,7 @@ const S = {
   ItemTitle: styled.span<{ $isOpen: boolean }>`
     font-size: 17px;
     font-weight: 600;
-    color: ${({ $isOpen }) => ($isOpen ? '${Color.Link}' : '${Color.TextPrimary}')};
+    color: ${({ $isOpen }) => ($isOpen ? Color.Link : Color.TextPrimary)};
     letter-spacing: -0.01em;
     transition: color 0.3s ease;
   `,
