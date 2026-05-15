@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
@@ -10,16 +12,26 @@ import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
 
 export const HowToCont = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const titleFade = useScrollFadeIn({ delay: 0 });
   const gridFade = useScrollFadeIn({ delay: 200 });
   const ctaFade = useScrollFadeIn({ delay: 400 });
   const { t } = useLanguage();
 
+  const handleGetStarted = async () => {
+    if (session) {
+      router.push('/my');
+    } else {
+      await signIn('github', { callbackUrl: '/my' });
+    }
+  };
+
   const steps = [
-    { number: '01', title: t.howTo.step1Title, description: t.howTo.step1Desc },
-    { number: '02', title: t.howTo.step2Title, description: t.howTo.step2Desc },
-    { number: '03', title: t.howTo.step3Title, description: t.howTo.step3Desc },
-    { number: '04', title: t.howTo.step4Title, description: t.howTo.step4Desc },
+    { step: 1, title: t.howTo.step1Title, description: t.howTo.step1Desc },
+    { step: 2, title: t.howTo.step2Title, description: t.howTo.step2Desc },
+    { step: 3, title: t.howTo.step3Title, description: t.howTo.step3Desc },
+    { step: 4, title: t.howTo.step4Title, description: t.howTo.step4Desc },
   ];
 
   return (
@@ -33,21 +45,26 @@ export const HowToCont = () => {
         </S.Title>
         <S.Grid ref={gridFade.ref} data-visible={gridFade.isVisible}>
           {steps.map((step) => (
-            <S.Card key={step.number}>
-              <S.StepNumber>{step.number}</S.StepNumber>
+            <S.Card key={step.step}>
+              <S.StepBadge>STEP {step.step}</S.StepBadge>
               <S.StepTitle>{step.title}</S.StepTitle>
               <S.StepDesc>{step.description}</S.StepDesc>
             </S.Card>
           ))}
         </S.Grid>
-        <S.LinkButton ref={ctaFade.ref} data-visible={ctaFade.isVisible}>
-          <Link
-            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#how-to-use"
-            rel="noopener noreferrer"
-            target="_blank">
-            {t.howTo.learnMore} &rarr;
-          </Link>
-        </S.LinkButton>
+        <S.CTAGroup ref={ctaFade.ref} data-visible={ctaFade.isVisible}>
+          <S.CTAPrimary onClick={handleGetStarted}>
+            {t.hero.getStarted}
+          </S.CTAPrimary>
+          <S.LinkButton>
+            <Link
+              href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#how-to-use"
+              rel="noopener noreferrer"
+              target="_blank">
+              {t.howTo.learnMore} &rarr;
+            </Link>
+          </S.LinkButton>
+        </S.CTAGroup>
       </S.Inner>
     </S.Section>
   );
@@ -56,13 +73,13 @@ export const HowToCont = () => {
 
 const S = {
   Section: styled.section`
-    background: #000;
+    background: ${Color.Black};
     padding: 180px 24px;
     text-align: center;
   `,
 
   Inner: styled.div`
-    max-width: 980px;
+    max-width: 1120px;
     margin: 0 auto;
   `,
 
@@ -124,12 +141,15 @@ const S = {
     }
   `,
 
-  StepNumber: styled.span`
-    display: block;
-    font-size: 40px;
+  StepBadge: styled.span`
+    display: inline-block;
+    font-size: 12px;
     font-weight: 700;
     color: ${Color.Link};
-    letter-spacing: -0.02em;
+    background: rgba(0, 113, 227, 0.12);
+    padding: 4px 12px;
+    border-radius: 980px;
+    letter-spacing: 0.04em;
     margin-bottom: 16px;
   `,
 
@@ -147,9 +167,36 @@ const S = {
     line-height: 1.5;
   `,
 
-  LinkButton: styled.div`
+  CTAGroup: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
     ${fadeInStyle}
 
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 12px;
+    }
+  `,
+
+  CTAPrimary: styled.button`
+    padding: 14px 36px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    background: ${Color.Link};
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: ${Color.LinkHover};
+    }
+  `,
+
+  LinkButton: styled.div`
     a {
       display: inline-block;
       font-size: 17px;

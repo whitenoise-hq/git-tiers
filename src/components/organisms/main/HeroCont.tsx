@@ -131,7 +131,7 @@ const S = {
     color: ${Color.Link};
     letter-spacing: 0.02em;
     margin-bottom: 16px;
-    animation: ${fadeInUp} 0.8s ease-out both;
+    animation: ${fadeInUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   `,
 
   Title: styled.h1`
@@ -140,7 +140,7 @@ const S = {
     line-height: 1.05;
     letter-spacing: -0.04em;
     color: ${Color.TextLight};
-    animation: ${fadeInUp} 0.8s ease-out 0.1s both;
+    animation: ${fadeInUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 
     @media (max-width: 768px) {
       font-size: 48px;
@@ -169,7 +169,7 @@ const S = {
     font-weight: 400;
     line-height: 1.5;
     color: ${Color.TextSecondary};
-    animation: ${fadeInUp} 0.8s ease-out 0.25s both;
+    animation: ${fadeInUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
 
     @media (max-width: 768px) {
       font-size: 17px;
@@ -182,7 +182,7 @@ const S = {
     justify-content: center;
     gap: 20px;
     margin-top: 36px;
-    animation: ${fadeInUp} 0.8s ease-out 0.4s both;
+    animation: ${fadeInUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
 
     @media (max-width: 480px) {
       flex-direction: column;
@@ -223,7 +223,7 @@ const S = {
     width: 300px;
     height: 300px;
     margin-top: 60px;
-    animation: ${fadeInUp} 1s ease-out 0.6s both;
+    animation: ${fadeInUp} 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
 
     @media (max-width: 768px) {
       width: 240px;

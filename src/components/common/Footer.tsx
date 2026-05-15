@@ -18,8 +18,8 @@ export const Footer = () => {
 
 const S = {
   Footer: styled.footer`
-    background: ${Color.TextLight};
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background: #0e0e0e;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 20px 24px;
   `,
 
@@ -35,13 +35,13 @@ const S = {
   Brand: styled.span`
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
   `,
 
   Divider: styled.span`
     width: 1px;
     height: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
   `,
 
   Credit: styled.span`

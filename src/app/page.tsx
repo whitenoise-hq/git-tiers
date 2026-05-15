@@ -30,7 +30,7 @@ export default function MainPage() {
 
 const S = {
   Page: styled.div`
-    background: #000;
+    background: ${Color.Black};
     color: ${Color.TextLight};
     overflow-x: clip;
   `,

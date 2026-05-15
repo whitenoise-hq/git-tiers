@@ -41,14 +41,14 @@
   "howTo": {
     "label": "Getting Started",
     "title": "Simple as 4 step.",
-    "step1Title": "Login",
-    "step1Desc": "Sign in with your GitHub account.",
-    "step2Title": "Check Tier",
-    "step2Desc": "View your current tier on My Page.",
-    "step3Title": "Customize",
-    "step3Desc": "Set your font and background color, then save.",
-    "step4Title": "Share",
-    "step4Desc": "Copy the code and paste it into your GitHub README.",
+    "step1Title": "Sign in with GitHub",
+    "step1Desc": "Log in with your GitHub account. No sign-up needed — get started instantly.",
+    "step2Title": "Check Your Tier",
+    "step2Desc": "Your tier is automatically calculated based on your total contributions. View it on My Page.",
+    "step3Title": "Customize & Save",
+    "step3Desc": "Pick your background color and card style, then save the image. You must save before copying the tag.",
+    "step4Title": "Copy Tag & Share",
+    "step4Desc": "Use the Copy Tag button to grab your image tag, then paste it into your GitHub README to show off your tier.",
     "learnMore": "Learn more"
   },
   "header": {

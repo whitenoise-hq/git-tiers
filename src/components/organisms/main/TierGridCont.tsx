@@ -55,12 +55,12 @@ const S = {
   Section: styled.section`
     padding: 180px 24px;
     text-align: center;
-    background: #000;
+    background: ${Color.Black};
     ${fadeInStyle}
   `,
 
   Inner: styled.div`
-    max-width: 980px;
+    max-width: 1120px;
     margin: 0 auto;
   `,
 

@@ -24,6 +24,7 @@ export const MakeTier = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [userImageUrl, setUserImageUrl] = useState<string>('');
+  const [hasSaved, setHasSaved] = useState<boolean>(false);
 
   const handleGithubData = async () => {
     if (session?.loginId) {
@@ -73,6 +74,7 @@ export const MakeTier = () => {
       const baseUrl = window.location.origin;
       setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
 
+      setHasSaved(true);
       toast.success(t.toast.imageSaved);
     } catch {
       toast.error(t.toast.saveFailed);
@@ -101,6 +103,7 @@ export const MakeTier = () => {
         setIsCard(settings.isCard as CardType);
         setIsText(settings.isText as TextVisibility);
         setIsMode(settings.isMode);
+        setHasSaved(true);
       }
     } catch {
       // Settings load failure is non-critical, use defaults
@@ -157,7 +160,7 @@ export const MakeTier = () => {
         <S.PrimaryButton onClick={handleSaveImage} disabled={saveLoading}>
           {saveLoading ? t.myPage.saving : t.myPage.saveImage}
         </S.PrimaryButton>
-        <S.SecondaryButton onClick={copyToClipboard}>
+        <S.SecondaryButton onClick={copyToClipboard} disabled={!hasSaved}>
           {t.myPage.copyTag}
         </S.SecondaryButton>
       </S.Actions>
@@ -252,9 +255,14 @@ const S = {
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
       border-color: rgba(0, 0, 0, 0.25);
       color: ${Color.TextPrimary};
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
     }
   `,
 

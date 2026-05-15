@@ -39,9 +39,7 @@ export const Showcase = () => {
 
             <S.ReadmeBody>
               <S.ReadmeH1>devwoodie</S.ReadmeH1>
-              <S.ReadmeText>
-                {t.showcase.mockBio}
-              </S.ReadmeText>
+              <S.ReadmeText>{t.showcase.mockBio}</S.ReadmeText>
 
               {/* Tier badge */}
               <S.BadgeWrap>
@@ -70,17 +68,16 @@ export const Showcase = () => {
   );
 };
 
-
 const S = {
   Section: styled.section`
-    background: #000;
+    background: ${Color.Black};
     padding: 180px 24px;
     text-align: center;
     overflow: hidden;
   `,
 
   Inner: styled.div`
-    max-width: 980px;
+    max-width: 1120px;
     margin: 0 auto;
   `,
 

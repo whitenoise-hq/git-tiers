@@ -56,7 +56,9 @@ const S = {
     opacity: 0;
     transform: translateY(16px);
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
 
     &[data-visible='true'] {
       opacity: 1;
@@ -83,7 +85,9 @@ const S = {
     -webkit-backdrop-filter: blur(12px);
     color: ${Color.TextLight};
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
 
     &:hover {
       background: rgba(60, 60, 60, 0.9);
@@ -107,7 +111,9 @@ const S = {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
 
     &:hover {
       background: rgba(60, 60, 60, 0.9);
@@ -128,7 +134,9 @@ const S = {
     -webkit-backdrop-filter: blur(12px);
     color: ${Color.TextLight};
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
 
     &:hover {
       background: rgba(60, 60, 60, 0.9);

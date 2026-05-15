@@ -61,6 +61,7 @@ export const TierProgression = () => {
         <S.Title>{t.tierProgression.title}</S.Title>
 
         <S.Showcase>
+          <S.Glow />
           <S.TierIcon key={activeTier.name}>
             <Image src={activeTier.src} alt={activeTier.name} width={120} height={120} />
           </S.TierIcon>
@@ -97,7 +98,7 @@ const S = {
   Section: styled.section`
     position: relative;
     height: 400vh;
-    background: #000;
+    background: ${Color.Black};
   `,
 
   Sticky: styled.div`
@@ -135,11 +136,25 @@ const S = {
   `,
 
   Showcase: styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
     margin-bottom: 56px;
+  `,
+
+  Glow: styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0, 113, 227, 0.25), transparent 70%);
+    pointer-events: none;
+    filter: blur(60px);
   `,
 
   TierIcon: styled.div`

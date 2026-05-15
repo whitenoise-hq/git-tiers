@@ -9,7 +9,13 @@ import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
 
 const ICONS = ['⟐', '⊕', '⇆', '✓', '❖'] as const;
-const KEYS = ['commits', 'issues', 'pullRequests', 'codeReviews', 'wikis'] as const;
+const KEYS = [
+  'commits',
+  'issues',
+  'pullRequests',
+  'codeReviews',
+  'wikis',
+] as const;
 
 export const WhatCounts = () => {
   const titleFade = useScrollFadeIn({ delay: 0 });
@@ -62,16 +68,15 @@ const WhatCountsItem = ({
   );
 };
 
-
 const S = {
   Section: styled.section`
-    background: #101010;
+    background: #0e0e0e;
     padding: 280px 24px;
     text-align: center;
   `,
 
   Inner: styled.div`
-    max-width: 980px;
+    max-width: 1120px;
     margin: 0 auto;
   `,
 
@@ -130,7 +135,7 @@ const S = {
     align-items: center;
     gap: 12px;
     padding: 32px 16px;
-    background: #000;
+    background: ${Color.Black};
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 1px solid rgba(255, 255, 255, 0.18);
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);

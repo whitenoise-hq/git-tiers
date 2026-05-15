@@ -41,14 +41,14 @@
   "howTo": {
     "label": "시작하기",
     "title": "간단한 4단계.",
-    "step1Title": "로그인",
-    "step1Desc": "GitHub 계정으로 로그인하세요.",
-    "step2Title": "티어 확인",
-    "step2Desc": "마이페이지에서 현재 티어를 확인하세요.",
-    "step3Title": "커스터마이즈",
-    "step3Desc": "폰트와 배경색을 설정한 후 저장하세요.",
-    "step4Title": "공유",
-    "step4Desc": "코드를 복사해서 GitHub README에 붙여넣으세요.",
+    "step1Title": "GitHub 로그인",
+    "step1Desc": "GitHub 계정으로 간편하게 로그인하세요. 별도 회원가입 없이 바로 시작할 수 있습니다.",
+    "step2Title": "내 티어 확인",
+    "step2Desc": "총 기여 수를 기반으로 자동 산정된 티어를 마이페이지에서 확인하세요.",
+    "step3Title": "커스터마이즈 & 저장",
+    "step3Desc": "배경색과 카드 스타일을 원하는 대로 설정한 후 이미지를 저장하세요. 저장해야 태그 복사가 가능합니다.",
+    "step4Title": "태그 복사 & 공유",
+    "step4Desc": "Copy Tag 버튼으로 이미지 태그를 복사한 뒤, GitHub README에 붙여넣어 티어를 공유하세요.",
     "learnMore": "자세히 보기"
   },
   "header": {
