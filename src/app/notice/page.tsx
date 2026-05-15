@@ -66,10 +66,10 @@ export default function NoticePage() {
 
 const S = {
   Wrapper: styled.div`
-    max-width: 720px;
+    max-width: 1200px;
     width: 100%;
     margin: 0 auto;
-    padding: 40px 24px 0;
+    padding: 40px 0 0;
 
     @media (max-width: 768px) {
       padding: 24px 20px 0;
@@ -79,7 +79,7 @@ const S = {
   PageLabel: styled.p`
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 6px;
@@ -88,7 +88,7 @@ const S = {
   PageTitle: styled.h2`
     font-size: 36px;
     font-weight: 700;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
     letter-spacing: -0.03em;
     margin-bottom: 48px;
 
@@ -106,18 +106,19 @@ const S = {
   `,
 
   Item: styled.li<{ $isOpen: boolean }>`
-    background: ${({ $isOpen }) => ($isOpen ? '#fff' : 'rgba(0, 0, 0, 0.02)')};
+    background: ${({ $isOpen }) =>
+      $isOpen ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.02)'};
     border: 1px solid
       ${({ $isOpen }) =>
-        $isOpen ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.06)'};
+        $isOpen ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.06)'};
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: ${({ $isOpen }) =>
-      $isOpen ? '0 2px 12px rgba(0, 0, 0, 0.06)' : 'none'};
+      $isOpen ? '0 2px 12px rgba(0, 0, 0, 0.3)' : 'none'};
 
     &:hover {
-      border-color: rgba(0, 0, 0, 0.1);
+      border-color: rgba(255, 255, 255, 0.12);
     }
   `,
 
@@ -159,7 +160,7 @@ const S = {
   ItemTitle: styled.span<{ $isOpen: boolean }>`
     font-size: 17px;
     font-weight: 600;
-    color: ${({ $isOpen }) => ($isOpen ? Color.Link : Color.TextPrimary)};
+    color: ${({ $isOpen }) => ($isOpen ? Color.Link : Color.TextLight)};
     letter-spacing: -0.01em;
     transition: color 0.3s ease;
   `,
@@ -174,7 +175,7 @@ const S = {
   Date: styled.span`
     font-size: 13px;
     font-weight: 400;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
   `,
 
   Chevron: styled.span<{ $isOpen: boolean }>`
@@ -193,8 +194,8 @@ const S = {
       left: 4px;
       width: 8px;
       height: 8px;
-      border-right: 2px solid ${Color.TextSecondary};
-      border-bottom: 2px solid ${Color.TextSecondary};
+      border-right: 2px solid ${Color.TextLight};
+      border-bottom: 2px solid ${Color.TextLight};
       transform: rotate(45deg);
     }
   `,
@@ -215,8 +216,8 @@ const S = {
     line-height: 1.7;
     margin: 0;
     padding: 0 24px 24px;
-    color: ${Color.TextSubtle};
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    color: ${Color.Gray100};
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     padding-top: 20px;
 
     @media (max-width: 768px) {

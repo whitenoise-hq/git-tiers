@@ -3,6 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import styled from '@emotion/styled';
+import { Color } from '@/styles/color';
 
 const FULL_BLEED_PATHS = ['/'];
 
@@ -27,6 +28,6 @@ const S = {
     padding-top: 84px;
     padding-bottom: 80px;
     min-height: 100vh;
-    background-color: #fbfbfd;
+    background-color: ${Color.Black};
   `,
 };

@@ -111,8 +111,8 @@ export const Header = () => {
   return (
     <S.Nav>
       <S.Inner>
-        <Logo />
-        <HeaderActions dark={false} isLogin={isLogin} userImg={userImg} onLogin={handleGitLogin} />
+        <Logo dark />
+        <HeaderActions dark isLogin={isLogin} userImg={userImg} onLogin={handleGitLogin} />
       </S.Inner>
     </S.Nav>
   );
@@ -265,10 +265,10 @@ const S = {
     right: 0;
     z-index: 1000;
     padding: 0 24px;
-    background: rgba(251, 251, 253, 0.72);
+    background: rgba(0, 0, 0, 0.72);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   `,
 
   Inner: styled.div`

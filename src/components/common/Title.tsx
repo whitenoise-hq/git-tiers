@@ -22,7 +22,7 @@ export const Title = ({ title, icon }: TProps) => {
 const S = {
   Title: styled.h3`
     font-size: 24px;
-    color: ${Color.Black};
+    color: ${Color.TextLight};
     display: flex;
     align-items: center;
     justify-content: start;
