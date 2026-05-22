@@ -25,6 +25,7 @@ export const MakeTier = () => {
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [userImageUrl, setUserImageUrl] = useState<string>('');
   const [hasSaved, setHasSaved] = useState<boolean>(false);
+  const isDev = process.env.NODE_ENV === 'development';
 
   const handleGithubData = async () => {
     if (session?.loginId) {
@@ -111,6 +112,10 @@ export const MakeTier = () => {
   };
 
   useEffect(() => {
+    if (isDev && !session?.loginId) {
+      setLoading(false);
+      return;
+    }
     handleGithubData();
   }, [session?.loginId]);
 
@@ -181,11 +186,13 @@ export const MakeTier = () => {
 
 const S = {
   Card: styled.div`
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 32px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     text-align: center;
 
     @media (max-width: 768px) {
@@ -196,12 +203,12 @@ const S = {
   ContribLabel: styled.p`
     font-size: 17px;
     font-weight: 400;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
   `,
 
   ContribCount: styled.span`
     font-weight: 700;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
     font-size: 20px;
     letter-spacing: -0.02em;
   `,
@@ -248,16 +255,16 @@ const S = {
     padding: 10px 28px;
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 980px;
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease;
 
     &:hover:not(:disabled) {
-      border-color: rgba(0, 0, 0, 0.25);
-      color: ${Color.TextPrimary};
+      border-color: rgba(255, 255, 255, 0.25);
+      color: ${Color.TextLight};
     }
 
     &:disabled {

@@ -105,7 +105,7 @@ export const TierController = ({
             data-active={isCustomColor}
             onClick={handleCustomClick}>
             <S.ColorDot
-              style={{ background: isCustomColor ? isMode : Color.TextSecondary }}
+              style={{ background: isCustomColor ? isMode : Color.Gray300 }}
             />
             Custom
           </S.CustomButton>
@@ -142,7 +142,7 @@ const S = {
   GroupLabel: styled.span`
     font-size: 13px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     text-transform: uppercase;
     letter-spacing: 0.04em;
     text-align: left;
@@ -157,7 +157,7 @@ const S = {
   Segment: styled.div`
     display: flex;
     flex: 1;
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 10px;
     padding: 3px;
     gap: 2px;
@@ -168,7 +168,7 @@ const S = {
     padding: 8px 12px;
     font-size: 13px;
     font-weight: 500;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -177,14 +177,14 @@ const S = {
     min-width: 0;
 
     &[data-active='true'] {
-      background: #fff;
-      color: ${Color.TextPrimary};
+      background: rgba(255, 255, 255, 0.12);
+      color: ${Color.TextLight};
       font-weight: 600;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     }
 
     &:hover:not([data-active='true']) {
-      color: ${Color.TextPrimary};
+      color: ${Color.TextLight};
     }
   `,
 
@@ -197,23 +197,23 @@ const S = {
     flex-shrink: 0;
     font-size: 13px;
     font-weight: 500;
-    color: ${Color.TextSecondary};
-    background: rgba(0, 0, 0, 0.04);
+    color: ${Color.Gray300};
+    background: rgba(255, 255, 255, 0.06);
     border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &[data-active='true'] {
-      background: #fff;
-      color: ${Color.TextPrimary};
+      background: rgba(255, 255, 255, 0.12);
+      color: ${Color.TextLight};
       font-weight: 600;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     }
 
     &:hover:not([data-active='true']) {
-      color: ${Color.TextPrimary};
-      background: rgba(0, 0, 0, 0.06);
+      color: ${Color.TextLight};
+      background: rgba(255, 255, 255, 0.08);
     }
   `,
 
@@ -221,7 +221,7 @@ const S = {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     transition: background 0.15s ease;
   `,
 
@@ -231,10 +231,10 @@ const S = {
     align-items: center;
     gap: 10px;
     padding: 16px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 
     .react-colorful {
       width: 100% !important;
@@ -261,7 +261,7 @@ const S = {
   HexValue: styled.span`
     font-size: 13px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     font-family: monospace;
     letter-spacing: 0.03em;
   `,

@@ -54,15 +54,15 @@ export const Profile = () => {
 
           <S.Meta>
             <S.MetaItem>
-              <ApartmentIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
+              <ApartmentIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
               <span>{session?.user.company || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <AlternateEmailIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
+              <AlternateEmailIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
               <span>{session?.user.email || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <LocationOnIcon sx={{ fontSize: 16, color: Color.TextSecondary }} />
+              <LocationOnIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
               <span>{session?.user.location || '-'}</span>
             </S.MetaItem>
           </S.Meta>
@@ -87,10 +87,12 @@ export const Profile = () => {
 
 const S = {
   Card: styled.div`
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     overflow: hidden;
   `,
 
@@ -103,7 +105,7 @@ const S = {
     transition: background 0.2s ease;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.02);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     @media (max-width: 768px) {
@@ -114,7 +116,7 @@ const S = {
   HeaderLabel: styled.span`
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
   `,
 
   HeaderLeft: styled.div`
@@ -126,14 +128,14 @@ const S = {
   ProfileImg: styled(Avatar)`
     width: 36px !important;
     height: 36px !important;
-    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
     flex-shrink: 0;
   `,
 
   Name: styled.span`
     font-size: 16px;
     font-weight: 600;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
     letter-spacing: -0.01em;
   `,
 
@@ -173,8 +175,8 @@ const S = {
       left: 3px;
       width: 8px;
       height: 8px;
-      border-right: 2px solid ${Color.TextSecondary};
-      border-bottom: 2px solid ${Color.TextSecondary};
+      border-right: 2px solid ${Color.TextLight};
+      border-bottom: 2px solid ${Color.TextLight};
       transform: rotate(45deg);
     }
   `,
@@ -190,7 +192,7 @@ const S = {
 
   DetailInner: styled.div`
     padding: 0 24px 24px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     padding-top: 20px;
 
     @media (max-width: 768px) {
@@ -214,7 +216,7 @@ const S = {
   ProfileImgLarge: styled(Avatar)`
     width: 64px !important;
     height: 64px !important;
-    border: 2px solid rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.12);
     flex-shrink: 0;
   `,
 
@@ -225,21 +227,21 @@ const S = {
   NameLarge: styled.p`
     font-size: 20px;
     font-weight: 700;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
     letter-spacing: -0.02em;
   `,
 
   LoginId: styled.p`
     font-size: 14px;
     font-weight: 400;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     margin-top: 2px;
   `,
 
   Bio: styled.p`
     font-size: 13px;
     font-weight: 400;
-    color: ${Color.TextSubtle};
+    color: ${Color.Gray100};
     margin-top: 6px;
     line-height: 1.5;
   `,
@@ -249,7 +251,7 @@ const S = {
     flex-wrap: wrap;
     gap: 16px;
     padding-top: 16px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     margin-bottom: 20px;
   `,
 
@@ -258,7 +260,7 @@ const S = {
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
   `,
 
   Actions: styled.div`
@@ -290,16 +292,16 @@ const S = {
     padding: 10px 24px;
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 980px;
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease;
 
     &:hover {
-      border-color: rgba(0, 0, 0, 0.25);
-      color: ${Color.TextPrimary};
+      border-color: rgba(255, 255, 255, 0.25);
+      color: ${Color.TextLight};
     }
   `,
 };

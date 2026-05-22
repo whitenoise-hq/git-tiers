@@ -107,18 +107,23 @@ const S = {
 
   Item: styled.li<{ $isOpen: boolean }>`
     background: ${({ $isOpen }) =>
-      $isOpen ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.02)'};
+      $isOpen ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid
       ${({ $isOpen }) =>
-        $isOpen ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.06)'};
+        $isOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)'};
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: ${({ $isOpen }) =>
-      $isOpen ? '0 2px 12px rgba(0, 0, 0, 0.3)' : 'none'};
+      $isOpen
+        ? '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+        : '0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)'};
 
     &:hover {
-      border-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.07);
     }
   `,
 

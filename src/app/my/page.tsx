@@ -15,13 +15,15 @@ export default function MyPage() {
   const router = useRouter();
   const { t } = useLanguage();
 
+  const isDev = process.env.NODE_ENV === 'development';
+
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!isDev && status === 'unauthenticated') {
       router.push('/');
     }
-  }, [status, router]);
+  }, [status, router, isDev]);
 
-  if (status !== 'authenticated') {
+  if (!isDev && status !== 'authenticated') {
     return null;
   }
 
@@ -52,7 +54,7 @@ const S = {
   PageLabel: styled.p`
     font-size: 14px;
     font-weight: 600;
-    color: ${Color.TextSecondary};
+    color: ${Color.Gray300};
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 6px;
@@ -61,7 +63,7 @@ const S = {
   PageTitle: styled.h2`
     font-size: 36px;
     font-weight: 700;
-    color: ${Color.TextPrimary};
+    color: ${Color.TextLight};
     letter-spacing: -0.03em;
     margin-bottom: 40px;
 
