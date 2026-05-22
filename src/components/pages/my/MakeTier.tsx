@@ -25,7 +25,6 @@ export const MakeTier = () => {
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [userImageUrl, setUserImageUrl] = useState<string>('');
   const [hasSaved, setHasSaved] = useState<boolean>(false);
-  const isDev = process.env.NODE_ENV === 'development';
 
   const handleGithubData = async () => {
     if (session?.loginId) {
@@ -112,7 +111,7 @@ export const MakeTier = () => {
   };
 
   useEffect(() => {
-    if (isDev && !session?.loginId) {
+    if (process.env.NODE_ENV === 'development' && !session?.loginId) {
       setLoading(false);
       return;
     }
@@ -137,6 +136,7 @@ export const MakeTier = () => {
   }, [session?.loginId]);
 
   return (
+    <>
     <S.Card>
       <S.ContribLabel>
         {t.myPage.totalContributions} <S.ContribCount>{contributeCount || 0}</S.ContribCount>
@@ -179,8 +179,9 @@ export const MakeTier = () => {
         </Link>
       </S.TableLink>
 
-      <LoadingSpinner loading={loading} />
     </S.Card>
+    <LoadingSpinner loading={loading} />
+    </>
   );
 };
 
