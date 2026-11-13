@@ -36,6 +36,8 @@ export default function RankingPage() {
         {data.status === 'ready' && (
           <S.Content>
             <Podium items={data.ranking.podium} />
+            {/* 상위 3명과 내 순위·분포 사이 경계 */}
+            <S.Divider role="separator" />
             {data.my.status === 'ranked' && (
               <MyRankCard
                 status="ranked"
@@ -115,13 +117,25 @@ const S = {
   `,
 
   // 데이터가 다 준비되면 섹션이 차례로 아래에서 떠오른다.
+  // 벤토 그리드: 위에 상위 3명, 아래에 내 순위 · 티어 분포 두 칸
   Content: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 
+    > :first-child,
+    > :last-child,
+    > [role='separator'] {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* 끝난 뒤에는 transform 을 놓아줘서 카드 호버 효과가 살아 있게 한다(backwards). */
     > * {
-      animation: ${riseIn} 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: ${riseIn} 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
     > *:nth-child(2) {
@@ -143,7 +157,22 @@ const S = {
     }
   `,
 
+  // 상위 3명과 아래 칸을 나누는 선: 가운데가 밝고 양끝으로 갈수록 옅어진다.
+  Divider: styled.hr`
+    height: 1px;
+    margin: 24px 0 20px;
+    border: none;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.26) 50%,
+      rgba(255, 255, 255, 0.04)
+    );
+    box-shadow: 0 0 10px rgba(100, 172, 255, 0.12);
+  `,
+
   Note: styled.p`
+    margin-top: 8px;
     font-size: 12px;
     text-align: center;
     color: ${Color.TextSecondary};
