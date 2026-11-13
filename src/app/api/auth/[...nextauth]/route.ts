@@ -1,7 +1,6 @@
 import GitHubProvider from "next-auth/providers/github";
 import NextAuth from 'next-auth';
-import { firestore } from '../../../../../firebase/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { usersCollection } from '../../../../../firebase/admin';
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -36,16 +35,16 @@ const handler = NextAuth({
 
             if(userData?.login){
               try{
-                const userRef = doc(firestore, 'users', userData.login);
-                const userDoc = await getDoc(userRef);
-                if(!userDoc.exists()){
-                  await setDoc(userRef, {
+                const userRef = usersCollection().doc(userData.login);
+                const userDoc = await userRef.get();
+                if(!userDoc.exists){
+                  await userRef.set({
                     login_id: userData.login,
                     first_login: new Date().toISOString(),
                     last_login: new Date().toISOString(),
                   })
                 }else{
-                  await setDoc(userRef, {
+                  await userRef.set({
                     last_login: new Date().toISOString(),
                   }, { merge: true });
                 }

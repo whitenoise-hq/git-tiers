@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../../../../../firebase/firebase';
+import { usersCollection } from '../../../../../firebase/admin';
 import { UserData } from '@/types/api';
 import { generateTierSvg } from '@/utils/generateTierSvg';
 
@@ -17,10 +16,9 @@ export async function GET(
       return new NextResponse('Invalid user ID', { status: 400 });
     }
 
-    const userRef = doc(firestore, 'users', userId);
-    const userDoc = await getDoc(userRef);
+    const userDoc = await usersCollection().doc(userId).get();
 
-    if (!userDoc.exists()) {
+    if (!userDoc.exists) {
       return new NextResponse('User not found', { status: 404 });
     }
 

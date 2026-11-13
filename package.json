@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.3.0",
-    "firebase": "^11.10.0",
+    "firebase-admin": "^14.5.1",
     "next": "15.5.15",
     "next-auth": "^4.24.10",
     "react": "^19.0.0",

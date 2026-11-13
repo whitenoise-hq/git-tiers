@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../../../../../firebase/firebase';
+import { usersCollection } from '../../../../../firebase/admin';
 import { UserData } from '@/types/api';
 
 export async function GET(request: NextRequest) {
@@ -14,10 +13,9 @@ export async function GET(request: NextRequest) {
   const loginId = token.loginId as string;
 
   try {
-    const userRef = doc(firestore, 'users', loginId);
-    const userDoc = await getDoc(userRef);
+    const userDoc = await usersCollection().doc(loginId).get();
 
-    if (!userDoc.exists()) {
+    if (!userDoc.exists) {
       return NextResponse.json({ imageSettings: null });
     }
 

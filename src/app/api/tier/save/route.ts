@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { doc, setDoc } from 'firebase/firestore';
-import { firestore } from '../../../../../firebase/firebase';
+import { usersCollection } from '../../../../../firebase/admin';
 import { ImageSettings, isValidImageOptions } from '@/types/api';
 import { getContributeCount } from '@/utils/github';
 
@@ -45,9 +44,7 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    const userRef = doc(firestore, 'users', loginId);
-    await setDoc(
-      userRef,
+    await usersCollection().doc(loginId).set(
       {
         lastUpdated: new Date().toISOString(),
         imageSettings,
