@@ -17,6 +17,8 @@
 
 Git TIERS는 GitHub 활동을 기반으로 **Iron**부터 **Challenger**까지 티어를 부여합니다. 커밋, 이슈, PR, 코드 리뷰, 위키 작성이 모두 반영됩니다.
 
+기여 수는 **최근 1년(12개월)** 기준이며, GitHub 프로필에 표시되는 숫자와 같습니다.
+
 티어 뱃지를 생성하고 GitHub README에 삽입하여 기여도를 보여주세요.
 
 ## 사용 방법
@@ -37,6 +39,8 @@ Git TIERS는 GitHub 활동을 기반으로 **Iron**부터 **Challenger**까지 �
 ```
 
 ## 티어 표
+
+> 최근 1년 기여 수 기준입니다. 경계값은 `src/constants/tierThresholds.ts` 에서 관리합니다.
 
 ### Challenger
 | 기여 수 | 티어 |
