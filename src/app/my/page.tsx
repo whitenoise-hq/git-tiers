@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 import styled from '@emotion/styled';
+import toast from 'react-hot-toast';
 
 import { Profile } from '@/components/pages/my/Profile';
 import { MakeTier } from '@/components/pages/my/MakeTier';
@@ -50,6 +51,29 @@ const MyPageContent = () => {
           {previewError
             ? '개발 미리보기를 불러오지 못했습니다. 아이디와 .env.local 의 GITHUB_TOKEN 을 확인하세요.'
             : `개발 미리보기: ${previewData?.profile.loginId ?? '불러오는 중'} · 옵션은 저장되지 않고, 탈퇴는 확인창까지만 열립니다.`}
+          <S.ToastDemo>
+            <span>토스트 보기</span>
+            <button type="button" onClick={() => toast.success(t.toast.tagCopied)}>
+              성공
+            </button>
+            <button type="button" onClick={() => toast.error(t.toast.saveFailed)}>
+              오류
+            </button>
+            <button type="button" onClick={() => toast(t.toast.withdrawRevokeManual, { duration: 8000 })}>
+              일반
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                toast.promise(new Promise((resolve) => setTimeout(resolve, 1500)), {
+                  loading: t.myPage.saving,
+                  success: t.myPage.saved,
+                  error: t.myPage.saveError,
+                })
+              }>
+              로딩
+            </button>
+          </S.ToastDemo>
         </S.PreviewBanner>
       )}
       {isPreview && previewLoading ? (
@@ -111,6 +135,29 @@ const S = {
     &[data-error='true'] {
       color: ${Color.Red100};
       background: rgba(249, 68, 57, 0.12);
+    }
+  `,
+
+  ToastDemo: styled.span`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+
+    button {
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: ${Color.TextLight};
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 980px;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
     }
   `,
 
