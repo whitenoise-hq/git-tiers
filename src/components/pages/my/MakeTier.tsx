@@ -37,6 +37,9 @@ const spin = keyframes`
   }
 `;
 
+/** 나란히 놓인 액션 버튼 높이 */
+const ACTION_HEIGHT = 42;
+
 const META_ICON_SX = { fontSize: 14 } as const;
 
 const SAVE_STATUS_ICONS = {
@@ -291,7 +294,12 @@ const S = {
   `,
 
   PrimaryButton: styled.button`
-    padding: 10px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: ${ACTION_HEIGHT}px;
+    padding: 0 28px;
+    line-height: 1;
     font-size: 14px;
     font-weight: 600;
     color: #fff;
@@ -314,8 +322,11 @@ const S = {
   SecondaryButton: styled.a`
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 10px 20px;
+    height: ${ACTION_HEIGHT}px;
+    padding: 0 22px;
+    line-height: 1;
     font-size: 14px;
     font-weight: 600;
     color: ${Color.TextLight};
