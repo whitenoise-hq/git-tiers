@@ -111,14 +111,18 @@ const STEP_MINIMUMS: readonly number[] = TIER_THRESHOLDS.flatMap(
 export interface NextTier {
   readonly tierText: string;
   readonly remaining: number;
+  /** 지금 세부 단계 안에서 다음 단계까지 진행한 비율(0~1, 소수 둘째 자리) */
+  readonly progress: number;
 }
 
-/** 바로 위 세부 단계와 남은 기여 수. 가장 높은 단계면 null */
+/** 바로 위 세부 단계, 남은 기여 수, 진행 비율. 가장 높은 단계면 null */
 export const getNextTier = (count: number): NextTier | null => {
   const next = STEP_MINIMUMS.find((min) => min > count);
-  return next === undefined
-    ? null
-    : { tierText: getTierText(next), remaining: next - count };
+  if (next === undefined) return null;
+  const current = [...STEP_MINIMUMS].reverse().find((min) => min <= count) ?? 0;
+  const progress =
+    Math.round(((count - current) / (next - current)) * 100) / 100;
+  return { tierText: getTierText(next), remaining: next - count, progress };
 };
 
 export interface MyRank {

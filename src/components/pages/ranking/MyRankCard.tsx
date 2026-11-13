@@ -70,37 +70,51 @@ export const MyRankCard = (props: MyRankCardProps) => {
     '--accent': TIER_ACCENTS[me.tierName],
   } as React.CSSProperties;
 
+  const progress = me.next ? me.next.progress : 1;
+
   return (
     <S.Card style={style} data-ranked="true">
       <S.Top>
-        <S.Label>
-          {t.ranking.myRank} · {loginId}
-        </S.Label>
-        <S.Emblem>
-          <Image src={me.tierImage} alt={me.tierName} width={48} height={48} />
-        </S.Emblem>
-      </S.Top>
-
-      {/* 총 인원이 드러나지 않도록 순위 숫자만 보여 준다. */}
-      <S.Rank>{formatMessage(t.ranking.rank, { rank: me.rank })}</S.Rank>
-      <S.Meta>
-        <strong>{me.tierText}</strong>
-        <span>
-          {me.next
-            ? formatMessage(t.ranking.nextTier, {
-                tier: me.next.tierText,
-                remaining: me.next.remaining.toLocaleString(),
-              })
-            : t.ranking.topTier}
-        </span>
-      </S.Meta>
-
-      <S.Footer>
+        <S.Label>{t.ranking.myRank}</S.Label>
         <RefreshButton
           availableAt={props.refreshAvailableAt}
           onRefresh={props.onRefresh}
         />
-      </S.Footer>
+      </S.Top>
+
+      <S.Identity>
+        {/* 티어 색으로 은은하게 빛나는 엠블럼 타일 */}
+        <S.EmblemTile>
+          <Image src={me.tierImage} alt={me.tierName} width={64} height={64} />
+        </S.EmblemTile>
+        <S.IdentityText>
+          {/* 총 인원이 드러나지 않도록 순위 숫자만 보여 준다. */}
+          <S.Rank>{formatMessage(t.ranking.rank, { rank: me.rank })}</S.Rank>
+          <S.TierChip>{me.tierText}</S.TierChip>
+          <S.Login>{loginId}</S.Login>
+        </S.IdentityText>
+      </S.Identity>
+
+      <S.Progress>
+        <S.ProgressHead>
+          <span>
+            {me.next
+              ? formatMessage(t.ranking.nextTier, {
+                  tier: me.next.tierText,
+                  remaining: me.next.remaining.toLocaleString(),
+                })
+              : t.ranking.topTier}
+          </span>
+          <S.Percent>{Math.round(progress * 100)}%</S.Percent>
+        </S.ProgressHead>
+        <S.Track
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress * 100)}>
+          <S.Fill style={{ width: `${progress * 100}%` }} />
+        </S.Track>
+      </S.Progress>
     </S.Card>
   );
 };
@@ -131,13 +145,6 @@ const S = {
     }
   `,
 
-  Top: styled.div`
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  `,
-
   Label: styled.span`
     font-size: 12px;
     font-weight: 600;
@@ -147,44 +154,6 @@ const S = {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  `,
-
-  Emblem: styled.div`
-    flex-shrink: 0;
-    filter: drop-shadow(
-      0 8px 20px color-mix(in srgb, var(--accent) 40%, transparent)
-    );
-
-    img {
-      display: block;
-      object-fit: contain;
-    }
-  `,
-
-  Rank: styled.strong`
-    font-size: 56px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.05em;
-    font-variant-numeric: tabular-nums;
-    background: linear-gradient(180deg, ${Color.TextLight} 30%, var(--accent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  `,
-
-  Meta: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 13px;
-    color: ${Color.Gray100};
-
-    strong {
-      font-size: 15px;
-      font-weight: 700;
-      color: ${Color.TextLight};
-    }
   `,
 
   Message: styled.p`
@@ -217,5 +186,123 @@ const S = {
     &:hover {
       background: ${Color.LinkHover};
     }
+  `,
+
+  Top: styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  `,
+
+  Identity: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 6px;
+  `,
+
+  EmblemTile: styled.div`
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    background: radial-gradient(
+      circle at 50% 40%,
+      color-mix(in srgb, var(--accent) 26%, transparent),
+      rgba(255, 255, 255, 0.03) 70%
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.06));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 20%, transparent);
+
+    img {
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(
+        0 6px 14px color-mix(in srgb, var(--accent) 45%, transparent)
+      );
+    }
+  `,
+
+  IdentityText: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+  `,
+
+  Rank: styled.strong`
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: ${Color.TextLight};
+  `,
+
+  TierChip: styled.span`
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-radius: 980px;
+  `,
+
+  Login: styled.span`
+    max-width: 100%;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important;
+    color: ${Color.TextSecondary};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+
+  Progress: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  `,
+
+  ProgressHead: styled.div`
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    color: ${Color.Gray100};
+  `,
+
+  Percent: styled.span`
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  `,
+
+  Track: styled.div`
+    height: 6px;
+    border-radius: 980px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  `,
+
+  Fill: styled.div`
+    height: 100%;
+    border-radius: 980px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent) 45%, transparent),
+      var(--accent)
+    );
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   `,
 };
