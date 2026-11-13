@@ -8,7 +8,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { TIER_ACCENTS } from '@/constants/tierAccents';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
-import { PODIUM_SIZE, type PublicRankItem } from '@/utils/ranking';
+import { PODIUM_SIZE, type PodiumItem } from '@/utils/ranking';
 
 /** 화면 배치 순서: 2위 · 1위 · 3위(모바일은 1 · 2 · 3) */
 const DESKTOP_ORDER: Record<number, number> = { 1: 2, 2: 1, 3: 3 };
@@ -16,7 +16,7 @@ const DESKTOP_ORDER: Record<number, number> = { 1: 2, 2: 1, 3: 3 };
 export const Podium = ({
   items,
 }: {
-  readonly items: readonly PublicRankItem[];
+  readonly items: readonly PodiumItem[];
 }) => {
   const { t } = useLanguage();
   const slots = Array.from({ length: PODIUM_SIZE }, (_, i) => items[i] ?? null);
@@ -51,7 +51,10 @@ export const Podium = ({
                   />
                 </S.Emblem>
                 <S.TierText>{item.tierText}</S.TierText>
-                <S.Login>{item.maskedLogin}</S.Login>
+                <S.Login>
+                  {item.maskedLogin}
+                  {item.isMe && <S.MeBadge>{t.ranking.me}</S.MeBadge>}
+                </S.Login>
               </>
             ) : (
               <S.Empty>{t.ranking.podiumEmpty}</S.Empty>
@@ -191,6 +194,17 @@ const S = {
     @media (max-width: 640px) {
       margin: 0 0 0 auto;
     }
+  `,
+
+  MeBadge: styled.span`
+    margin-left: 6px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    color: ${Color.Black};
+    background: var(--accent);
+    border-radius: 980px;
   `,
 
   Empty: styled.span`

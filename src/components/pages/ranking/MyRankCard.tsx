@@ -10,15 +10,22 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { formatMessage } from '@/utils/formatMessage';
 import type { MyRank } from '@/utils/ranking';
+import { RefreshButton } from './RefreshButton';
+import type { RefreshResult } from './useRankingData';
+
+interface RefreshProps {
+  readonly refreshAvailableAt: number;
+  readonly onRefresh: () => Promise<RefreshResult>;
+}
 
 type MyRankCardProps =
   | { readonly status: 'guest' }
-  | { readonly status: 'unranked' }
-  | {
+  | ({ readonly status: 'unranked' } & RefreshProps)
+  | ({
       readonly status: 'ranked';
       readonly me: MyRank;
       readonly loginId: string;
-    };
+    } & RefreshProps);
 
 /** 로그인한 본인의 순위. 로그인하지 않았으면 로그인 안내를 보여 준다. */
 export const MyRankCard = (props: MyRankCardProps) => {
@@ -41,12 +48,15 @@ export const MyRankCard = (props: MyRankCardProps) => {
     return (
       <S.Card data-variant="guest">
         <S.Message>{t.ranking.notRanked}</S.Message>
+        <RefreshButton
+          availableAt={props.refreshAvailableAt}
+          onRefresh={props.onRefresh}
+        />
       </S.Card>
     );
   }
 
   const { me, loginId } = props;
-  const percent = Math.max(1, Math.ceil((me.rank / me.total) * 100));
   const style = {
     '--accent': TIER_ACCENTS[me.tierName],
   } as React.CSSProperties;
@@ -61,15 +71,8 @@ export const MyRankCard = (props: MyRankCardProps) => {
           {t.ranking.myRank} · {loginId}
         </S.Label>
         <S.RankLine>
-          <S.Rank>
-            {formatMessage(t.ranking.rankOf, {
-              rank: me.rank,
-              total: me.total,
-            })}
-          </S.Rank>
-          <S.Percent>
-            {formatMessage(t.ranking.topPercent, { percent })}
-          </S.Percent>
+          {/* 총 인원이 드러나지 않도록 순위 숫자만 보여 준다. */}
+          <S.Rank>{formatMessage(t.ranking.rank, { rank: me.rank })}</S.Rank>
         </S.RankLine>
         <S.Meta>
           {me.tierText} ·{' '}
@@ -81,6 +84,12 @@ export const MyRankCard = (props: MyRankCardProps) => {
             : t.ranking.topTier}
         </S.Meta>
       </S.Body>
+      <S.Action>
+        <RefreshButton
+          availableAt={props.refreshAvailableAt}
+          onRefresh={props.onRefresh}
+        />
+      </S.Action>
     </S.Card>
   );
 };
@@ -90,8 +99,9 @@ const S = {
     --accent: rgba(255, 255, 255, 0.3);
 
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 18px;
+    gap: 12px 18px;
     padding: 20px 22px;
     border-radius: 20px;
     border: 1px solid
@@ -123,6 +133,16 @@ const S = {
     }
   `,
 
+  // 좁은 화면에서는 버튼이 아래 줄로 내려간다.
+  Action: styled.div`
+    margin-left: auto;
+
+    @media (max-width: 520px) {
+      flex-basis: 100%;
+      margin-left: 82px;
+    }
+  `,
+
   Body: styled.div`
     display: flex;
     flex-direction: column;
@@ -151,12 +171,6 @@ const S = {
     font-weight: 700;
     letter-spacing: -0.02em;
     color: ${Color.TextLight};
-  `,
-
-  Percent: styled.span`
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
   `,
 
   Meta: styled.span`

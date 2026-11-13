@@ -18,7 +18,9 @@ const loginOf = (user: UserRecord): string | null =>
 
 /** 캐시가 만료됐거나 조회에 실패했을 때 쓸 마지막 값 */
 const lastKnownCount = (user: UserRecord): number | null =>
-  user.data.contributions?.count ?? user.data.imageSettings?.contributeCount ?? null;
+  user.data.contributions?.count ??
+  user.data.imageSettings?.contributeCount ??
+  null;
 
 const isFresh = (updatedAt: string | undefined, now: number): boolean => {
   if (!updatedAt) return false;
@@ -32,7 +34,7 @@ const isFresh = (updatedAt: string | undefined, now: number): boolean => {
  */
 export const getContributionCount = async (
   user: UserRecord,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): Promise<number | null> => {
   const cached = user.data.contributions;
   if (cached && isFresh(cached.updatedAt, now)) {
@@ -45,7 +47,10 @@ export const getContributionCount = async (
     return lastKnownCount(user);
   }
 
-  const count = await getContributeCount({ accessToken: serverToken, loginId: login });
+  const count = await getContributeCount({
+    accessToken: serverToken,
+    loginId: login,
+  });
   if (count === 'ERROR') {
     return lastKnownCount(user);
   }
@@ -53,7 +58,10 @@ export const getContributionCount = async (
   try {
     await usersCollection()
       .doc(user.docId)
-      .set({ contributions: { count, updatedAt: new Date(now).toISOString() } }, { merge: true });
+      .set(
+        { contributions: { count, updatedAt: new Date(now).toISOString() } },
+        { merge: true }
+      );
   } catch {
     // 캐시 저장에 실패해도 조회한 값은 돌려준다.
   }
@@ -74,7 +82,9 @@ export interface RefreshSummary {
  * 모든 사용자의 기여 수를 캐시와 상관없이 새로 조회해 저장한다(매일 예약 작업).
  * 랭킹 순서가 뱃지 조회 여부와 상관없이 같은 날 기준이 되도록 한다.
  */
-export const refreshAllContributions = async (now: number = Date.now()): Promise<RefreshSummary> => {
+export const refreshAllContributions = async (
+  now: number = Date.now()
+): Promise<RefreshSummary> => {
   const serverToken = process.env.GITHUB_TOKEN;
   if (!serverToken) {
     throw new Error('GITHUB_TOKEN is not configured');
@@ -92,7 +102,10 @@ export const refreshAllContributions = async (now: number = Date.now()): Promise
     const batch = targets.slice(i, i + REFRESH_CONCURRENCY);
     const batchResults = await Promise.all(
       batch.map(async ({ docId, login }) => {
-        const count = await getContributeCount({ accessToken: serverToken, loginId: login });
+        const count = await getContributeCount({
+          accessToken: serverToken,
+          loginId: login,
+        });
         if (count === 'ERROR') return false;
         try {
           await usersCollection()
@@ -102,7 +115,7 @@ export const refreshAllContributions = async (now: number = Date.now()): Promise
         } catch {
           return false;
         }
-      }),
+      })
     );
     results.push(...batchResults);
   }
@@ -113,4 +126,33 @@ export const refreshAllContributions = async (now: number = Date.now()): Promise
     failed: results.length - updated,
     skipped: snapshot.docs.length - targets.length,
   };
+};
+
+/**
+ * 한 사람의 기여 수를 캐시와 상관없이 새로 조회해 저장한다(랭킹 화면의 갱신 버튼).
+ * GitHub 조회에 실패하면 null.
+ */
+export const refreshUserContribution = async (
+  docId: string,
+  login: string,
+  now: number = Date.now()
+): Promise<number | null> => {
+  const serverToken = process.env.GITHUB_TOKEN;
+  if (!serverToken) {
+    throw new Error('GITHUB_TOKEN is not configured');
+  }
+
+  const count = await getContributeCount({
+    accessToken: serverToken,
+    loginId: login,
+  });
+  if (count === 'ERROR') return null;
+
+  await usersCollection()
+    .doc(docId)
+    .set(
+      { contributions: { count, updatedAt: new Date(now).toISOString() } },
+      { merge: true }
+    );
+  return count;
 };

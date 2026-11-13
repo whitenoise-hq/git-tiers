@@ -9,8 +9,15 @@ import type { MyRank } from '@/utils/ranking';
 
 export type MyRankState =
   | { readonly status: 'guest' }
-  | { readonly status: 'unranked' }
-  | { readonly status: 'ranked'; readonly me: MyRank };
+  | {
+      readonly status: 'unranked';
+      readonly refreshAvailableAt: number;
+    }
+  | {
+      readonly status: 'ranked';
+      readonly me: MyRank;
+      readonly refreshAvailableAt: number;
+    };
 
 export type RankingDataState =
   | { readonly status: 'loading' }
@@ -21,16 +28,40 @@ export type RankingDataState =
       readonly my: MyRankState;
     };
 
-const fetchJson = async <T>(url: string): Promise<T> => {
-  const res = await fetch(url);
+export type RefreshResult = 'refreshed' | 'cooldown' | 'failed';
+
+const toReadyState = (body: MyRankResponse): RankingDataState => ({
+  status: 'ready',
+  ranking: {
+    podium: body.podium,
+    distribution: body.distribution,
+  },
+  my: body.me
+    ? {
+        status: 'ranked',
+        me: body.me,
+        refreshAvailableAt: body.refreshAvailableAt,
+      }
+    : { status: 'unranked', refreshAvailableAt: body.refreshAvailableAt },
+});
+
+const fetchJson = async <T>(url: string, init?: RequestInit): Promise<T> => {
+  const res = await fetch(url, init);
   if (!res.ok) throw new Error(`Request failed: ${url} ${res.status}`);
   return res.json() as Promise<T>;
 };
 
-/** 공개 랭킹과(로그인했으면) 본인 순위를 함께 불러온다. 둘 다 끝나야 ready. */
-export const useRankingData = (): RankingDataState => {
+/**
+ * 랭킹 데이터.
+ * - 로그인 안 함: 공개 랭킹(/api/ranking)
+ * - 로그인: 포디움과 본인 순위를 같은 시점으로 계산한 /api/ranking/me 하나만 쓴다.
+ */
+export const useRankingData = (): {
+  readonly data: RankingDataState;
+  readonly refresh: () => Promise<RefreshResult>;
+} => {
   const { status: sessionStatus } = useSession();
-  const [state, setState] = useState<RankingDataState>({ status: 'loading' });
+  const [data, setData] = useState<RankingDataState>({ status: 'loading' });
 
   useEffect(() => {
     if (sessionStatus === 'loading') return undefined;
@@ -38,24 +69,17 @@ export const useRankingData = (): RankingDataState => {
     let cancelled = false;
     const load = async () => {
       try {
-        const loggedIn = sessionStatus === 'authenticated';
-        const [ranking, mine] = await Promise.all([
-          fetchJson<RankingResponse>('/api/ranking'),
-          // 본인 순위를 못 불러와도 공개 랭킹은 보여 준다.
-          loggedIn
-            ? fetchJson<MyRankResponse>('/api/ranking/me').catch(() => ({
-                me: null,
-              }))
-            : null,
-        ]);
-        const my: MyRankState = !mine
-          ? { status: 'guest' }
-          : mine.me
-            ? { status: 'ranked', me: mine.me }
-            : { status: 'unranked' };
-        if (!cancelled) setState({ status: 'ready', ranking, my });
+        const next: RankingDataState =
+          sessionStatus === 'authenticated'
+            ? toReadyState(await fetchJson<MyRankResponse>('/api/ranking/me'))
+            : {
+                status: 'ready',
+                ranking: await fetchJson<RankingResponse>('/api/ranking'),
+                my: { status: 'guest' },
+              };
+        if (!cancelled) setData(next);
       } catch {
-        if (!cancelled) setState({ status: 'error' });
+        if (!cancelled) setData({ status: 'error' });
       }
     };
     load();
@@ -65,5 +89,32 @@ export const useRankingData = (): RankingDataState => {
     };
   }, [sessionStatus]);
 
-  return state;
+  /** 본인 기여 수를 새로 조회한다. 1분 안에 다시 누르면 cooldown. */
+  const refresh = async (): Promise<RefreshResult> => {
+    try {
+      const res = await fetch('/api/ranking/me', { method: 'POST' });
+      if (res.status === 429) {
+        const body: { refreshAvailableAt?: number } = await res.json();
+        setData((prev) =>
+          prev.status === 'ready' && prev.my.status !== 'guest'
+            ? {
+                ...prev,
+                my: {
+                  ...prev.my,
+                  refreshAvailableAt: body.refreshAvailableAt ?? Date.now(),
+                },
+              }
+            : prev
+        );
+        return 'cooldown';
+      }
+      if (!res.ok) return 'failed';
+      setData(toReadyState((await res.json()) as MyRankResponse));
+      return 'refreshed';
+    } catch {
+      return 'failed';
+    }
+  };
+
+  return { data, refresh };
 };

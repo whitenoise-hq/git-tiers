@@ -1,0 +1,63 @@
+name: Refresh contributions
+
+# 매일 모든 사용자의 기여 수를 새로 조회해 랭킹 순서를 맞춘다.
+# 실제 갱신은 운영 API(/api/cron/refresh-contributions)가 하고, 여기서는 CRON_SECRET 으로 호출만 한다.
+on:
+  schedule:
+    # 매일 UTC 18:00 = KST 03:00 (GitHub 사정으로 몇 분 늦을 수 있음)
+    - cron: '0 18 * * *'
+  # Actions 탭의 "Run workflow" 버튼으로 바로 실행
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-contributions
+  cancel-in-progress: false
+
+env:
+  ENDPOINT: https://git-tiers.devwoodie.com/api/cron/refresh-contributions
+
+jobs:
+  refresh:
+    name: Refresh all contributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Call refresh endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CRON_SECRET}" ]; then
+            echo "::error::CRON_SECRET 레포 Secret 이 없습니다."
+            exit 1
+          fi
+
+          status=$(curl -sS -o response.json -w '%{http_code}' \
+            --retry 2 --retry-delay 10 --max-time 90 \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${ENDPOINT}")
+
+          echo "HTTP ${status}"
+          cat response.json
+          echo
+
+          if [ "${status}" != "200" ]; then
+            echo "::error::갱신 요청이 실패했습니다 (HTTP ${status})."
+            exit 1
+          fi
+
+          failed=$(jq -r '.failed' response.json)
+          updated=$(jq -r '.updated' response.json)
+          echo "### 기여 수 갱신 결과" >> "$GITHUB_STEP_SUMMARY"
+          echo "- 갱신: ${updated}명" >> "$GITHUB_STEP_SUMMARY"
+          echo "- 실패: ${failed}명" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${failed}" != "0" ]; then
+            echo "::error::${failed}명의 기여 수를 갱신하지 못했습니다."
+            exit 1
+          fi

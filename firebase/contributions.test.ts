@@ -11,7 +11,12 @@ const mocks = vi.hoisted(() => ({
 vi.mock('./admin', () => ({ usersCollection: () => ({ doc: mocks.doc, get: mocks.getAll }) }));
 vi.mock('../src/utils/github', () => ({ getContributeCount: mocks.getContributeCount }));
 
-const { getContributionCount, refreshAllContributions, CONTRIBUTIONS_TTL_MS } = await import(
+const {
+  getContributionCount,
+  refreshAllContributions,
+  refreshUserContribution,
+  CONTRIBUTIONS_TTL_MS,
+} = await import(
   './contributions'
 );
 
@@ -176,5 +181,34 @@ describe('refreshAllContributions', () => {
   it('GITHUB_TOKEN 이 없으면 오류', async () => {
     vi.stubEnv('GITHUB_TOKEN', '');
     await expect(refreshAllContributions(NOW)).rejects.toThrow('GITHUB_TOKEN');
+  });
+});
+
+describe('refreshUserContribution', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'ghp_server');
+    mocks.doc.mockReturnValue({ set: mocks.set });
+    mocks.set.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('새로 조회한 값을 저장하고 돌려준다', async () => {
+    mocks.getContributeCount.mockResolvedValue(321);
+    expect(await refreshUserContribution('583231', 'octocat', NOW)).toBe(321);
+    expect(mocks.doc).toHaveBeenCalledWith('583231');
+    expect(mocks.set).toHaveBeenCalledWith(
+      { contributions: { count: 321, updatedAt: new Date(NOW).toISOString() } },
+      { merge: true }
+    );
+  });
+
+  it('GitHub 조회 실패면 저장하지 않고 null', async () => {
+    mocks.getContributeCount.mockResolvedValue('ERROR');
+    expect(await refreshUserContribution('583231', 'octocat', NOW)).toBeNull();
+    expect(mocks.set).not.toHaveBeenCalled();
   });
 });
