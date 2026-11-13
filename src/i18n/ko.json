@@ -52,8 +52,27 @@
     "learnMore": "자세히 보기"
   },
   "header": {
+    "ranking": "랭킹",
     "myPage": "마이페이지",
     "getStarted": "시작하기"
+  },
+  "ranking": {
+    "label": "Ranking",
+    "title": "랭킹",
+    "subtitle": "최근 1년 GitHub 기여 기준 · 매일 갱신",
+    "podiumEmpty": "아직 순위가 없습니다",
+    "myRank": "내 순위",
+    "rankOf": "{total}명 중 {rank}위",
+    "topPercent": "상위 {percent}%",
+    "nextTier": "{tier}까지 {remaining}개",
+    "topTier": "가장 높은 단계입니다",
+    "notRanked": "아직 순위가 없습니다. 하루 안에 반영됩니다.",
+    "loginPrompt": "로그인하고 내 순위를 확인해 보세요",
+    "login": "GitHub 로그인",
+    "distribution": "티어 분포",
+    "people": "{count}명",
+    "privacyNote": "아이디는 일부만 표시하고 기여 수는 공개하지 않습니다.",
+    "loadFailed": "랭킹을 불러오지 못했습니다."
   },
   "footer": {
     "privacy": "개인정보 처리방침"
