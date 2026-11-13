@@ -6,6 +6,7 @@ import '@/styles/globals.css';
 import '@/styles/reset.css';
 import { Header } from '@/components/common/Header';
 import { Container } from '@/components/common/Container';
+import { Footer } from '@/components/common/Footer';
 import { GoogleAdSense } from '@/components/common/GoogleAdSense';
 
 export const metadata: Metadata = {
@@ -61,6 +62,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <Container>{children}</Container>
+          <Footer />
           <GoogleAdSense />
         </Providers>
       </body>

@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import { PageContainer } from '@/components/common/PageContainer';
 import { keyframes } from '@emotion/react';
 import toast from 'react-hot-toast';
 
@@ -130,18 +131,8 @@ const riseIn = keyframes`
 `;
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 40px 24px 0;
-
-    @media (max-width: 768px) {
-      padding: 24px 20px 0;
-    }
-  `,
+  // 본문 너비는 모든 페이지가 같은 틀을 쓴다.
+  Wrapper: PageContainer,
 
   PageLabel: styled.p`
     font-size: 14px;
@@ -204,10 +195,18 @@ const S = {
   `,
 
   // 준비 전에는 숨겨 두고, 준비되면 섹션이 차례로 아래에서 떠오른다.
+  // 넓은 화면: 왼쪽에 내 정보(좁게), 오른쪽에 티어 설정. 좁은 화면은 위아래로 쌓는다.
   Content: styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
+
+    @media (min-width: 900px) {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      align-items: start;
+      gap: 20px;
+    }
 
     > * {
       opacity: 0;

@@ -1,36 +1,32 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import styled from '@emotion/styled';
+import { useState } from "react";
+import styled from "@emotion/styled";
+import { keyframes } from "@emotion/react";
 
-import { useLanguage } from '@/i18n/LanguageContext';
-import { Color } from '@/styles/color';
-import { AuroraBackdrop } from '@/components/common/AuroraBackdrop';
+import { AuroraBackdrop } from "@/components/common/AuroraBackdrop";
+import { PageContainer } from "@/components/common/PageContainer";
+import {
+  NoticeEntry,
+  type Notice,
+} from "@/components/pages/notice/NoticeEntry";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { Color } from "@/styles/color";
 
-type TNotice = {
-  id: number;
-  title: string;
-  content: string;
-  isNew: boolean;
-  date: string;
-};
-
+/** 공지사항: 버전별 변경 기록 타임라인. 최신 공지만 펼쳐서 시작한다. */
 export default function NoticePage() {
   const { t } = useLanguage();
-  const noticeList = t.noticeData as TNotice[];
-  const [openItems, setOpenItems] = useState<Set<number>>(
-    new Set(noticeList.length > 0 ? [noticeList[0].id] : [])
+  const notices = t.noticeData as Notice[];
+  const [openIds, setOpenIds] = useState<ReadonlySet<number>>(
+    () => new Set(notices.length > 0 ? [notices[0].id] : []),
   );
 
-  const toggleItem = (id: number) => {
-    setOpenItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
+  const toggle = (id: number) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
   };
 
@@ -38,50 +34,39 @@ export default function NoticePage() {
     <>
       <AuroraBackdrop />
       <S.Wrapper>
-        <S.PageLabel>{t.notice.label}</S.PageLabel>
+        <S.PageLabel>{t.notice.label || "Changelog"}</S.PageLabel>
         <S.PageTitle>{t.notice.title}</S.PageTitle>
 
-        <S.List>
-          {noticeList.map((notice: TNotice) => {
-            const isOpen = openItems.has(notice.id);
-            return (
-              <S.Item key={notice.id} $isOpen={isOpen}>
-                <S.Header onClick={() => toggleItem(notice.id)}>
-                  <S.TitleRow>
-                    {notice.isNew && <S.NewBadge>N</S.NewBadge>}
-                    <S.ItemTitle $isOpen={isOpen}>{notice.title}</S.ItemTitle>
-                  </S.TitleRow>
-                  <S.HeaderRight>
-                    <S.Date>{notice.date}</S.Date>
-                    <S.Chevron $isOpen={isOpen} />
-                  </S.HeaderRight>
-                </S.Header>
-                <S.Content $isOpen={isOpen}>
-                  <S.ContentInner>{notice.content}</S.ContentInner>
-                </S.Content>
-              </S.Item>
-            );
-          })}
-        </S.List>
+        <S.Timeline>
+          {notices.map((notice, index) => (
+            <NoticeEntry
+              key={notice.id}
+              notice={notice}
+              open={openIds.has(notice.id)}
+              latest={index === 0}
+              onToggle={() => toggle(notice.id)}
+            />
+          ))}
+        </S.Timeline>
       </S.Wrapper>
     </>
   );
 }
 
-const S = {
-  Wrapper: styled.div`
-    position: relative;
-    z-index: 1;
-    /* 헤더와 같은 틀: 바깥 여백 24px, 최대 1200px, 안쪽 여백 25px → 로고와 왼쪽 선이 맞는다 */
-    width: calc(100% - 48px);
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 25px 0;
+const riseIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
-    @media (max-width: 768px) {
-      padding-top: 24px;
-    }
-  `,
+const S = {
+  // 본문 너비는 모든 페이지가 같은 틀을 쓴다.
+  Wrapper: PageContainer,
 
   PageLabel: styled.p`
     font-size: 14px;
@@ -97,144 +82,65 @@ const S = {
     font-weight: 700;
     color: ${Color.TextLight};
     letter-spacing: -0.03em;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 
     @media (max-width: 768px) {
       font-size: 28px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
   `,
 
-  List: styled.ul`
+  // 왼쪽 메타(120px) + 간격(12px) + 점 칸(24px)의 가운데를 지나는 세로선
+  Timeline: styled.ol`
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     list-style: none;
-  `,
-
-  Item: styled.li<{ $isOpen: boolean }>`
-    background: ${({ $isOpen }) =>
-      $isOpen ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid
-      ${({ $isOpen }) =>
-        $isOpen ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)'};
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: ${({ $isOpen }) =>
-      $isOpen
-        ? '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-        : '0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03)'};
-
-    &:hover {
-      border-color: rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.07);
-    }
-  `,
-
-  Header: styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    cursor: pointer;
-    gap: 16px;
-
-    @media (max-width: 768px) {
-      padding: 16px 20px;
-    }
-  `,
-
-  TitleRow: styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  `,
-
-  NewBadge: styled.span`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #ff3b30;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-    line-height: 1;
-  `,
-
-  ItemTitle: styled.span<{ $isOpen: boolean }>`
-    font-size: 17px;
-    font-weight: 600;
-    color: ${({ $isOpen }) => ($isOpen ? Color.Link : Color.TextLight)};
-    letter-spacing: -0.01em;
-    transition: color 0.3s ease;
-  `,
-
-  HeaderRight: styled.div`
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-  `,
-
-  Date: styled.span`
-    font-size: 13px;
-    font-weight: 400;
-    color: ${Color.Gray300};
-  `,
-
-  Chevron: styled.span<{ $isOpen: boolean }>`
-    width: 20px;
-    height: 20px;
-    position: relative;
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
-    transform: ${({ $isOpen }) =>
-      $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
-      top: 5px;
-      left: 4px;
-      width: 8px;
-      height: 8px;
-      border-right: 2px solid ${Color.TextLight};
-      border-bottom: 2px solid ${Color.TextLight};
-      transform: rotate(45deg);
+      top: 28px;
+      bottom: 28px;
+      left: calc(120px + 12px + 12px - 1px);
+      width: 2px;
+      border-radius: 2px;
+      background: linear-gradient(
+        180deg,
+        rgba(100, 172, 255, 0.6),
+        rgba(255, 255, 255, 0.08) 30%,
+        rgba(255, 255, 255, 0.04)
+      );
     }
-  `,
 
-  Content: styled.div<{ $isOpen: boolean }>`
-    overflow: hidden;
-    max-height: ${({ $isOpen }) => ($isOpen ? '500px' : '0')};
-    opacity: ${({ $isOpen }) => ($isOpen ? '1' : '0')};
-    transition:
-      max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.3s ease,
-      padding 0.3s ease;
-  `,
+    > li {
+      animation: ${riseIn} 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
 
-  ContentInner: styled.p`
-    font-size: 15px;
-    white-space: pre-wrap;
-    line-height: 1.7;
-    margin: 0;
-    padding: 0 24px 24px;
-    color: ${Color.Gray100};
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 20px;
+    > li:nth-of-type(2) {
+      animation-delay: 0.05s;
+    }
 
-    @media (max-width: 768px) {
-      padding: 0 20px 20px;
-      padding-top: 16px;
+    > li:nth-of-type(3) {
+      animation-delay: 0.1s;
+    }
+
+    > li:nth-of-type(n + 4) {
+      animation-delay: 0.15s;
+    }
+
+    @media (max-width: 640px) {
+      &::before {
+        left: 11px;
+        top: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      > li {
+        animation: none;
+      }
     }
   `,
 };

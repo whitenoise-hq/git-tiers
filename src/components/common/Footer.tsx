@@ -10,6 +10,8 @@ import { Color } from '@/styles/color';
 const GITHUB_REPO_URL = 'https://github.com/git-tiers/gittiers';
 const AUTHOR_GITHUB_URL = 'https://github.com/devwoodie';
 const CURRENT_YEAR = new Date().getFullYear();
+/** 빌드할 때 package.json 의 version 이 들어간다(next.config.ts). */
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
 
 export const Footer = () => {
   const { t } = useLanguage();
@@ -33,7 +35,13 @@ export const Footer = () => {
         </S.Top>
 
         <S.Bottom>
-          <span>&copy; {CURRENT_YEAR} Git TIERS. All rights reserved.</span>
+          <S.Legal>
+            <span>&copy; {CURRENT_YEAR} Git TIERS. All rights reserved.</span>
+            {APP_VERSION && (
+              // 최신 버전 내용은 공지사항에서 볼 수 있다.
+              <S.Version href="/notice">v{APP_VERSION}</S.Version>
+            )}
+          </S.Legal>
           <S.Author href={AUTHOR_GITHUB_URL} target="_blank" rel="noopener noreferrer">
             Made by devwoodie
           </S.Author>
@@ -46,6 +54,8 @@ export const Footer = () => {
 const S = {
   Footer: styled.footer`
     position: relative;
+    /* 오로라 배경(고정 레이어) 위로 올린다 */
+    z-index: 1;
     background: #0a0a0a;
     padding: 32px 24px 24px;
 
@@ -142,6 +152,30 @@ const S = {
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 12px;
     color: ${Color.Black200};
+  `,
+
+  Legal: styled.span`
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  `,
+
+  Version: styled(Link)`
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: ${Color.TextSecondary};
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 980px;
+    transition: color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      color: ${Color.TextLight};
+      background: rgba(255, 255, 255, 0.12);
+    }
   `,
 
   Author: styled.a`

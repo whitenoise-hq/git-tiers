@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import styled from '@emotion/styled';
 
 import { TIER_ACCENTS } from '@/constants/tierAccents';
+import { TIERS } from '@/constants/tiers';
 import type { TierName } from '@/constants/tierThresholds';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
@@ -14,6 +16,23 @@ interface TierDistributionProps {
   /** 로그인한 본인의 티어(강조) */
   readonly myTier?: TierName;
 }
+
+const TIER_ICON = Object.fromEntries(
+  TIERS.map((tier) => [tier.name, tier.src])
+);
+
+/** 좁은 칸에 들어가도록 줄인 이름(전체 이름은 aria-label·title 로 전달) */
+const SHORT_NAME: Record<TierName, string> = {
+  Iron: 'Iron',
+  Bronze: 'Bronze',
+  Silver: 'Silver',
+  Gold: 'Gold',
+  Platinum: 'Plat',
+  Diamond: 'Dia',
+  Master: 'Master',
+  Grandmaster: 'GM',
+  Challenger: 'Chall',
+};
 
 /** 티어별 상대 비율 막대. 인원수와 총 인원은 보여 주지 않는다. */
 export const TierDistribution = ({
@@ -41,7 +60,16 @@ export const TierDistribution = ({
               <S.Track>
                 <S.Bar />
               </S.Track>
-              <S.Name>{bucket.tier}</S.Name>
+              {/* 좁은 칸에서도 읽히도록 이름 대신 엠블럼 */}
+              <S.Emblem title={bucket.tier}>
+                <Image
+                  src={TIER_ICON[bucket.tier]}
+                  alt={bucket.tier}
+                  width={22}
+                  height={22}
+                />
+              </S.Emblem>
+              <S.Name aria-hidden>{SHORT_NAME[bucket.tier]}</S.Name>
             </S.Column>
           );
         })}
@@ -52,10 +80,17 @@ export const TierDistribution = ({
 
 const S = {
   Section: styled.section`
-    padding: 24px 22px 18px;
-    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 22px 24px 18px;
+    border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.015)
+    );
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   `,
@@ -70,6 +105,7 @@ const S = {
   `,
 
   Chart: styled.div`
+    margin-top: auto;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 8px;
@@ -116,16 +152,31 @@ const S = {
 
   Name: styled.span`
     width: 100%;
+    margin-top: -2px;
     font-size: 10px;
+    font-weight: 500;
     text-align: center;
-    color: ${Color.TextSecondary};
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
+    color: ${Color.TextSecondary};
 
     [data-mine='true'] & {
-      color: ${Color.TextLight};
-      font-weight: 600;
+      color: var(--accent);
+      font-weight: 700;
+    }
+  `,
+
+  Emblem: styled.span`
+    display: block;
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+
+    img {
+      display: block;
+      object-fit: contain;
+    }
+
+    [data-mine='true'] & {
+      opacity: 1;
     }
   `,
 };

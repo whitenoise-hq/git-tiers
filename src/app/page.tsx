@@ -10,7 +10,6 @@ import { TierProgression } from '@/components/organisms/main/TierProgression';
 import { WhatCounts } from '@/components/organisms/main/WhatCounts';
 import { Showcase } from '@/components/organisms/main/Showcase';
 import { HowToCont } from '@/components/organisms/main/HowToCont';
-import { Footer } from '@/components/common/Footer';
 import { FloatingActions } from '@/components/common/FloatingActions';
 
 export default function MainPage() {
@@ -22,7 +21,6 @@ export default function MainPage() {
       <TierGridCont />
       <Showcase />
       <HowToCont />
-      <Footer />
       <FloatingActions />
     </S.Page>
   );

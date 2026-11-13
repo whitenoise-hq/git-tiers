@@ -4,7 +4,9 @@ import React from 'react';
 import Image from 'next/image';
 import styled from '@emotion/styled';
 import { signIn } from 'next-auth/react';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
+import { SpotlightCard } from '@/components/common/SpotlightCard';
 import { TIER_ACCENTS } from '@/constants/tierAccents';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
@@ -27,31 +29,38 @@ type MyRankCardProps =
       readonly loginId: string;
     } & RefreshProps);
 
-/** 로그인한 본인의 순위. 로그인하지 않았으면 로그인 안내를 보여 준다. */
+/** 벤토 칸 하나: 내 순위. 로그인하지 않았으면 로그인 안내를 보여 준다. */
 export const MyRankCard = (props: MyRankCardProps) => {
   const { t } = useLanguage();
 
   if (props.status === 'guest') {
     return (
-      <S.Card data-variant="guest">
+      <S.Card>
+        <S.Label>{t.ranking.myRank}</S.Label>
         <S.Message>{t.ranking.loginPrompt}</S.Message>
-        <S.LoginButton
-          type="button"
-          onClick={() => signIn('github', { callbackUrl: '/ranking' })}>
-          {t.ranking.login}
-        </S.LoginButton>
+        <S.Footer>
+          <S.LoginButton
+            type="button"
+            onClick={() => signIn('github', { callbackUrl: '/ranking' })}>
+            <GitHubIcon sx={{ fontSize: 16 }} aria-hidden />
+            {t.ranking.login}
+          </S.LoginButton>
+        </S.Footer>
       </S.Card>
     );
   }
 
   if (props.status === 'unranked') {
     return (
-      <S.Card data-variant="guest">
+      <S.Card>
+        <S.Label>{t.ranking.myRank}</S.Label>
         <S.Message>{t.ranking.notRanked}</S.Message>
-        <RefreshButton
-          availableAt={props.refreshAvailableAt}
-          onRefresh={props.onRefresh}
-        />
+        <S.Footer>
+          <RefreshButton
+            availableAt={props.refreshAvailableAt}
+            onRefresh={props.onRefresh}
+          />
+        </S.Footer>
       </S.Card>
     );
   }
@@ -62,63 +71,82 @@ export const MyRankCard = (props: MyRankCardProps) => {
   } as React.CSSProperties;
 
   return (
-    <S.Card style={style}>
-      <S.Emblem>
-        <Image src={me.tierImage} alt={me.tierName} width={64} height={64} />
-      </S.Emblem>
-      <S.Body>
+    <S.Card style={style} data-ranked="true">
+      <S.Top>
         <S.Label>
           {t.ranking.myRank} · {loginId}
         </S.Label>
-        <S.RankLine>
-          {/* 총 인원이 드러나지 않도록 순위 숫자만 보여 준다. */}
-          <S.Rank>{formatMessage(t.ranking.rank, { rank: me.rank })}</S.Rank>
-        </S.RankLine>
-        <S.Meta>
-          {me.tierText} ·{' '}
+        <S.Emblem>
+          <Image src={me.tierImage} alt={me.tierName} width={48} height={48} />
+        </S.Emblem>
+      </S.Top>
+
+      {/* 총 인원이 드러나지 않도록 순위 숫자만 보여 준다. */}
+      <S.Rank>{formatMessage(t.ranking.rank, { rank: me.rank })}</S.Rank>
+      <S.Meta>
+        <strong>{me.tierText}</strong>
+        <span>
           {me.next
             ? formatMessage(t.ranking.nextTier, {
                 tier: me.next.tierText,
                 remaining: me.next.remaining.toLocaleString(),
               })
             : t.ranking.topTier}
-        </S.Meta>
-      </S.Body>
-      <S.Action>
+        </span>
+      </S.Meta>
+
+      <S.Footer>
         <RefreshButton
           availableAt={props.refreshAvailableAt}
           onRefresh={props.onRefresh}
         />
-      </S.Action>
+      </S.Footer>
     </S.Card>
   );
 };
 
 const S = {
-  Card: styled.section`
-    --accent: rgba(255, 255, 255, 0.3);
+  Card: styled(SpotlightCard)`
+    --accent: rgba(255, 255, 255, 0.4);
 
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 18px;
-    padding: 20px 22px;
-    border-radius: 20px;
-    border: 1px solid
-      color-mix(in srgb, var(--accent) 40%, rgba(255, 255, 255, 0.06));
-    background: linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--accent) 14%, transparent),
-        transparent 60%
-      ),
-      rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    min-height: 220px;
+    padding: 22px 24px;
+    border-radius: 24px;
 
-    &[data-variant='guest'] {
-      justify-content: space-between;
-      flex-wrap: wrap;
+    &[data-ranked='true'] {
+      background: radial-gradient(
+          80% 70% at 100% 0%,
+          color-mix(in srgb, var(--accent) 16%, transparent),
+          transparent 70%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.015)
+        );
     }
+  `,
+
+  Top: styled.div`
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  `,
+
+  Label: styled.span`
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: ${Color.TextSecondary};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   `,
 
   Emblem: styled.div`
@@ -133,58 +161,50 @@ const S = {
     }
   `,
 
-  // 좁은 화면에서는 버튼이 아래 줄로 내려간다.
-  Action: styled.div`
-    margin-left: auto;
-
-    @media (max-width: 520px) {
-      flex-basis: 100%;
-      margin-left: 82px;
-    }
+  Rank: styled.strong`
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, ${Color.TextLight} 30%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   `,
 
-  Body: styled.div`
+  Meta: styled.div`
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  `,
-
-  Label: styled.span`
-    font-size: 12px;
-    font-weight: 600;
-    color: ${Color.TextSecondary};
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  `,
-
-  RankLine: styled.div`
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 10px;
-  `,
-
-  Rank: styled.strong`
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: ${Color.TextLight};
-  `,
-
-  Meta: styled.span`
+    gap: 2px;
     font-size: 13px;
     color: ${Color.Gray100};
+
+    strong {
+      font-size: 15px;
+      font-weight: 700;
+      color: ${Color.TextLight};
+    }
   `,
 
   Message: styled.p`
     font-size: 15px;
+    line-height: 1.5;
     color: ${Color.Gray100};
   `,
 
+  // 버튼은 칸 맨 아래에 붙인다.
+  Footer: styled.div`
+    margin-top: auto;
+    padding-top: 6px;
+  `,
+
   LoginButton: styled.button`
-    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 18px;
     font-size: 14px;
     font-weight: 600;
     color: #fff;
