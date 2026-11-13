@@ -6,6 +6,7 @@ import { keyframes } from '@emotion/react';
 /**
  * 마이페이지·공지사항 배경: 천천히 떠다니는 흐린 빛 덩어리(오로라) + 가장자리로 사라지는 점 격자.
  * 카드들이 반투명 유리(backdrop-filter)라 뒤에서 은은하게 비친다.
+ * 성능: 흐림 필터(filter: blur) 대신 가장자리가 투명해지는 원형 그라데이션으로 부드럽게 만든다.
  * 움직임 줄이기 설정을 켠 사용자에게는 멈춰 있는 배경만 보여 준다.
  */
 export const AuroraBackdrop = () => (
@@ -62,7 +63,6 @@ const S = {
     width: 46vmax;
     height: 46vmax;
     border-radius: 50%;
-    filter: blur(90px);
     opacity: var(--opacity-max);
     will-change: transform, opacity;
     animation:
@@ -72,13 +72,13 @@ const S = {
     &[data-tone='blue'] {
       top: -16vmax;
       left: -10vmax;
-      background: radial-gradient(circle, #0071e3 0%, transparent 70%);
+      background: radial-gradient(closest-side, rgba(0, 113, 227, 0.9), rgba(0, 113, 227, 0.35) 45%, transparent);
     }
 
     &[data-tone='violet'] {
       top: 10vh;
       right: -18vmax;
-      background: radial-gradient(circle, #5e5ce6 0%, transparent 70%);
+      background: radial-gradient(closest-side, rgba(94, 92, 230, 0.9), rgba(94, 92, 230, 0.35) 45%, transparent);
       animation:
         ${driftB} 22s ease-in-out infinite alternate,
         ${breathe} 8s ease-in-out -3s infinite alternate;
@@ -90,7 +90,7 @@ const S = {
 
       bottom: -22vmax;
       left: 20vw;
-      background: radial-gradient(circle, #30b0c7 0%, transparent 70%);
+      background: radial-gradient(closest-side, rgba(48, 176, 199, 0.9), rgba(48, 176, 199, 0.35) 45%, transparent);
       animation:
         ${driftC} 26s ease-in-out infinite alternate,
         ${breathe} 7s ease-in-out -5s infinite alternate;
