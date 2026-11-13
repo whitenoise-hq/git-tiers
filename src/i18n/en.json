@@ -109,11 +109,18 @@
   },
   "noticeData": [
     {
+      "id": 5,
+      "title": "Auto-Update, Account Deletion, and Security Improvements",
+      "content": "Your README tier badge now updates automatically.\n\nWhat's new:\n- Automatic badge updates (your contributions are reflected without visiting My Page)\n- Badge settings are saved automatically (the Save button has been removed)\n- Account deletion (available from your profile on My Page; your data is deleted immediately)\n- New Privacy Policy page\n\nSecurity improvements:\n- Contributions are now fetched on the server, so tiers can no longer be manipulated.\n- The database can now be accessed only from our servers.\n\nContribution counts now match the number shown on your GitHub profile, so some users may see a slightly different count.\nBadges already in your README keep working as they are.",
+      "date": "2026.11.13",
+      "isNew": true
+    },
+    {
       "id": 4,
       "title": "Dark Theme Applied",
       "content": "Dark theme has been applied to the Notice and My Page.\n\nChanges:\n- Notice page dark theme applied\n- My Page profile card dark theme applied\n- Tier creation area dark theme applied\n- Tier controller (type/text/background settings) dark theme applied\n- Color picker dark theme applied\n\nThe entire page now has a unified dark theme for a cleaner look.",
       "date": "2026.05.22",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": 3,
