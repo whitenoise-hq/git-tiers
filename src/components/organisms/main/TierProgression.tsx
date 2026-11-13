@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styled from '@emotion/styled';
 
 import { TIERS } from '@/constants/tiers';
+import { TIER_ACCENTS } from '@/constants/tierAccents';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 
@@ -56,7 +57,7 @@ export const TierProgression = () => {
 
   return (
     <S.Section ref={sectionRef}>
-      <S.Sticky>
+      <S.Sticky style={{ '--accent': TIER_ACCENTS[activeTier.name] } as React.CSSProperties}>
         <S.Label>{t.tierProgression.label}</S.Label>
         <S.Title>{t.tierProgression.title}</S.Title>
 
@@ -152,14 +153,18 @@ const S = {
     width: 500px;
     height: 400px;
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(0, 113, 227, 0.25), transparent 70%);
+    /* 지금 티어 색으로 퍼지는 빛. 흐림 필터 대신 마스크로 부드럽게(성능) */
+    background-color: var(--accent);
+    opacity: 0.28;
+    mask-image: radial-gradient(closest-side, #000, transparent);
+    -webkit-mask-image: radial-gradient(closest-side, #000, transparent);
+    transition: background-color 0.6s ease;
     pointer-events: none;
-    filter: blur(60px);
   `,
 
   TierIcon: styled.div`
-    filter: drop-shadow(0 0 60px rgba(0, 113, 227, 0.25));
-    transition: filter 0.4s ease;
+    filter: drop-shadow(0 0 48px color-mix(in srgb, var(--accent) 45%, transparent));
+    transition: filter 0.6s ease;
 
     img {
       display: block;
@@ -184,8 +189,8 @@ const S = {
   TierLabel: styled.span`
     font-size: 20px;
     font-weight: 600;
-    color: ${Color.Link};
-    transition: color 0.3s ease;
+    color: var(--accent);
+    transition: color 0.6s ease;
   `,
 
   Counter: styled.span`
@@ -220,7 +225,8 @@ const S = {
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(90deg, #48484a, ${Color.Link});
+    background: linear-gradient(90deg, #48484a, var(--accent));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent);
     border-radius: 2px;
     will-change: width;
   `,
@@ -244,8 +250,8 @@ const S = {
     background: rgba(255, 255, 255, 0.15);
 
     &[data-active='true'] {
-      background: ${Color.Link};
-      box-shadow: 0 0 8px rgba(0, 113, 227, 0.5);
+      background: var(--accent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
     }
   `,
 

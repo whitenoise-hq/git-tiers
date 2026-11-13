@@ -2,13 +2,27 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
+import type { SvgIconComponent } from '@mui/icons-material';
+import CommitIcon from '@mui/icons-material/Commit';
+import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
+
+import { SpotlightCard } from '@/components/common/SpotlightCard';
 
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
 
-const ICONS = ['⟐', '⊕', '⇆', '✓', '❖'] as const;
+const ICONS: readonly SvgIconComponent[] = [
+  CommitIcon,
+  BugReportOutlinedIcon,
+  CallMergeIcon,
+  RateReviewOutlinedIcon,
+  MenuBookOutlinedIcon,
+];
 const KEYS = [
   'commits',
   'issues',
@@ -54,23 +68,31 @@ const WhatCountsItem = ({
   item,
   index,
 }: {
-  readonly item: { icon: string; title: string; description: string };
+  readonly item: { icon: SvgIconComponent; title: string; description: string };
   readonly index: number;
 }) => {
   const [fadeRef, fadeVisible] = useScrollFadeIn({ delay: index * 100 });
+  const Icon = item.icon;
 
   return (
-    <S.Card ref={fadeRef} data-visible={fadeVisible}>
-      <S.CardIcon>{item.icon}</S.CardIcon>
-      <S.CardTitle>{item.title}</S.CardTitle>
-      <S.CardDesc>{item.description}</S.CardDesc>
-    </S.Card>
+    <S.Item ref={fadeRef} data-visible={fadeVisible}>
+      <S.Card>
+        <S.CardIcon>
+          <Icon sx={{ fontSize: 24 }} />
+        </S.CardIcon>
+        <S.CardTitle>{item.title}</S.CardTitle>
+        <S.CardDesc>{item.description}</S.CardDesc>
+      </S.Card>
+    </S.Item>
   );
 };
 
 const S = {
   Section: styled.section`
-    background: #0e0e0e;
+    /* 위아래 섹션과 이어지도록 가운데만 아주 옅게 밝힌다 */
+    background:
+      radial-gradient(60% 40% at 50% 50%, rgba(0, 113, 227, 0.08), transparent 70%),
+      #0a0a0a;
     padding: 280px 24px;
     text-align: center;
   `,
@@ -129,40 +151,31 @@ const S = {
     }
   `,
 
-  Card: styled.div`
+  // 스크롤 등장 효과는 바깥(Item), 마우스 빛·호버는 안쪽(Card)에 둬서 transform 이 겹치지 않게 한다.
+  Item: styled.div`
+    ${fadeInStyle}
+  `,
+
+  Card: styled(SpotlightCard)`
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    height: 100%;
     padding: 32px 16px;
-    background: ${Color.Black};
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 20px;
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
-    ${fadeInStyle}
-
-    &:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      border-top-color: rgba(255, 255, 255, 0.28);
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transform: translateY(-4px);
-    }
   `,
 
   CardIcon: styled.span`
-    font-size: 32px;
-    color: ${Color.Link};
-    line-height: 1;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+    color: #64acff;
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.28), rgba(94, 92, 230, 0.18));
+    border: 1px solid rgba(100, 172, 255, 0.25);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 113, 227, 0.18);
   `,
 
   CardTitle: styled.h3`

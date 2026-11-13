@@ -6,6 +6,8 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 
+import { SpotlightCard } from '@/components/common/SpotlightCard';
+
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
@@ -46,7 +48,10 @@ export const HowToCont = () => {
         <S.Grid ref={gridRef} data-visible={gridVisible}>
           {steps.map((step) => (
             <S.Card key={step.step}>
-              <S.StepBadge>STEP {step.step}</S.StepBadge>
+              <S.StepHead>
+                <S.StepNumber>{String(step.step).padStart(2, '0')}</S.StepNumber>
+                <S.StepBadge>STEP</S.StepBadge>
+              </S.StepHead>
               <S.StepTitle>{step.title}</S.StepTitle>
               <S.StepDesc>{step.description}</S.StepDesc>
             </S.Card>
@@ -125,32 +130,36 @@ const S = {
     }
   `,
 
-  Card: styled.div`
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 20px;
-    padding: 36px 24px;
+  Card: styled(SpotlightCard)`
+    padding: 32px 24px 36px;
     text-align: left;
-    transition:
-      background 0.3s ease,
-      transform 0.3s ease;
+  `,
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-4px);
-    }
+  StepHead: styled.div`
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 20px;
+  `,
+
+  // 큰 그라데이션 숫자(01, 02 …)
+  StepNumber: styled.span`
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, #a8d8ff 0%, ${Color.Link} 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   `,
 
   StepBadge: styled.span`
-    display: inline-block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    color: ${Color.Link};
-    background: rgba(0, 113, 227, 0.12);
-    padding: 4px 12px;
-    border-radius: 980px;
-    letter-spacing: 0.04em;
-    margin-bottom: 16px;
+    letter-spacing: 0.14em;
+    color: ${Color.TextSecondary};
   `,
 
   StepTitle: styled.h3`

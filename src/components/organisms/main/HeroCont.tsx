@@ -1,17 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
-import { TIERS } from '@/constants/tiers';
+import { HeroTierCard } from '@/components/organisms/main/HeroTierCard';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
-
-const ChallengerIcon = TIERS[8].src;
 
 export const HeroCont = () => {
   const { data: session } = useSession();
@@ -39,7 +36,12 @@ export const HeroCont = () => {
 
   return (
     <S.Hero ref={heroRef}>
-      <S.HeroContent style={{ transform: `scale(${heroScale})`, opacity: heroOpacity, filter: `blur(${heroBlur}px)` }}>
+      <S.HeroContent
+        style={{
+          transform: `scale(${heroScale})`,
+          opacity: heroOpacity,
+          filter: `blur(${heroBlur}px)`,
+        }}>
         <S.HeroInner>
           <S.Eyebrow>Git TIERS</S.Eyebrow>
           <S.Title>
@@ -58,7 +60,9 @@ export const HeroCont = () => {
                 {t.hero.myPage}
               </S.CTAPrimary>
             ) : (
-              <S.CTAPrimary onClick={handleGitLogin}>{t.hero.getStarted}</S.CTAPrimary>
+              <S.CTAPrimary onClick={handleGitLogin}>
+                {t.hero.getStarted}
+              </S.CTAPrimary>
             )}
             <S.CTASecondary
               href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
@@ -68,18 +72,7 @@ export const HeroCont = () => {
             </S.CTASecondary>
           </S.CTAGroup>
         </S.HeroInner>
-        <S.TierShowcase>
-          <S.CenterTier>
-            <Image src={ChallengerIcon} alt="Challenger" width={100} height={100} />
-          </S.CenterTier>
-          <S.OrbitRing>
-            {TIERS.slice(0, 8).map((tier, i) => (
-              <S.OrbitIcon key={tier.name} style={{ '--i': i } as React.CSSProperties}>
-                <Image src={tier.src} alt={tier.name} width={48} height={48} />
-              </S.OrbitIcon>
-            ))}
-          </S.OrbitRing>
-        </S.TierShowcase>
+        <HeroTierCard />
       </S.HeroContent>
     </S.Hero>
   );
@@ -93,11 +86,6 @@ const fadeInUp = keyframes`
 const shimmer = keyframes`
   0%   { background-position: 200% center; }
   100% { background-position: -200% center; }
-`;
-
-const orbit = keyframes`
-  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
-  to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
 `;
 
 const S = {
@@ -215,84 +203,6 @@ const S = {
 
     &:hover {
       text-decoration: underline;
-    }
-  `,
-
-  TierShowcase: styled.div`
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin-top: 60px;
-    animation: ${fadeInUp} 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
-
-    @media (max-width: 768px) {
-      width: 240px;
-      height: 240px;
-    }
-  `,
-
-  CenterTier: styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    filter: drop-shadow(0 0 40px rgba(0, 113, 227, 0.3));
-
-    img {
-      display: block;
-      object-fit: contain;
-    }
-
-    @media (max-width: 768px) {
-      img {
-        width: 72px !important;
-        height: 72px !important;
-      }
-    }
-  `,
-
-  OrbitRing: styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-  `,
-
-  OrbitIcon: styled.div`
-    position: absolute;
-    top: -24px;
-    left: -24px;
-    animation: ${orbit} 30s linear infinite;
-    animation-delay: calc(var(--i) * -3.75s);
-    opacity: 0.5;
-    transition: opacity 0.3s;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    img {
-      display: block;
-      object-fit: contain;
-    }
-
-    @media (max-width: 768px) {
-      top: -18px;
-      left: -18px;
-
-      animation-name: ${keyframes`
-        from { transform: rotate(0deg) translateX(90px) rotate(0deg); }
-        to   { transform: rotate(360deg) translateX(90px) rotate(-360deg); }
-      `};
-
-      img {
-        width: 36px !important;
-        height: 36px !important;
-      }
     }
   `,
 };
