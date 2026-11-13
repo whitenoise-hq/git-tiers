@@ -4,11 +4,11 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
 /**
- * 마이페이지 배경: 천천히 떠다니는 흐린 빛 덩어리(오로라) + 가장자리로 사라지는 점 격자.
+ * 마이페이지·공지사항 배경: 천천히 떠다니는 흐린 빛 덩어리(오로라) + 가장자리로 사라지는 점 격자.
  * 카드들이 반투명 유리(backdrop-filter)라 뒤에서 은은하게 비친다.
  * 움직임 줄이기 설정을 켠 사용자에게는 멈춰 있는 배경만 보여 준다.
  */
-export const MyBackdrop = () => (
+export const AuroraBackdrop = () => (
   <S.Layer aria-hidden>
     <S.Blob data-tone="blue" />
     <S.Blob data-tone="violet" />

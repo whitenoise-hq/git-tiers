@@ -12,7 +12,7 @@ import {
   MyAccountProvider,
   useMyAccount,
 } from '@/components/pages/my/MyAccountContext';
-import { MyBackdrop } from '@/components/pages/my/MyBackdrop';
+import { AuroraBackdrop } from '@/components/common/AuroraBackdrop';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
@@ -49,7 +49,7 @@ const MyPageContent = () => {
 
   return (
     <>
-      <MyBackdrop />
+      <AuroraBackdrop />
       <S.Wrapper>
         <S.PageLabel>{t.myPage.label}</S.PageLabel>
         <S.PageTitle>{t.myPage.title}</S.PageTitle>
