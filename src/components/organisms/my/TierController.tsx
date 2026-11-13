@@ -93,17 +93,16 @@ export const TierController = ({
 
       <S.Group>
         <S.GroupLabel>{t.tierController.background}</S.GroupLabel>
-        <S.BgRow>
-          <S.Segment>
-            {bgOptions.map((opt) => (
-              <S.SegmentButton
-                key={opt.value}
-                data-active={isMode === opt.value}
-                onClick={() => handlePresetClick(opt.value)}>
-                {opt.label}
-              </S.SegmentButton>
-            ))}
-          </S.Segment>
+        {/* Custom 도 같은 칸에 넣어 프리셋 버튼들과 너비를 똑같이 맞춘다. */}
+        <S.Segment>
+          {bgOptions.map((opt) => (
+            <S.SegmentButton
+              key={opt.value}
+              data-active={isMode === opt.value}
+              onClick={() => handlePresetClick(opt.value)}>
+              {opt.label}
+            </S.SegmentButton>
+          ))}
           <S.CustomButton
             data-active={isCustomColor}
             onClick={handleCustomClick}>
@@ -112,7 +111,7 @@ export const TierController = ({
             />
             Custom
           </S.CustomButton>
-        </S.BgRow>
+        </S.Segment>
         {pickerOpen && (
           <S.PickerWrap>
             <HexColorPicker
@@ -151,12 +150,6 @@ const S = {
     text-align: left;
   `,
 
-  BgRow: styled.div`
-    display: flex;
-    gap: 6px;
-    align-items: stretch;
-  `,
-
   Segment: styled.div`
     display: flex;
     flex: 1;
@@ -192,18 +185,19 @@ const S = {
   `,
 
   CustomButton: styled.button`
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 14px;
-    flex-shrink: 0;
+    gap: 5px;
+    padding: 8px 12px;
+    min-width: 0;
     font-size: 13px;
     font-weight: 500;
     color: ${Color.Gray300};
-    background: rgba(255, 255, 255, 0.06);
+    background: transparent;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
 
@@ -216,13 +210,13 @@ const S = {
 
     &:hover:not([data-active='true']) {
       color: ${Color.TextLight};
-      background: rgba(255, 255, 255, 0.08);
     }
   `,
 
   ColorDot: styled.span`
-    width: 18px;
-    height: 18px;
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.15);
     transition: background 0.15s ease;
