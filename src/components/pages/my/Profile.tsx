@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import styled from '@emotion/styled';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { WithdrawDialog } from '@/components/organisms/my/WithdrawDialog';
+import { useMyAccount } from '@/components/pages/my/MyAccountContext';
 import Avatar from '@mui/material/Avatar';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 export const Profile = () => {
-  const { data: session } = useSession();
+  const { session, isPreview } = useMyAccount();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -80,14 +81,14 @@ export const Profile = () => {
             <S.SecondaryButton onClick={handleGitLogout}>
               {t.myPage.logout}
             </S.SecondaryButton>
-            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)}>
+            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)} disabled={isPreview}>
               {t.myPage.withdraw}
             </S.DangerButton>
           </S.Actions>
         </S.DetailInner>
       </S.Expandable>
 
-      {session?.loginId && (
+      {session?.loginId && !isPreview && (
         <WithdrawDialog
           open={withdrawOpen}
           loginId={session.loginId}
@@ -331,9 +332,14 @@ const S = {
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: rgba(249, 68, 57, 0.16);
       border-color: ${Color.Red100};
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
   `,
 };

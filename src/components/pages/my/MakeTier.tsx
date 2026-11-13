@@ -1,5 +1,11 @@
-import { signOut, useSession } from 'next-auth/react';
-import React, { Dispatch, SetStateAction, useEffect, useEffectEvent, useState } from 'react';
+import { signOut } from 'next-auth/react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useEffectEvent,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
@@ -9,6 +15,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useMyAccount } from '@/components/pages/my/MyAccountContext';
 import { CardType, DEFAULT_IMAGE_OPTIONS, TextVisibility } from '@/types/api';
 import { Color } from '@/styles/color';
 
@@ -18,13 +25,16 @@ const AUTO_SAVE_DELAY_MS = 700;
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export const MakeTier = () => {
-  const { data: session } = useSession();
+  const { loginId, isPreview, previewData } = useMyAccount();
   const { t } = useLanguage();
-  const loginId = session?.loginId;
-  const [contributeCount, setContributeCount] = useState<number>(0);
-  const [isCard, setIsCard] = useState<CardType>(DEFAULT_IMAGE_OPTIONS.isCard);
-  const [isText, setIsText] = useState<TextVisibility>(DEFAULT_IMAGE_OPTIONS.isText);
-  const [isMode, setIsMode] = useState<string>(DEFAULT_IMAGE_OPTIONS.isMode);
+  // 개발 미리보기는 불러온 값으로 시작한다(페이지가 데이터를 다 받은 뒤에 이 컴포넌트를 그린다).
+  const initialOptions = previewData?.imageSettings ?? DEFAULT_IMAGE_OPTIONS;
+  const [contributeCount, setContributeCount] = useState<number>(
+    previewData?.contributions ?? 0
+  );
+  const [isCard, setIsCard] = useState<CardType>(initialOptions.isCard);
+  const [isText, setIsText] = useState<TextVisibility>(initialOptions.isText);
+  const [isMode, setIsMode] = useState<string>(initialOptions.isMode);
   const [loading, setLoading] = useState<boolean>(true);
   // 사용자가 옵션을 바꾼 횟수. 0 이면(불러오기만 한 상태) 저장하지 않는다.
   const [editVersion, setEditVersion] = useState<number>(0);
@@ -34,8 +44,9 @@ export const MakeTier = () => {
   const tierImage = getTierImage(contributeCount);
   const tierText = getTierText(contributeCount);
 
-  // 개발 모드에서 로그인 없이 /my 를 열면 로딩 화면 없이 기본값으로 보여준다.
-  const isDevPreview = process.env.NODE_ENV === 'development' && !loginId;
+  // 개발 모드에서 로그인 없이 /my 를 열거나 미리보기(?preview=아이디)로 열면 로딩 화면 없이 보여준다.
+  const isDevPreview =
+    process.env.NODE_ENV === 'development' && (!loginId || isPreview);
 
   // effect 의존성에 t(언어)를 넣지 않기 위해 Effect Event 로 분리한다.
   const handleLoadError = useEffectEvent(async () => {
@@ -58,14 +69,14 @@ export const MakeTier = () => {
     if (!loginId) return;
     const userImageUrl = `${window.location.origin}/api/tier/${loginId}`;
     navigator.clipboard.writeText(
-      `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
+      `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`
     );
     toast.success(t.toast.tagCopied);
   };
 
   // 기여 수 조회(배지와 같은 값)
   useEffect(() => {
-    if (!loginId) return undefined;
+    if (!loginId || isPreview) return undefined;
 
     let cancelled = false;
     let spinnerTimer: ReturnType<typeof setTimeout> | undefined;
@@ -92,11 +103,11 @@ export const MakeTier = () => {
       cancelled = true;
       clearTimeout(spinnerTimer);
     };
-  }, [loginId]);
+  }, [loginId, isPreview]);
 
   // 저장된 표시 옵션 불러오기
   useEffect(() => {
-    if (!loginId) return undefined;
+    if (!loginId || isPreview) return undefined;
 
     let cancelled = false;
 
@@ -122,11 +133,12 @@ export const MakeTier = () => {
     return () => {
       cancelled = true;
     };
-  }, [loginId]);
+  }, [loginId, isPreview]);
 
   // 옵션을 바꾸면 잠시 뒤 자동 저장한다. README 배지에도 이 옵션이 쓰인다.
   useEffect(() => {
-    if (!loginId || editVersion === 0) return undefined;
+    // 개발 미리보기는 다른 사람의 설정이므로 저장하지 않는다.
+    if (!loginId || isPreview || editVersion === 0) return undefined;
 
     let cancelled = false;
     const timer = setTimeout(async () => {
@@ -151,62 +163,63 @@ export const MakeTier = () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [loginId, editVersion, isCard, isText, isMode]);
+  }, [loginId, isPreview, editVersion, isCard, isText, isMode]);
 
-  const saveStatusText = {
-    idle: t.myPage.autoSaveHint,
-    saving: t.myPage.saving,
-    saved: t.myPage.saved,
-    error: t.myPage.saveError,
-  }[saveStatus];
+  const saveStatusText = isPreview
+    ? '개발 미리보기 — 바꾼 옵션은 저장되지 않습니다.'
+    : {
+        idle: t.myPage.autoSaveHint,
+        saving: t.myPage.saving,
+        saved: t.myPage.saved,
+        error: t.myPage.saveError,
+      }[saveStatus];
 
   return (
     <>
-    <S.Card>
-      <S.ContribLabel>{t.myPage.totalContributions}</S.ContribLabel>
+      <S.Card>
+        <S.ContribLabel>{t.myPage.totalContributions}</S.ContribLabel>
 
-      <S.TierWrap>
-        <TierImage
-          isMode={isMode}
-          isCard={isCard}
-          isText={isText}
-          tierImage={tierImage}
-          tierText={tierText}
-          contributeCount={contributeCount}
-        />
-        <TierController
-          isCard={isCard}
-          isText={isText}
-          isMode={isMode}
-          setIsCard={editable(setIsCard)}
-          setIsText={editable(setIsText)}
-          setIsMode={editable(setIsMode)}
-        />
-      </S.TierWrap>
+        <S.TierWrap>
+          <TierImage
+            isMode={isMode}
+            isCard={isCard}
+            isText={isText}
+            tierImage={tierImage}
+            tierText={tierText}
+            contributeCount={contributeCount}
+          />
+          <TierController
+            isCard={isCard}
+            isText={isText}
+            isMode={isMode}
+            setIsCard={editable(setIsCard)}
+            setIsText={editable(setIsText)}
+            setIsMode={editable(setIsMode)}
+          />
+        </S.TierWrap>
 
-      <S.SaveStatus role="status" aria-live="polite" data-status={saveStatus}>
-        {saveStatusText}
-      </S.SaveStatus>
+        <S.SaveStatus role="status" aria-live="polite" data-status={saveStatus}>
+          {saveStatusText}
+        </S.SaveStatus>
 
-      <S.Actions>
-        <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
-          {t.myPage.copyTag}
-        </S.PrimaryButton>
-      </S.Actions>
+        <S.Actions>
+          <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
+            {t.myPage.copyTag}
+          </S.PrimaryButton>
+        </S.Actions>
 
-      <S.AutoUpdateNote>{t.myPage.autoUpdateNote}</S.AutoUpdateNote>
+        <S.AutoUpdateNote>{t.myPage.autoUpdateNote}</S.AutoUpdateNote>
 
-      <S.TableLink>
-        <Link
-          href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
-          rel="noopener noreferrer"
-          target="_blank">
-          {t.myPage.viewTierTable} &rarr;
-        </Link>
-      </S.TableLink>
-
-    </S.Card>
-    <LoadingSpinner loading={loading && !isDevPreview} />
+        <S.TableLink>
+          <Link
+            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
+            rel="noopener noreferrer"
+            target="_blank">
+            {t.myPage.viewTierTable} &rarr;
+          </Link>
+        </S.TableLink>
+      </S.Card>
+      <LoadingSpinner loading={loading && !isDevPreview} />
     </>
   );
 };
@@ -219,7 +232,9 @@ const S = {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 32px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
     text-align: center;
 
     @media (max-width: 768px) {
