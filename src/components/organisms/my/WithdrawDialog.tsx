@@ -115,7 +115,14 @@ export const WithdrawDialog = ({ open, loginId, onClose }: WithdrawDialogProps) 
 
 const S = {
   Dialog: styled.dialog`
+    /* 전역 리셋(* { margin: 0 })이 기본 가운데 정렬(margin: auto)을 지우므로 다시 지정한다. */
+    position: fixed;
+    inset: 0;
+    margin: auto;
     width: min(440px, calc(100vw - 32px));
+    height: fit-content;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
