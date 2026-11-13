@@ -74,6 +74,13 @@
     "autoSaveHint": "Changes are saved automatically.",
     "autoUpdateNote": "Your README badge updates its contribution count automatically — no need to come back. (Updates may take a few hours.)",
     "copyTag": "Copy Tag",
+    "withdraw": "Delete account",
+    "withdrawTitle": "Delete your account?",
+    "withdrawPoints": ["Your saved data (GitHub username, badge settings, contribution records) is deleted immediately and cannot be recovered.", "Badges in your README will show “Sign in to Git TIERS” instead.", "Git TIERS will be disconnected from your GitHub account. Signing in again creates a new account."],
+    "withdrawConfirmLabel": "Type your GitHub username to confirm",
+    "withdrawConfirm": "Delete account",
+    "withdrawing": "Deleting...",
+    "cancel": "Cancel",
     "viewTierTable": "View Tier Table"
   },
   "tierController": {
@@ -95,7 +102,10 @@
     "loginFirst": "Please log in first.",
     "imageTooLarge": "Image is too large. Please try with simpler settings.",
     "saveFailed": "Couldn't save your settings. Please try again later.",
-    "tagCopied": "Image tag copied to clipboard!"
+    "tagCopied": "Image tag copied to clipboard!",
+    "withdrawn": "Your account has been deleted. Thank you for using Git TIERS.",
+    "withdrawFailed": "Couldn't delete your account. Please try again later.",
+    "withdrawRevokeManual": "We couldn't disconnect GitHub automatically. You can revoke Git TIERS in GitHub Settings > Applications."
   },
   "noticeData": [
     {

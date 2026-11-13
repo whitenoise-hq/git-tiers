@@ -74,6 +74,13 @@
     "autoSaveHint": "옵션을 바꾸면 자동으로 저장됩니다.",
     "autoUpdateNote": "README에 넣은 뱃지는 기여 수가 자동으로 갱신되니 다시 들어오지 않아도 됩니다. (반영까지 몇 시간 걸릴 수 있어요)",
     "copyTag": "태그 복사",
+    "withdraw": "회원 탈퇴",
+    "withdrawTitle": "정말 탈퇴하시겠어요?",
+    "withdrawPoints": ["저장된 정보(GitHub 아이디, 뱃지 설정, 기여 수 기록)가 바로 삭제되며 되돌릴 수 없습니다.", "README에 넣은 뱃지는 「Sign in to Git TIERS」 안내로 바뀝니다.", "GitHub 계정과 Git TIERS의 연결도 해제됩니다. 다시 로그인하면 새로 가입됩니다."],
+    "withdrawConfirmLabel": "확인을 위해 GitHub 아이디를 입력하세요",
+    "withdrawConfirm": "탈퇴하기",
+    "withdrawing": "탈퇴 중...",
+    "cancel": "취소",
     "viewTierTable": "티어 표 보기"
   },
   "tierController": {
@@ -95,7 +102,10 @@
     "loginFirst": "먼저 로그인해주세요.",
     "imageTooLarge": "이미지가 너무 큽니다. 더 간단한 설정으로 시도해주세요.",
     "saveFailed": "설정을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
-    "tagCopied": "이미지 태그가 클립보드에 복사되었습니다!"
+    "tagCopied": "이미지 태그가 클립보드에 복사되었습니다!",
+    "withdrawn": "탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.",
+    "withdrawFailed": "탈퇴하지 못했습니다. 잠시 후 다시 시도해주세요.",
+    "withdrawRevokeManual": "GitHub 연결은 해제하지 못했습니다. GitHub 설정 > Applications에서 Git TIERS를 직접 해제할 수 있습니다."
   },
   "noticeData": [
     {

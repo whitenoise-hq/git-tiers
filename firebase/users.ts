@@ -146,3 +146,33 @@ export const saveImageSettings = async ({
     { merge: true },
   );
 };
+
+/**
+ * 회원 탈퇴. 숫자 ID 문서와, 남아 있을 수 있는 예전 문서(문서 ID = 아이디)를 지운다.
+ * @returns 지운 문서 ID 목록
+ */
+export const deleteUserData = async ({
+  githubId,
+  login,
+}: {
+  githubId: string;
+  login: string;
+}): Promise<string[]> => {
+  const users = usersCollection();
+  const [current, legacyCandidate] = await Promise.all([
+    users.doc(githubId).get(),
+    users.doc(login).get(),
+  ]);
+
+  const targets = [
+    current.exists ? current : null,
+    legacyCandidate.exists &&
+    legacyCandidate.id !== githubId &&
+    isLegacyUser(legacyCandidate.data() as UserData | undefined)
+      ? legacyCandidate
+      : null,
+  ].filter((doc): doc is NonNullable<typeof doc> => doc !== null);
+
+  await Promise.all(targets.map((doc) => doc.ref.delete()));
+  return targets.map((doc) => doc.id);
+};

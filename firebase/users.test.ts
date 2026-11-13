@@ -40,9 +40,8 @@ vi.mock('./admin', () => ({
   }),
 }));
 
-const { findUserByLogin, upsertUserOnLogin, saveImageSettings, getImageSettings } = await import(
-  './users'
-);
+const { findUserByLogin, upsertUserOnLogin, saveImageSettings, getImageSettings, deleteUserData } =
+  await import('./users');
 
 const settings = { isCard: 'card', isText: 'exist', isMode: 'dark' } as const;
 
@@ -141,5 +140,40 @@ describe('users 저장소', () => {
       login_lower: 'answer',
     });
     expect(store.get('42')?.imageSettings).toEqual(settings);
+  });
+});
+
+describe('deleteUserData (회원 탈퇴)', () => {
+  beforeEach(() => store.clear());
+
+  it('내 숫자 ID 문서를 지운다', async () => {
+    await upsertUserOnLogin({ githubId: '583231', login: 'octocat' });
+    expect(await deleteUserData({ githubId: '583231', login: 'octocat' })).toEqual(['583231']);
+    expect(store.has('583231')).toBe(false);
+    expect(await findUserByLogin('octocat')).toBeNull();
+  });
+
+  it('남아 있는 예전 문서(문서 ID = 아이디)도 함께 지운다', async () => {
+    store.set('583231', { github_id: 583231, login_id: 'octocat', login_lower: 'octocat' });
+    store.set('octocat', { login_id: 'octocat', imageSettings: settings });
+
+    const deleted = await deleteUserData({ githubId: '583231', login: 'octocat' });
+
+    expect(deleted.sort()).toEqual(['583231', 'octocat']);
+    expect(store.size).toBe(0);
+  });
+
+  it('숫자로만 된 아이디라도 다른 사용자의 숫자 ID 문서는 지우지 않는다', async () => {
+    store.set('999', { github_id: 999, login_id: '12345' });
+    store.set('12345', { github_id: 12345, login_id: 'someone' });
+
+    await deleteUserData({ githubId: '999', login: '12345' });
+
+    expect(store.has('999')).toBe(false);
+    expect(store.has('12345')).toBe(true);
+  });
+
+  it('지울 문서가 없어도 오류 없이 끝난다', async () => {
+    expect(await deleteUserData({ githubId: '1', login: 'ghost' })).toEqual([]);
   });
 });
