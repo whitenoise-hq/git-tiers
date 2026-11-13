@@ -2,8 +2,9 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import toast from 'react-hot-toast';
 
 import { Profile } from '@/components/pages/my/Profile';
@@ -36,6 +37,8 @@ const MyPageContent = () => {
     useMyAccount();
 
   const isDev = process.env.NODE_ENV === 'development';
+  // 티어 카드 데이터가 다 준비되면 섹션들을 함께 보여 준다(그 전에는 스피너만).
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (!isDev && status === 'unauthenticated') {
@@ -97,16 +100,34 @@ const MyPageContent = () => {
         {isPreview && previewLoading ? (
           <LoadingSpinner loading />
         ) : (
-          // 미리보기 대상이 바뀌면 화면 상태를 새로 만든다.
-          <S.Content key={previewData?.profile.loginId ?? 'me'}>
-            <Profile />
-            <MakeTier />
-          </S.Content>
+          <>
+            {/* 미리보기 대상이 바뀌면 화면 상태를 새로 만든다. */}
+            <S.Content
+              key={previewData?.profile.loginId ?? 'me'}
+              data-ready={ready}
+              aria-busy={!ready}>
+              <Profile />
+              <MakeTier onReady={() => setReady(true)} />
+            </S.Content>
+            {/* 섹션은 준비될 때까지 숨겨 두므로 스피너는 섹션 밖에 둔다. */}
+            <LoadingSpinner loading={!ready} />
+          </>
         )}
       </S.Wrapper>
     </>
   );
 };
+
+const riseIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const S = {
   Wrapper: styled.div`
@@ -182,9 +203,29 @@ const S = {
     }
   `,
 
+  // 준비 전에는 숨겨 두고, 준비되면 섹션이 차례로 아래에서 떠오른다.
   Content: styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
+
+    > * {
+      opacity: 0;
+    }
+
+    &[data-ready='true'] > * {
+      animation: ${riseIn} 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    &[data-ready='true'] > *:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &[data-ready='true'] > * {
+        animation: none;
+        opacity: 1;
+      }
+    }
   `,
 };

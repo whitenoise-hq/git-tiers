@@ -18,12 +18,16 @@ import SyncIcon from '@mui/icons-material/Sync';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import { getTierImage, getTierText } from '@/utils/getTier';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useMyAccount } from '@/components/pages/my/MyAccountContext';
-import { CardType, DEFAULT_IMAGE_OPTIONS, ImageOptions, TextVisibility } from '@/types/api';
+import {
+  CardType,
+  DEFAULT_IMAGE_OPTIONS,
+  ImageOptions,
+  TextVisibility,
+} from '@/types/api';
 import { Color } from '@/styles/color';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
@@ -49,9 +53,15 @@ const SAVE_STATUS_ICONS = {
   error: ErrorOutlineIcon,
 } as const;
 
-const TIER_TABLE_URL = 'https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table';
+const TIER_TABLE_URL =
+  'https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table';
 
-export const MakeTier = () => {
+interface MakeTierProps {
+  /** 기여 수·표시 옵션을 다 불러왔을 때(개발 미리보기는 바로) 한 번 호출된다. */
+  readonly onReady?: () => void;
+}
+
+export const MakeTier = ({ onReady }: MakeTierProps) => {
   const { loginId, isPreview, previewData } = useMyAccount();
   const { t } = useLanguage();
   // 개발 미리보기는 불러온 값으로 시작한다(페이지가 데이터를 다 받은 뒤에 이 컴포넌트를 그린다).
@@ -62,7 +72,6 @@ export const MakeTier = () => {
   const [isCard, setIsCard] = useState<CardType>(initialOptions.isCard);
   const [isText, setIsText] = useState<TextVisibility>(initialOptions.isText);
   const [isMode, setIsMode] = useState<string>(initialOptions.isMode);
-  const [loading, setLoading] = useState<boolean>(true);
   // 사용자가 옵션을 바꾼 횟수. 0 이면(불러오기만 한 상태) 저장하지 않는다.
   const [editVersion, setEditVersion] = useState<number>(0);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -79,6 +88,9 @@ export const MakeTier = () => {
   const handleLoadError = useEffectEvent(async () => {
     toast.error(t.toast.error);
     await signOut({ callbackUrl: '/' });
+  });
+  const notifyReady = useEffectEvent(() => {
+    onReady?.();
   });
   const handleSaveError = useEffectEvent(() => {
     toast.error(t.toast.saveFailed);
@@ -100,6 +112,11 @@ export const MakeTier = () => {
     );
     toast.success(t.toast.tagCopied);
   };
+
+  // 불러올 것이 없는 개발 화면(미리보기·로그인 없음)은 바로 준비 완료다.
+  useEffect(() => {
+    if (isDevPreview) notifyReady();
+  }, [isDevPreview]);
 
   // 기여 수(배지와 같은 값)와 저장된 표시 옵션을 함께 불러온 뒤에 스피너를 끈다.
   // 둘 중 하나만 먼저 끝나면 스피너가 사라진 뒤 배경색 등이 바뀌어 보이기 때문이다.
@@ -130,7 +147,10 @@ export const MakeTier = () => {
 
     const load = async () => {
       try {
-        const [count, settings] = await Promise.all([fetchContributions(), fetchSettings()]);
+        const [count, settings] = await Promise.all([
+          fetchContributions(),
+          fetchSettings(),
+        ]);
         if (cancelled) return;
         setContributeCount(count);
         if (settings) {
@@ -144,7 +164,8 @@ export const MakeTier = () => {
       }
       // 스피너가 깜빡이지 않게 잠깐 유지한다.
       spinnerTimer = setTimeout(() => {
-        if (!cancelled) setLoading(false);
+        if (cancelled) return;
+        notifyReady();
       }, 300);
     };
 
@@ -195,7 +216,9 @@ export const MakeTier = () => {
         error: t.myPage.saveError,
       }[saveStatus];
 
-  const SaveStatusIcon = isPreview ? VisibilityOutlinedIcon : SAVE_STATUS_ICONS[saveStatus];
+  const SaveStatusIcon = isPreview
+    ? VisibilityOutlinedIcon
+    : SAVE_STATUS_ICONS[saveStatus];
 
   return (
     <>
@@ -225,14 +248,20 @@ export const MakeTier = () => {
           <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
             {t.myPage.copyTag}
           </S.PrimaryButton>
-          <S.SecondaryButton href={TIER_TABLE_URL} rel="noopener noreferrer" target="_blank">
+          <S.SecondaryButton
+            href={TIER_TABLE_URL}
+            rel="noopener noreferrer"
+            target="_blank">
             {t.myPage.viewTierTable}
             <OpenInNewIcon sx={META_ICON_SX} aria-hidden />
           </S.SecondaryButton>
         </S.Actions>
 
         <S.MetaRow>
-          <S.MetaItem role="status" aria-live="polite" data-status={isPreview ? 'preview' : saveStatus}>
+          <S.MetaItem
+            role="status"
+            aria-live="polite"
+            data-status={isPreview ? 'preview' : saveStatus}>
             <SaveStatusIcon sx={META_ICON_SX} aria-hidden />
             {saveStatusText}
           </S.MetaItem>
@@ -242,7 +271,6 @@ export const MakeTier = () => {
           </S.MetaItem>
         </S.MetaRow>
       </S.Card>
-      <LoadingSpinner loading={loading && !isDevPreview} />
     </>
   );
 };
