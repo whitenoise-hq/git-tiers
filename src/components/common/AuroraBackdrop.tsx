@@ -17,22 +17,32 @@ export const AuroraBackdrop = () => (
   </S.Layer>
 );
 
+// 이동하면서 커졌다 줄었다 한다. 주기가 서로 달라 같은 모양이 반복되지 않는다.
 const driftA = keyframes`
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  50%  { transform: translate3d(12vw, 8vh, 0) scale(1.15); }
-  100% { transform: translate3d(-6vw, 14vh, 0) scale(0.95); }
+  33%  { transform: translate3d(16vw, 10vh, 0) scale(1.3); }
+  66%  { transform: translate3d(6vw, 22vh, 0) scale(0.85); }
+  100% { transform: translate3d(-8vw, 12vh, 0) scale(1.15); }
 `;
 
 const driftB = keyframes`
-  0%   { transform: translate3d(0, 0, 0) scale(1); }
-  50%  { transform: translate3d(-14vw, 6vh, 0) scale(0.9); }
-  100% { transform: translate3d(-4vw, -10vh, 0) scale(1.1); }
+  0%   { transform: translate3d(0, 0, 0) scale(1.1); }
+  33%  { transform: translate3d(-18vw, 8vh, 0) scale(0.8); }
+  66%  { transform: translate3d(-10vw, -12vh, 0) scale(1.25); }
+  100% { transform: translate3d(4vw, -6vh, 0) scale(0.95); }
 `;
 
 const driftC = keyframes`
-  0%   { transform: translate3d(0, 0, 0) scale(0.95); }
-  50%  { transform: translate3d(8vw, -12vh, 0) scale(1.1); }
-  100% { transform: translate3d(-10vw, -4vh, 0) scale(1); }
+  0%   { transform: translate3d(0, 0, 0) scale(0.9); }
+  33%  { transform: translate3d(12vw, -14vh, 0) scale(1.2); }
+  66%  { transform: translate3d(-14vw, -8vh, 0) scale(0.85); }
+  100% { transform: translate3d(-4vw, 4vh, 0) scale(1.1); }
+`;
+
+// 숨 쉬듯 밝아졌다 어두워진다(이동과 다른 주기).
+const breathe = keyframes`
+  from { opacity: var(--opacity-min); }
+  to   { opacity: var(--opacity-max); }
 `;
 
 const S = {
@@ -45,14 +55,19 @@ const S = {
   `,
 
   Blob: styled.div`
+    --opacity-min: 0.22;
+    --opacity-max: 0.4;
+
     position: absolute;
     width: 46vmax;
     height: 46vmax;
     border-radius: 50%;
     filter: blur(90px);
-    opacity: 0.32;
-    will-change: transform;
-    animation: ${driftA} 28s ease-in-out infinite alternate;
+    opacity: var(--opacity-max);
+    will-change: transform, opacity;
+    animation:
+      ${driftA} 18s ease-in-out infinite alternate,
+      ${breathe} 6s ease-in-out infinite alternate;
 
     &[data-tone='blue'] {
       top: -16vmax;
@@ -64,17 +79,21 @@ const S = {
       top: 10vh;
       right: -18vmax;
       background: radial-gradient(circle, #5e5ce6 0%, transparent 70%);
-      animation-name: ${driftB};
-      animation-duration: 34s;
+      animation:
+        ${driftB} 22s ease-in-out infinite alternate,
+        ${breathe} 8s ease-in-out -3s infinite alternate;
     }
 
     &[data-tone='teal'] {
+      --opacity-min: 0.14;
+      --opacity-max: 0.3;
+
       bottom: -22vmax;
       left: 20vw;
       background: radial-gradient(circle, #30b0c7 0%, transparent 70%);
-      opacity: 0.22;
-      animation-name: ${driftC};
-      animation-duration: 40s;
+      animation:
+        ${driftC} 26s ease-in-out infinite alternate,
+        ${breathe} 7s ease-in-out -5s infinite alternate;
     }
 
     @media (prefers-reduced-motion: reduce) {
