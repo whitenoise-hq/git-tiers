@@ -55,6 +55,9 @@
     "myPage": "My Page",
     "getStarted": "Get Started"
   },
+  "footer": {
+    "privacy": "Privacy Policy"
+  },
   "notice": {
     "label": "Announcements",
     "title": "Notice"

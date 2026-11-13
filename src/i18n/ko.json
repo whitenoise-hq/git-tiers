@@ -55,6 +55,9 @@
     "myPage": "마이페이지",
     "getStarted": "시작하기"
   },
+  "footer": {
+    "privacy": "개인정보 처리방침"
+  },
   "notice": {
     "label": "",
     "title": "공지사항"
