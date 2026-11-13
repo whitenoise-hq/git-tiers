@@ -72,13 +72,14 @@ const S = {
   Wrapper: styled.div`
     position: relative;
     z-index: 1;
+    /* 헤더와 같은 틀: 바깥 여백 24px, 최대 1200px, 안쪽 여백 25px → 로고와 왼쪽 선이 맞는다 */
+    width: calc(100% - 48px);
     max-width: 1200px;
-    width: 100%;
     margin: 0 auto;
-    padding: 40px 0 0;
+    padding: 40px 25px 0;
 
     @media (max-width: 768px) {
-      padding: 24px 20px 0;
+      padding-top: 24px;
     }
   `,
 

@@ -277,6 +277,8 @@ const S = {
     max-width: 1200px;
     margin: 0 auto;
     height: 52px;
+    /* 랜딩 헤더와 로고·버튼 위치를 맞춘다: 랜딩 안쪽 여백 24px + 테두리 1px */
+    padding: 0 25px;
   `,
 
   Actions: styled.div`
