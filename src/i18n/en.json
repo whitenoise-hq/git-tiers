@@ -67,6 +67,7 @@
     "title": "My Page",
     "myGithub": "My GitHub",
     "logout": "Logout",
+    "totalContributions": "Contributions in the last year",
     "saving": "Saving...",
     "saved": "Changes saved.",
     "saveError": "Couldn't save. Try changing an option again.",

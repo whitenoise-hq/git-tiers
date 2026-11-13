@@ -163,6 +163,8 @@ export const MakeTier = () => {
   return (
     <>
     <S.Card>
+      <S.ContribLabel>{t.myPage.totalContributions}</S.ContribLabel>
+
       <S.TierWrap>
         <TierImage
           isMode={isMode}
@@ -225,8 +227,14 @@ const S = {
     }
   `,
 
+  ContribLabel: styled.p`
+    font-size: 17px;
+    font-weight: 400;
+    color: ${Color.Gray300};
+  `,
+
   TierWrap: styled.div`
-    margin: 0 auto 24px;
+    margin: 24px auto;
     display: flex;
     align-items: center;
     justify-content: center;
