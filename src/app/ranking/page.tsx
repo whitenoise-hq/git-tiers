@@ -3,6 +3,7 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import styled from '@emotion/styled';
+import { PageContainer } from '@/components/common/PageContainer';
 import { keyframes } from '@emotion/react';
 
 import { AuroraBackdrop } from '@/components/common/AuroraBackdrop';
@@ -80,18 +81,8 @@ const riseIn = keyframes`
 `;
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    z-index: 1;
-    max-width: 880px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 40px 24px 0;
-
-    @media (max-width: 768px) {
-      padding: 24px 20px 0;
-    }
-  `,
+  // 본문 너비는 모든 페이지가 같은 틀을 쓴다.
+  Wrapper: PageContainer,
 
   PageLabel: styled.p`
     font-size: 14px;

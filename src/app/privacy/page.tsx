@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { PageContainer } from '@/components/common/PageContainer';
 
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
@@ -89,16 +90,8 @@ export default function PrivacyPage() {
 }
 
 const S = {
-  Wrapper: styled.div`
-    max-width: 880px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 40px 0 0;
-
-    @media (max-width: 768px) {
-      padding: 24px 20px 0;
-    }
-  `,
+  // 본문 너비는 모든 페이지가 같은 틀을 쓴다.
+  Wrapper: PageContainer,
 
   PageLabel: styled.p`
     font-size: 14px;

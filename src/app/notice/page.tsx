@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import { PageContainer } from '@/components/common/PageContainer';
 
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
@@ -69,19 +70,8 @@ export default function NoticePage() {
 }
 
 const S = {
-  Wrapper: styled.div`
-    position: relative;
-    z-index: 1;
-    /* 헤더와 같은 틀: 바깥 여백 24px, 최대 1200px, 안쪽 여백 25px → 로고와 왼쪽 선이 맞는다 */
-    width: calc(100% - 48px);
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 25px 0;
-
-    @media (max-width: 768px) {
-      padding-top: 24px;
-    }
-  `,
+  // 본문 너비는 모든 페이지가 같은 틀을 쓴다.
+  Wrapper: PageContainer,
 
   PageLabel: styled.p`
     font-size: 14px;

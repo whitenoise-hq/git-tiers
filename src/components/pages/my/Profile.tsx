@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { WithdrawDialog } from '@/components/organisms/my/WithdrawDialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { useMyAccount } from '@/components/pages/my/MyAccountContext';
 import Avatar from '@mui/material/Avatar';
 import ApartmentIcon from '@mui/icons-material/Apartment';
@@ -15,6 +16,7 @@ export const Profile = () => {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleGitLogout = async () => {
     await signOut();
@@ -78,16 +80,32 @@ export const Profile = () => {
               rel="noopener noreferrer">
               {t.myPage.myGithub}
             </S.PrimaryButton>
-            <S.SecondaryButton onClick={handleGitLogout}>
-              {t.myPage.logout}
-            </S.SecondaryButton>
-            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)}>
-              {t.myPage.withdraw}
-            </S.DangerButton>
           </S.Actions>
+
+          {/* 자주 쓰지 않는 계정 동작은 작은 글자 버튼으로 아래에 따로 둔다. */}
+          <S.AccountLinks>
+            <S.TextButton type="button" onClick={() => setLogoutOpen(true)}>
+              {t.myPage.logout}
+            </S.TextButton>
+            <S.TextButton
+              type="button"
+              data-tone="danger"
+              onClick={() => setWithdrawOpen(true)}>
+              {t.myPage.withdraw}
+            </S.TextButton>
+          </S.AccountLinks>
         </S.DetailInner>
       </S.Expandable>
 
+      <ConfirmDialog
+        open={logoutOpen}
+        title={t.myPage.logoutTitle}
+        description={t.myPage.logoutDesc}
+        confirmLabel={t.myPage.logout}
+        cancelLabel={t.myPage.cancel}
+        onConfirm={handleGitLogout}
+        onClose={() => setLogoutOpen(false)}
+      />
       {session?.loginId && (
         <WithdrawDialog
           preview={isPreview}
@@ -100,6 +118,23 @@ export const Profile = () => {
   );
 };
 
+/** 내 GitHub · 로그아웃 · 회원 탈퇴 버튼이 같은 크기가 되도록 공통 틀을 쓴다. */
+const actionButtonBase = `
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 40px;
+  min-width: 112px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 980px;
+`;
+
 const S = {
   Card: styled.div`
     background: rgba(255, 255, 255, 0.06);
@@ -107,8 +142,16 @@ const S = {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
     overflow: hidden;
+
+    /* 왼쪽 칸에서는 스크롤해도 따라 내려온다 */
+    @media (min-width: 900px) {
+      position: sticky;
+      top: 24px;
+    }
   `,
 
   Header: styled.div`
@@ -125,6 +168,11 @@ const S = {
 
     @media (max-width: 768px) {
       padding: 14px 20px;
+    }
+
+    /* 넓은 화면은 왼쪽 칸에 항상 펼쳐 두므로 접는 머리줄이 필요 없다. */
+    @media (min-width: 900px) {
+      display: none;
     }
   `,
 
@@ -181,7 +229,8 @@ const S = {
     position: relative;
     flex-shrink: 0;
     transition: transform 0.3s ease;
-    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) =>
+      $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 
     &::before {
       content: '';
@@ -203,6 +252,11 @@ const S = {
     transition:
       max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
       opacity 0.3s ease;
+
+    @media (min-width: 900px) {
+      max-height: none;
+      opacity: 1;
+    }
   `,
 
   DetailInner: styled.div`
@@ -214,6 +268,11 @@ const S = {
       padding: 0 20px 20px;
       padding-top: 16px;
     }
+
+    @media (min-width: 900px) {
+      padding: 28px 22px 22px;
+      border-top: none;
+    }
   `,
 
   DetailTop: styled.div`
@@ -224,6 +283,13 @@ const S = {
 
     @media (max-width: 480px) {
       flex-direction: column;
+      text-align: center;
+    }
+
+    /* 왼쪽 칸: 사진 위, 이름 아래로 세로 정렬 */
+    @media (min-width: 900px) {
+      flex-direction: column;
+      gap: 14px;
       text-align: center;
     }
   `,
@@ -268,6 +334,11 @@ const S = {
     padding-top: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     margin-bottom: 20px;
+
+    @media (min-width: 900px) {
+      flex-direction: column;
+      gap: 10px;
+    }
   `,
 
   MetaItem: styled.div`
@@ -278,23 +349,20 @@ const S = {
     color: ${Color.Gray300};
   `,
 
+  // 주요 버튼(내 GitHub)은 카드 너비를 꽉 채운다.
   Actions: styled.div`
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+
+    > * {
+      width: 100%;
+    }
   `,
 
   PrimaryButton: styled.a`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
+    ${actionButtonBase}
     color: #fff;
     background: ${Color.Link};
-    border: none;
-    border-radius: 980px;
+    border-color: transparent;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s ease;
@@ -304,43 +372,36 @@ const S = {
     }
   `,
 
-  SecondaryButton: styled.button`
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    color: ${Color.Gray300};
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 980px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
-
-    &:hover {
-      border-color: rgba(255, 255, 255, 0.25);
-      color: ${Color.TextLight};
-    }
+  AccountLinks: styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
   `,
 
-  DangerButton: styled.button`
-    margin-left: auto;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    color: ${Color.Red100};
-    background: rgba(249, 68, 57, 0.08);
-    border: 1px solid rgba(249, 68, 57, 0.4);
-    border-radius: 980px;
+  TextButton: styled.button`
+    padding: 4px 2px;
+    font-size: 13px;
+    font-weight: 500;
+    color: ${Color.Gray300};
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition: color 0.2s ease;
 
-    &:hover:not(:disabled) {
-      background: rgba(249, 68, 57, 0.16);
-      border-color: ${Color.Red100};
+    &:hover {
+      color: ${Color.TextLight};
+      text-decoration: underline;
     }
 
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    &[data-tone='danger'] {
+      color: color-mix(in srgb, ${Color.Red100} 75%, ${Color.Gray300});
+
+      &:hover {
+        color: ${Color.Red100};
+      }
     }
   `,
 };

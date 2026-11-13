@@ -90,6 +90,8 @@
     "title": "마이페이지",
     "myGithub": "내 GitHub",
     "logout": "로그아웃",
+    "logoutTitle": "로그아웃할까요?",
+    "logoutDesc": "다시 로그인하면 뱃지 설정은 그대로 남아 있습니다.",
     "totalContributions": "최근 1년 기여 수",
     "saving": "저장 중...",
     "saved": "변경 사항이 저장되었습니다.",

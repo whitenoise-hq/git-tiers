@@ -90,6 +90,8 @@
     "title": "My Page",
     "myGithub": "My GitHub",
     "logout": "Logout",
+    "logoutTitle": "Sign out?",
+    "logoutDesc": "Your badge settings will stay as they are when you sign back in.",
     "totalContributions": "Contributions in the last year",
     "saving": "Saving...",
     "saved": "Changes saved.",
