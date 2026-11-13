@@ -42,7 +42,7 @@ export const TierController = ({
   ];
   const textOptions = [
     { value: 'exist', label: t.tierController.show },
-    { value: 'delete', label: t.tierController.hide },
+    { value: 'none', label: t.tierController.hide },
   ];
   const bgOptions = [
     { value: 'light', label: t.tierController.light },
