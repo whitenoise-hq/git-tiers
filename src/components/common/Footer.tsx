@@ -29,8 +29,7 @@ export const Footer = () => {
               <GitHubIcon sx={{ fontSize: 15 }} />
               GitHub
             </S.NavLink>
-            {/* 개인정보 처리방침은 법적으로 눈에 띄게 표시한다 */}
-            <S.PolicyLink href="/privacy">{t.footer.privacy}</S.PolicyLink>
+            <S.NavLink href="/privacy">{t.footer.privacy}</S.NavLink>
           </S.Nav>
         </S.Top>
 
@@ -49,7 +48,7 @@ const S = {
   Footer: styled.footer`
     position: relative;
     background: #0a0a0a;
-    padding: 56px 24px 40px;
+    padding: 32px 24px 24px;
 
     /* 위쪽 경계를 가운데만 은은하게 빛나는 선으로 */
     &::before {
@@ -64,7 +63,7 @@ const S = {
     }
 
     @media (max-width: 768px) {
-      padding: 44px 20px 32px;
+      padding: 28px 20px 20px;
     }
   `,
 
@@ -75,22 +74,23 @@ const S = {
 
   Top: styled.div`
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 32px;
-    padding-bottom: 32px;
+    gap: 24px;
+    padding-bottom: 20px;
 
     @media (max-width: 768px) {
       flex-direction: column;
-      gap: 24px;
-      padding-bottom: 24px;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 16px;
     }
   `,
 
   BrandBlock: styled.div`
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
   `,
 
   Brand: styled.p`
@@ -117,7 +117,7 @@ const S = {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
+    padding: 6px 12px;
     font-size: 13px;
     font-weight: 500;
     color: ${Color.Gray100};
@@ -134,29 +134,12 @@ const S = {
     }
   `,
 
-  PolicyLink: styled(Link)`
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    color: ${Color.TextLight};
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 980px;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.18);
-    }
-  `,
-
   Bottom: styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 8px;
-    padding-top: 20px;
+    padding-top: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 12px;
     color: ${Color.Black200};
