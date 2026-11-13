@@ -10,20 +10,29 @@ import MasterIcon from '@/assets/images/tiers/7_master.png';
 import GrandmasterIcon from '@/assets/images/tiers/8_grandmaster.png';
 import ChallengerIcon from '@/assets/images/tiers/9_challenger.png';
 
+import { TIER_THRESHOLDS, TierName, getTierMin } from './tierThresholds';
+
 export interface TierInfo {
   readonly src: StaticImageData;
-  readonly name: string;
+  readonly name: TierName;
   readonly min: number;
 }
 
-export const TIERS: readonly TierInfo[] = [
-  { src: IronIcon, name: 'Iron', min: 0 },
-  { src: BronzeIcon, name: 'Bronze', min: 200 },
-  { src: SilverIcon, name: 'Silver', min: 400 },
-  { src: GoldIcon, name: 'Gold', min: 600 },
-  { src: PlatinumIcon, name: 'Platinum', min: 800 },
-  { src: DiamondIcon, name: 'Diamond', min: 1200 },
-  { src: MasterIcon, name: 'Master', min: 2000 },
-  { src: GrandmasterIcon, name: 'Grandmaster', min: 3200 },
-  { src: ChallengerIcon, name: 'Challenger', min: 4800 },
-];
+const TIER_ICONS: Record<TierName, StaticImageData> = {
+  Iron: IronIcon,
+  Bronze: BronzeIcon,
+  Silver: SilverIcon,
+  Gold: GoldIcon,
+  Platinum: PlatinumIcon,
+  Diamond: DiamondIcon,
+  Master: MasterIcon,
+  Grandmaster: GrandmasterIcon,
+  Challenger: ChallengerIcon,
+};
+
+/** 화면 표시용. 낮은 티어(Iron)부터 정렬한다. 경계값은 tierThresholds.ts 에서 가져온다. */
+export const TIERS: readonly TierInfo[] = [...TIER_THRESHOLDS].reverse().map((tier) => ({
+  src: TIER_ICONS[tier.name],
+  name: tier.name,
+  min: getTierMin(tier),
+}));
