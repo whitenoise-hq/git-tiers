@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
 import { TIERS } from '@/constants/tiers';
+import { TIER_ACCENTS } from '@/constants/tierAccents';
 import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
@@ -23,9 +24,12 @@ export const TierGridCont = () => {
         <S.Title>{t.tierGrid.title}</S.Title>
         <S.Grid>
           {TIERS.map((tier, i) => (
-            <S.Card key={tier.name} style={{ '--idx': i } as React.CSSProperties}>
+            <S.Card
+              key={tier.name}
+              style={{ '--idx': i, '--accent': TIER_ACCENTS[tier.name] } as React.CSSProperties}>
               <Image src={tier.src} alt={tier.name} width={72} height={72} />
               <S.Name>{tier.name}</S.Name>
+              <S.Min>{tier.min.toLocaleString()}+</S.Min>
             </S.Card>
           ))}
         </S.Grid>
@@ -42,12 +46,20 @@ export const TierGridCont = () => {
   );
 };
 
+// 차례로 한 칸씩 그 티어 색으로 빛난다.
 const tierHighlight = keyframes`
-  0%   { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); transform: scale(1); }
-  3%   { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.22); transform: scale(1.06); }
-  8%   { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.22); transform: scale(1.06); }
-  11%  { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); transform: scale(1); }
-  100% { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); transform: scale(1); }
+  0%, 11%, 100% {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+    transform: scale(1);
+  }
+  3%, 8% {
+    background: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.03));
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: 0 0 36px color-mix(in srgb, var(--accent) 30%, transparent);
+    transform: scale(1.06);
+  }
 `;
 
 
@@ -55,7 +67,9 @@ const S = {
   Section: styled.section`
     padding: 180px 24px;
     text-align: center;
-    background: ${Color.Black};
+    background:
+      radial-gradient(50% 45% at 50% 55%, rgba(178, 107, 255, 0.07), transparent 70%),
+      ${Color.Black};
     ${fadeInStyle}
   `,
 
@@ -105,11 +119,24 @@ const S = {
     align-items: center;
     gap: 8px;
     padding: 20px 12px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
+    border-radius: 18px;
     animation: ${tierHighlight} 13.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     animation-delay: calc(var(--idx) * 1.5s);
+    transition: border-color 0.3s ease;
+
+    img {
+      filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent));
+    }
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
 
     img {
       object-fit: contain;
@@ -129,8 +156,15 @@ const S = {
 
   Name: styled.span`
     font-size: 13px;
-    font-weight: 500;
-    color: ${Color.TextSecondary};
+    font-weight: 600;
+    color: ${Color.TextLight};
+  `,
+
+  Min: styled.span`
+    margin-top: -4px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--accent) 70%, ${Color.TextSecondary});
   `,
 
   LinkWrap: styled.div`
