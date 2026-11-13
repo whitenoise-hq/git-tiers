@@ -9,6 +9,7 @@ import React, {
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 import { getTierImage, getTierText } from '@/utils/getTier';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -208,7 +209,10 @@ export const MakeTier = () => {
           </S.PrimaryButton>
         </S.Actions>
 
-        <S.AutoUpdateNote>{t.myPage.autoUpdateNote}</S.AutoUpdateNote>
+        <S.AutoUpdateNote>
+          <AutorenewIcon sx={{ fontSize: 14 }} aria-hidden />
+          {t.myPage.autoUpdateNote}
+        </S.AutoUpdateNote>
 
         <S.TableLink>
           <Link
@@ -297,10 +301,16 @@ const S = {
   `,
 
   AutoUpdateNote: styled.p`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin: 0 0 16px;
-    font-size: 13px;
-    line-height: 1.5;
-    color: ${Color.Gray300};
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: ${Color.Gray100};
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 980px;
   `,
 
   TableLink: styled.div`

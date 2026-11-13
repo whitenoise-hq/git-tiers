@@ -72,7 +72,7 @@
     "saved": "Changes saved.",
     "saveError": "Couldn't save. Try changing an option again.",
     "autoSaveHint": "Changes are saved automatically.",
-    "autoUpdateNote": "Your README badge updates its contribution count automatically — no need to come back. (Updates may take a few hours.)",
+    "autoUpdateNote": "Your badge updates automatically (may take a few hours)",
     "copyTag": "Copy Tag",
     "withdraw": "Delete account",
     "withdrawTitle": "Delete your account?",
