@@ -1,5 +1,5 @@
 import { usersCollection } from './admin';
-import type { ImageSettings, UserData } from '../src/types/api';
+import type { ImageOptions, ImageSettings, UserData } from '../src/types/api';
 
 /**
  * users 컬렉션 접근을 한곳에 모은다.
@@ -116,16 +116,25 @@ export const getImageSettings = async (githubId: string): Promise<ImageSettings 
   return user?.data.imageSettings ?? null;
 };
 
-/** 아이디도 함께 기록해 두어, 로그인 때 기록이 실패했더라도 배지 조회가 된다. */
+/**
+ * 표시 옵션만 저장한다(기여 수는 firebase/contributions.ts 가 따로 캐시).
+ * 아이디도 함께 기록해 두어, 로그인 때 기록이 실패했더라도 배지 조회가 된다.
+ */
 export const saveImageSettings = async ({
   githubId,
   login,
-  imageSettings,
+  options,
 }: {
   githubId: string;
   login: string;
-  imageSettings: ImageSettings;
+  options: ImageOptions;
 }): Promise<void> => {
+  const imageSettings: ImageOptions = {
+    isCard: options.isCard,
+    isText: options.isText,
+    isMode: options.isMode,
+  };
+
   await usersCollection().doc(githubId).set(
     {
       github_id: Number(githubId),

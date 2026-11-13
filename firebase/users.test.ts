@@ -44,7 +44,7 @@ const { findUserByLogin, upsertUserOnLogin, saveImageSettings, getImageSettings 
   './users'
 );
 
-const settings = { isCard: 'card', isText: 'exist', isMode: 'dark', contributeCount: 900 } as const;
+const settings = { isCard: 'card', isText: 'exist', isMode: 'dark' } as const;
 
 describe('users 저장소', () => {
   beforeEach(() => store.clear());
@@ -101,7 +101,7 @@ describe('users 저장소', () => {
 
   it('아이디를 바꾸면 같은 문서에서 아이디만 갱신되어 데이터가 이어진다', async () => {
     await upsertUserOnLogin({ githubId: '583231', login: 'octocat' });
-    await saveImageSettings({ githubId: '583231', login: 'octocat', imageSettings: settings });
+    await saveImageSettings({ githubId: '583231', login: 'octocat', options: settings });
 
     await upsertUserOnLogin({ githubId: '583231', login: 'octo-renamed' });
 
@@ -128,14 +128,18 @@ describe('users 저장소', () => {
     expect(await findUserByLogin('nobody')).toBeNull();
   });
 
-  it('저장할 때 아이디도 함께 기록한다', async () => {
-    await saveImageSettings({ githubId: '42', login: 'Answer', imageSettings: settings });
+  it('저장할 때 아이디도 함께 기록하고, 표시 옵션 외 필드는 저장하지 않는다', async () => {
+    await saveImageSettings({
+      githubId: '42',
+      login: 'Answer',
+      options: { ...settings, contributeCount: 99999 } as typeof settings,
+    });
 
     expect(store.get('42')).toMatchObject({
       github_id: 42,
       login_id: 'Answer',
       login_lower: 'answer',
-      imageSettings: settings,
     });
+    expect(store.get('42')?.imageSettings).toEqual(settings);
   });
 });

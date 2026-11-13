@@ -27,8 +27,10 @@ Generate a tier badge and embed it in your GitHub README to showcase your contri
 |------|-------------|
 | **1** | Sign in with your GitHub account |
 | **2** | Check your tier on My Page |
-| **3** | Customize the type and background color |
-| **4** | Click **Save Image**, then **Copy Tag** and paste it into your README |
+| **3** | Customize the type and background color — changes are saved automatically |
+| **4** | Click **Copy Tag** and paste it into your README |
+
+That's it. The badge fetches your contribution count from GitHub whenever it is shown, so it **keeps itself up to date** — no need to come back and save again. (Counts are cached for a few hours, so new contributions may take a little while to appear.)
 
 ## Embed Example
 

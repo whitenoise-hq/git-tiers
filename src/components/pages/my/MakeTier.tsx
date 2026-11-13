@@ -1,5 +1,5 @@
 import { signOut, useSession } from 'next-auth/react';
-import React, { useEffect, useEffectEvent, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useEffectEvent, useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
@@ -9,20 +9,26 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { CardType, TextVisibility } from '@/types/api';
+import { CardType, DEFAULT_IMAGE_OPTIONS, TextVisibility } from '@/types/api';
 import { Color } from '@/styles/color';
+
+/** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
+const AUTO_SAVE_DELAY_MS = 700;
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
   const { t } = useLanguage();
   const loginId = session?.loginId;
   const [contributeCount, setContributeCount] = useState<number>(0);
-  const [isCard, setIsCard] = useState<CardType>('card');
-  const [isText, setIsText] = useState<TextVisibility>('exist');
-  const [isMode, setIsMode] = useState<string>('light');
+  const [isCard, setIsCard] = useState<CardType>(DEFAULT_IMAGE_OPTIONS.isCard);
+  const [isText, setIsText] = useState<TextVisibility>(DEFAULT_IMAGE_OPTIONS.isText);
+  const [isMode, setIsMode] = useState<string>(DEFAULT_IMAGE_OPTIONS.isMode);
   const [loading, setLoading] = useState<boolean>(true);
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const [hasSaved, setHasSaved] = useState<boolean>(false);
+  // 사용자가 옵션을 바꾼 횟수. 0 이면(불러오기만 한 상태) 저장하지 않는다.
+  const [editVersion, setEditVersion] = useState<number>(0);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
   // 기여 수에서 바로 계산한다(0 이어도 Iron 4 가 보이도록).
   const tierImage = getTierImage(contributeCount);
@@ -36,45 +42,17 @@ export const MakeTier = () => {
     toast.error(t.toast.error);
     await signOut({ callbackUrl: '/' });
   });
+  const handleSaveError = useEffectEvent(() => {
+    toast.error(t.toast.saveFailed);
+  });
 
-  const handleSaveImage = async () => {
-    if (!loginId) {
-      toast.error(t.toast.loginFirst);
-      return;
-    }
-
-    setSaveLoading(true);
-    try {
-      const res = await fetch('/api/tier/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageSettings: {
-            isCard,
-            isText,
-            isMode,
-          },
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to save');
-      }
-
-      // 서버가 GitHub 에서 다시 조회해 저장한 값으로 화면을 맞춘다.
-      const data: { contributeCount?: number } = await res.json();
-      if (typeof data.contributeCount === 'number') {
-        setContributeCount(data.contributeCount);
-      }
-
-      setHasSaved(true);
-      toast.success(t.toast.imageSaved);
-    } catch {
-      toast.error(t.toast.saveFailed);
-    } finally {
-      setSaveLoading(false);
-    }
-  };
+  /** 사용자가 바꾼 옵션만 자동 저장 대상으로 표시한다. */
+  const editable =
+    <T,>(setter: Dispatch<SetStateAction<T>>): Dispatch<SetStateAction<T>> =>
+    (value) => {
+      setter(value);
+      setEditVersion((version) => version + 1);
+    };
 
   const copyToClipboard = () => {
     if (!loginId) return;
@@ -85,7 +63,7 @@ export const MakeTier = () => {
     toast.success(t.toast.tagCopied);
   };
 
-  // 기여 수 조회
+  // 기여 수 조회(배지와 같은 값)
   useEffect(() => {
     if (!loginId) return undefined;
 
@@ -133,7 +111,6 @@ export const MakeTier = () => {
           setIsCard(settings.isCard as CardType);
           setIsText(settings.isText as TextVisibility);
           setIsMode(settings.isMode);
-          setHasSaved(true);
         }
       } catch {
         // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 무시한다.
@@ -146,6 +123,42 @@ export const MakeTier = () => {
       cancelled = true;
     };
   }, [loginId]);
+
+  // 옵션을 바꾸면 잠시 뒤 자동 저장한다. README 배지에도 이 옵션이 쓰인다.
+  useEffect(() => {
+    if (!loginId || editVersion === 0) return undefined;
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setSaveStatus('saving');
+      try {
+        const res = await fetch('/api/tier/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageSettings: { isCard, isText, isMode } }),
+        });
+        if (!res.ok) throw new Error('Failed to save');
+        if (!cancelled) setSaveStatus('saved');
+      } catch {
+        if (!cancelled) {
+          setSaveStatus('error');
+          handleSaveError();
+        }
+      }
+    }, AUTO_SAVE_DELAY_MS);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [loginId, editVersion, isCard, isText, isMode]);
+
+  const saveStatusText = {
+    idle: t.myPage.autoSaveHint,
+    saving: t.myPage.saving,
+    saved: t.myPage.saved,
+    error: t.myPage.saveError,
+  }[saveStatus];
 
   return (
     <>
@@ -167,20 +180,23 @@ export const MakeTier = () => {
           isCard={isCard}
           isText={isText}
           isMode={isMode}
-          setIsCard={setIsCard}
-          setIsText={setIsText}
-          setIsMode={setIsMode}
+          setIsCard={editable(setIsCard)}
+          setIsText={editable(setIsText)}
+          setIsMode={editable(setIsMode)}
         />
       </S.TierWrap>
 
+      <S.SaveStatus role="status" aria-live="polite" data-status={saveStatus}>
+        {saveStatusText}
+      </S.SaveStatus>
+
       <S.Actions>
-        <S.PrimaryButton onClick={handleSaveImage} disabled={saveLoading}>
-          {saveLoading ? t.myPage.saving : t.myPage.saveImage}
-        </S.PrimaryButton>
-        <S.SecondaryButton onClick={copyToClipboard} disabled={!hasSaved}>
+        <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
           {t.myPage.copyTag}
-        </S.SecondaryButton>
+        </S.PrimaryButton>
       </S.Actions>
+
+      <S.AutoUpdateNote>{t.myPage.autoUpdateNote}</S.AutoUpdateNote>
 
       <S.TableLink>
         <Link
@@ -264,26 +280,21 @@ const S = {
     }
   `,
 
-  SecondaryButton: styled.button`
-    padding: 10px 28px;
-    font-size: 14px;
-    font-weight: 600;
+  SaveStatus: styled.p`
+    margin: 0 0 12px;
+    font-size: 13px;
     color: ${Color.Gray300};
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 980px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
 
-    &:hover:not(:disabled) {
-      border-color: rgba(255, 255, 255, 0.25);
-      color: ${Color.TextLight};
+    &[data-status='error'] {
+      color: ${Color.Red100};
     }
+  `,
 
-    &:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
+  AutoUpdateNote: styled.p`
+    margin: 0 0 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: ${Color.Gray300};
   `,
 
   TableLink: styled.div`

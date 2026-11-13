@@ -13,9 +13,25 @@ export interface ImageOptions {
   isMode: BackgroundMode | string; // string for custom hex colors
 }
 
-/** 저장되는 설정. contributeCount 는 서버가 GitHub 에서 직접 조회한 값만 넣는다. */
+export const DEFAULT_IMAGE_OPTIONS: ImageOptions = {
+  isCard: 'card',
+  isText: 'exist',
+  isMode: 'light',
+};
+
+/**
+ * users 문서에 저장된 표시 옵션.
+ * contributeCount 는 자동 갱신 도입(2026-11) 전에 저장하던 값으로, 새로 쓰지 않고 캐시가 없을 때 대체값으로만 읽는다.
+ */
 export interface ImageSettings extends ImageOptions {
-  contributeCount: number;
+  contributeCount?: number;
+}
+
+/** 서버 토큰으로 조회한 기여 수 캐시 */
+export interface ContributionsCache {
+  count: number;
+  /** ISO 시각 */
+  updatedAt: string;
 }
 
 /** #RGB 또는 #RRGGBB 만 허용한다(4·5자리는 SVG 에서 잘못된 색으로 나온다). */
@@ -44,6 +60,7 @@ export interface UserData {
   login_lower?: string | null;
   lastUpdated?: string;
   imageSettings?: ImageSettings;
+  contributions?: ContributionsCache;
   first_login?: string;
   last_login?: string;
 }

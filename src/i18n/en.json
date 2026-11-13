@@ -34,7 +34,7 @@
   "showcase": {
     "label": "Showcase",
     "title": "Show it off on GitHub.",
-    "subtitle": "Generate a beautiful tier badge and embed it in your README.",
+    "subtitle": "Add it to your README once — your tier badge updates automatically as you contribute.",
     "mockBio": "Full-stack developer who loves open source.",
     "techStack": "Tech Stack"
   },
@@ -45,10 +45,10 @@
     "step1Desc": "Log in with your GitHub account. No sign-up needed — get started instantly.",
     "step2Title": "Check Your Tier",
     "step2Desc": "Your tier is automatically calculated based on your contributions over the last year. View it on My Page.",
-    "step3Title": "Customize & Save",
-    "step3Desc": "Pick your background color and card style, then save the image. You must save before copying the tag.",
+    "step3Title": "Customize",
+    "step3Desc": "Pick your background color and card style — changes are saved automatically and applied to your README badge.",
     "step4Title": "Copy Tag & Share",
-    "step4Desc": "Use the Copy Tag button to grab your image tag, then paste it into your GitHub README to show off your tier.",
+    "step4Desc": "Copy your badge tag with the Copy Tag button and paste it into your GitHub README. Once it's there, your tier updates automatically as you contribute.",
     "learnMore": "Learn more"
   },
   "header": {
@@ -66,7 +66,10 @@
     "logout": "Logout",
     "totalContributions": "Contributions (last year)",
     "saving": "Saving...",
-    "saveImage": "Save Image",
+    "saved": "Changes saved.",
+    "saveError": "Couldn't save. Try changing an option again.",
+    "autoSaveHint": "Changes are saved automatically.",
+    "autoUpdateNote": "Your README badge updates its contribution count automatically — no need to come back. (Updates may take a few hours.)",
     "copyTag": "Copy Tag",
     "viewTierTable": "View Tier Table"
   },
@@ -88,8 +91,7 @@
     "error": "An error occurred. Please try again later.",
     "loginFirst": "Please log in first.",
     "imageTooLarge": "Image is too large. Please try with simpler settings.",
-    "imageSaved": "Image saved successfully!",
-    "saveFailed": "Failed to save image. Please try again.",
+    "saveFailed": "Couldn't save your settings. Please try again later.",
     "tagCopied": "Image tag copied to clipboard!"
   },
   "noticeData": [

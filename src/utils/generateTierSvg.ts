@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getTierImage, getTierText } from './getTier';
 import { getTierBg, isLightColor } from './getTierBg';
-import { ImageSettings } from '@/types/api';
+import { ImageOptions } from '@/types/api';
 import { Color } from '@/styles/color';
 
 const iconCache = new Map<string, string>();
@@ -34,13 +34,13 @@ export function generatePlaceholderSvg(): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${Color.TierBgLight}" stroke="rgba(0,0,0,0.1)" stroke-width="1" />
   <text x="${width / 2}" y="44" font-family="${font}" font-size="13" font-weight="700" fill="${Color.TextPrimary}" text-anchor="middle" letter-spacing="0.7">NOT RANKED YET</text>
-  <text x="${width / 2}" y="64" font-family="${font}" font-size="11" fill="${Color.TextSecondary}" text-anchor="middle">Save your tier on Git TIERS</text>
+  <text x="${width / 2}" y="64" font-family="${font}" font-size="11" fill="${Color.TextSecondary}" text-anchor="middle">Sign in to Git TIERS</text>
 </svg>`;
 }
 
 interface TierSvgParams {
   contributeCount: number;
-  settings: ImageSettings;
+  settings: ImageOptions;
 }
 
 export function generateTierSvg({ contributeCount, settings }: TierSvgParams): string {
