@@ -7,7 +7,6 @@ import { TIER_ACCENTS } from '@/constants/tierAccents';
 import type { TierName } from '@/constants/tierThresholds';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
-import { formatMessage } from '@/utils/formatMessage';
 import type { TierBucket } from '@/utils/ranking';
 
 interface TierDistributionProps {
@@ -16,13 +15,12 @@ interface TierDistributionProps {
   readonly myTier?: TierName;
 }
 
-/** 티어별 인원 막대. 인원수만 보여 준다. */
+/** 티어별 상대 비율 막대. 인원수와 총 인원은 보여 주지 않는다. */
 export const TierDistribution = ({
   buckets,
   myTier,
 }: TierDistributionProps) => {
   const { t } = useLanguage();
-  const max = Math.max(1, ...buckets.map((bucket) => bucket.count));
 
   return (
     <S.Section>
@@ -31,7 +29,7 @@ export const TierDistribution = ({
         {buckets.map((bucket) => {
           const style = {
             '--accent': TIER_ACCENTS[bucket.tier],
-            '--ratio': bucket.count / max,
+            '--ratio': bucket.ratio,
           } as React.CSSProperties;
           return (
             <S.Column
@@ -39,8 +37,7 @@ export const TierDistribution = ({
               role="listitem"
               style={style}
               data-mine={bucket.tier === myTier}
-              aria-label={`${bucket.tier} ${formatMessage(t.ranking.people, { count: bucket.count })}`}>
-              <S.Count>{bucket.count}</S.Count>
+              aria-label={bucket.tier}>
               <S.Track>
                 <S.Bar />
               </S.Track>
@@ -87,13 +84,6 @@ const S = {
     min-width: 0;
   `,
 
-  Count: styled.span`
-    font-size: 12px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    color: ${Color.Gray100};
-  `,
-
   Track: styled.div`
     display: flex;
     align-items: flex-end;
@@ -105,7 +95,7 @@ const S = {
     overflow: hidden;
   `,
 
-  // 0명이어도 바닥에 얇게 보이도록 최소 높이를 둔다.
+  // 비어 있는 티어도 바닥에 얇게 보이도록 최소 높이를 둔다.
   Bar: styled.div`
     width: 100%;
     height: max(4px, calc(var(--ratio) * 100%));

@@ -5,8 +5,8 @@ import { refreshAllContributions } from '../../../../../firebase/contributions';
 export const maxDuration = 60;
 
 /**
- * 매일 한 번(vercel.json crons) 모든 사용자의 기여 수를 새로 조회한다.
- * Vercel 이 `Authorization: Bearer <CRON_SECRET>` 를 붙여 호출하므로, 그 값이 맞을 때만 실행한다.
+ * 매일 한 번(GitHub Actions: .github/workflows/refresh-contributions.yml) 모든 사용자의 기여 수를 새로 조회한다.
+ * 호출할 때 `Authorization: Bearer <CRON_SECRET>` 를 붙이므로, 그 값이 맞을 때만 실행한다.
  */
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET;

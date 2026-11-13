@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildRankingSnapshot,
   buildTierDistribution,
+  getRefreshAvailableAt,
+  REFRESH_COOLDOWN_MS,
   findMyRank,
   getNextTier,
   getTierName,
@@ -95,6 +98,17 @@ describe('getTierName', () => {
 });
 
 describe('buildTierDistribution', () => {
+  it('사람이 있는 티어는 최소 0.1, 비율은 0.1 단위', () => {
+    const many = Array.from({ length: 30 }, (_, i) => entry(String(i), 0));
+    const buckets = buildTierDistribution([...many, entry('x', 2736)]);
+    expect(buckets[0].ratio).toBe(1);
+    expect(buckets.find((b) => b.tier === 'Master')?.ratio).toBe(0.1);
+  });
+
+  it('아무도 없으면 모두 0', () => {
+    expect(buildTierDistribution([]).every((b) => b.ratio === 0)).toBe(true);
+  });
+
   it('낮은 티어부터 9개 티어의 인원을 센다', () => {
     const buckets = buildTierDistribution([
       entry('1', 0),
@@ -102,9 +116,11 @@ describe('buildTierDistribution', () => {
       entry('3', 2736),
     ]);
     expect(buckets).toHaveLength(9);
-    expect(buckets[0]).toEqual({ tier: 'Iron', count: 2 });
-    expect(buckets.find((b) => b.tier === 'Master')?.count).toBe(1);
-    expect(buckets[8]).toEqual({ tier: 'Challenger', count: 0 });
+    // 가장 많은 Iron(2명)이 1, Master(1명)는 0.5, 빈 티어는 0
+    expect(buckets[0]).toEqual({ tier: 'Iron', ratio: 1 });
+    expect(buckets.find((b) => b.tier === 'Master')?.ratio).toBe(0.5);
+    expect(buckets[8]).toEqual({ tier: 'Challenger', ratio: 0 });
+    expect(JSON.stringify(buckets)).not.toContain('count');
   });
 });
 
@@ -131,7 +147,6 @@ describe('findMyRank', () => {
   it('본인 순위와 다음 단계', () => {
     expect(findMyRank(sorted, '3')).toEqual({
       rank: 2,
-      total: 3,
       count: 500,
       tierName: 'Silver',
       tierText: 'Silver 2',
@@ -142,5 +157,46 @@ describe('findMyRank', () => {
 
   it('목록에 없으면 null', () => {
     expect(findMyRank(sorted, '999')).toBeNull();
+  });
+});
+
+describe('getRefreshAvailableAt', () => {
+  const NOW = Date.parse('2026-11-13T12:00:00.000Z');
+
+  it('갱신한 적 없으면 지금 바로 가능', () => {
+    expect(getRefreshAvailableAt(undefined, NOW)).toBe(NOW);
+    expect(getRefreshAvailableAt('broken', NOW)).toBe(NOW);
+  });
+
+  it('마지막 갱신 + 1분', () => {
+    const last = new Date(NOW - 10_000).toISOString();
+    expect(getRefreshAvailableAt(last, NOW)).toBe(
+      NOW - 10_000 + REFRESH_COOLDOWN_MS
+    );
+  });
+
+  it('1분이 지났으면 지금', () => {
+    const last = new Date(NOW - 5 * 60_000).toISOString();
+    expect(getRefreshAvailableAt(last, NOW)).toBe(NOW);
+  });
+});
+
+describe('buildRankingSnapshot', () => {
+  const sorted = sortRanking([
+    entry('1', 10),
+    entry('2', 2736),
+    entry('3', 500),
+  ]);
+
+  it('공개용에는 isMe 를 넣지 않는다', () => {
+    const snapshot = buildRankingSnapshot(sorted);
+    expect('total' in snapshot).toBe(false);
+    expect(snapshot.podium).toHaveLength(3);
+    expect('isMe' in snapshot.podium[0]).toBe(false);
+  });
+
+  it('보는 사람이 있으면 본인 칸에만 isMe', () => {
+    const snapshot = buildRankingSnapshot(sorted, '3');
+    expect(snapshot.podium.map((p) => p.isMe)).toEqual([false, true, false]);
   });
 });

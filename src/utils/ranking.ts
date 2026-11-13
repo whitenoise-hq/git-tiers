@@ -8,6 +8,7 @@ import { getTierImage, getTierText } from './getTier';
 /**
  * 랭킹 계산(순수 함수).
  * 공개 화면에는 가린 아이디와 티어만 내보내고, 기여 수는 정렬에만 쓴다.
+ * 총 인원도 드러내지 않는다(순위 비율·티어별 인원수를 내보내지 않음).
  */
 
 /** 가린 부분은 길이를 드러내지 않도록 항상 같은 개수로 표시한다. */
@@ -75,18 +76,32 @@ export const toPublicRankItem = (
 
 export interface TierBucket {
   readonly tier: TierName;
-  readonly count: number;
+  /**
+   * 가장 많은 티어 대비 비율(0~1, 0.1 단위).
+   * 인원수·총 인원이 드러나지 않도록 실제 수는 내보내지 않는다.
+   * 사람이 있는 티어는 최소 0.1 로 보여 준다.
+   */
+  readonly ratio: number;
 }
 
-/** 티어별 인원(낮은 티어부터) */
+const roundToTenth = (value: number): number => Math.round(value * 10) / 10;
+
+/** 티어별 상대 비율(낮은 티어부터) */
 export const buildTierDistribution = (
   entries: readonly RankingEntry[]
-): TierBucket[] =>
-  [...TIER_THRESHOLDS].reverse().map((tier) => ({
+): TierBucket[] => {
+  const counts = [...TIER_THRESHOLDS].reverse().map((tier) => ({
     tier: tier.name,
     count: entries.filter((entry) => getTierName(entry.count) === tier.name)
       .length,
   }));
+  const max = Math.max(0, ...counts.map((bucket) => bucket.count));
+  return counts.map(({ tier, count }) => ({
+    tier,
+    ratio:
+      count === 0 || max === 0 ? 0 : Math.max(0.1, roundToTenth(count / max)),
+  }));
+};
 
 /** 모든 세부 단계의 최소 기여 수(오름차순) */
 const STEP_MINIMUMS: readonly number[] = TIER_THRESHOLDS.flatMap(
@@ -108,7 +123,6 @@ export const getNextTier = (count: number): NextTier | null => {
 
 export interface MyRank {
   readonly rank: number;
-  readonly total: number;
   readonly count: number;
   readonly tierName: TierName;
   readonly tierText: string;
@@ -126,7 +140,6 @@ export const findMyRank = (
   const { count } = sorted[index];
   return {
     rank: index + 1,
-    total: sorted.length,
     count,
     tierName: getTierName(count),
     tierText: getTierText(count),
@@ -134,3 +147,42 @@ export const findMyRank = (
     next: getNextTier(count),
   };
 };
+
+/** 사용자가 직접 갱신한 뒤 다시 갱신할 수 있을 때까지의 시간 */
+export const REFRESH_COOLDOWN_MS = 60 * 1000;
+
+/** 마지막 갱신 시각으로 다음 갱신 가능 시각(epoch ms)을 구한다. */
+export const getRefreshAvailableAt = (
+  updatedAt: string | undefined,
+  now: number
+): number => {
+  const last = updatedAt ? Date.parse(updatedAt) : Number.NaN;
+  return Number.isFinite(last)
+    ? Math.max(now, last + REFRESH_COOLDOWN_MS)
+    : now;
+};
+
+export interface PodiumItem extends PublicRankItem {
+  /** 로그인한 본인에게 보낼 때만 담는다. */
+  readonly isMe?: boolean;
+}
+
+export interface RankingSnapshot {
+  readonly podium: readonly PodiumItem[];
+  readonly distribution: readonly TierBucket[];
+}
+
+/**
+ * 포디움·분포·인원을 한 번에 만든다.
+ * 본인 순위와 같은 데이터로 계산해야 「내 순위」와 포디움이 어긋나지 않는다.
+ */
+export const buildRankingSnapshot = (
+  sorted: readonly RankingEntry[],
+  viewerGithubId?: string
+): RankingSnapshot => ({
+  podium: sorted.slice(0, PODIUM_SIZE).map((entry, i) => ({
+    ...toPublicRankItem(entry, i + 1),
+    ...(viewerGithubId ? { isMe: entry.githubId === viewerGithubId } : {}),
+  })),
+  distribution: buildTierDistribution(sorted),
+});

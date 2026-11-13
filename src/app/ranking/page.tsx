@@ -18,7 +18,7 @@ import { Color } from '@/styles/color';
 export default function RankingPage() {
   const { t } = useLanguage();
   const { data: session } = useSession();
-  const data = useRankingData();
+  const { data, refresh } = useRankingData();
 
   return (
     <>
@@ -35,15 +35,24 @@ export default function RankingPage() {
         {data.status === 'ready' && (
           <S.Content>
             <Podium items={data.ranking.podium} />
-            {data.my.status === 'ranked' ? (
+            {data.my.status === 'ranked' && (
               <MyRankCard
                 status="ranked"
                 me={data.my.me}
                 loginId={session?.loginId ?? ''}
+                refreshAvailableAt={data.my.refreshAvailableAt}
+                onRefresh={refresh}
               />
-            ) : (
-              <MyRankCard status={data.my.status} />
             )}
+            {data.my.status === 'unranked' && (
+              <MyRankCard
+                status="unranked"
+                refreshAvailableAt={data.my.refreshAvailableAt}
+                onRefresh={refresh}
+              />
+            )}
+            {/* 로그인하지 않은 사람에게는 갱신 버튼 없이 로그인 안내만 */}
+            {data.my.status === 'guest' && <MyRankCard status="guest" />}
             <TierDistribution
               buckets={data.ranking.distribution}
               myTier={
