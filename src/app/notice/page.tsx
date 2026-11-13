@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
+import { AuroraBackdrop } from '@/components/common/AuroraBackdrop';
 
 type TNotice = {
   id: number;
@@ -34,38 +35,43 @@ export default function NoticePage() {
   };
 
   return (
-    <S.Wrapper>
-      <S.PageLabel>{t.notice.label}</S.PageLabel>
-      <S.PageTitle>{t.notice.title}</S.PageTitle>
+    <>
+      <AuroraBackdrop />
+      <S.Wrapper>
+        <S.PageLabel>{t.notice.label}</S.PageLabel>
+        <S.PageTitle>{t.notice.title}</S.PageTitle>
 
-      <S.List>
-        {noticeList.map((notice: TNotice) => {
-          const isOpen = openItems.has(notice.id);
-          return (
-            <S.Item key={notice.id} $isOpen={isOpen}>
-              <S.Header onClick={() => toggleItem(notice.id)}>
-                <S.TitleRow>
-                  {notice.isNew && <S.NewBadge>N</S.NewBadge>}
-                  <S.ItemTitle $isOpen={isOpen}>{notice.title}</S.ItemTitle>
-                </S.TitleRow>
-                <S.HeaderRight>
-                  <S.Date>{notice.date}</S.Date>
-                  <S.Chevron $isOpen={isOpen} />
-                </S.HeaderRight>
-              </S.Header>
-              <S.Content $isOpen={isOpen}>
-                <S.ContentInner>{notice.content}</S.ContentInner>
-              </S.Content>
-            </S.Item>
-          );
-        })}
-      </S.List>
-    </S.Wrapper>
+        <S.List>
+          {noticeList.map((notice: TNotice) => {
+            const isOpen = openItems.has(notice.id);
+            return (
+              <S.Item key={notice.id} $isOpen={isOpen}>
+                <S.Header onClick={() => toggleItem(notice.id)}>
+                  <S.TitleRow>
+                    {notice.isNew && <S.NewBadge>N</S.NewBadge>}
+                    <S.ItemTitle $isOpen={isOpen}>{notice.title}</S.ItemTitle>
+                  </S.TitleRow>
+                  <S.HeaderRight>
+                    <S.Date>{notice.date}</S.Date>
+                    <S.Chevron $isOpen={isOpen} />
+                  </S.HeaderRight>
+                </S.Header>
+                <S.Content $isOpen={isOpen}>
+                  <S.ContentInner>{notice.content}</S.ContentInner>
+                </S.Content>
+              </S.Item>
+            );
+          })}
+        </S.List>
+      </S.Wrapper>
+    </>
   );
 }
 
 const S = {
   Wrapper: styled.div`
+    position: relative;
+    z-index: 1;
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
