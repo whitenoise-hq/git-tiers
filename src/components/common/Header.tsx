@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { Logo } from '@/components/common/Logo';
@@ -39,6 +40,10 @@ const HeaderActions = ({
         <Badge badgeContent={1} color="error">
           <NotificationsIcon sx={{ color: iconColor, fontSize: 20 }} />
         </Badge>
+      </IconButton>
+      {/* 다른 아이콘(알림·GitHub)처럼 채워진 모양을 써서 크기가 같아 보이게 한다. */}
+      <IconButton onClick={() => router.push('/ranking')} size="small" aria-label={t.header.ranking}>
+        <EmojiEventsIcon sx={{ color: iconColor, fontSize: 20 }} />
       </IconButton>
       <Link href={GITHUB_REPO_URL} rel="noopener noreferrer" target="_blank">
         <IconButton size="small">

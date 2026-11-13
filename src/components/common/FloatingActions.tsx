@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -12,7 +13,7 @@ import { Color } from '@/styles/color';
 export const FloatingActions = () => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const { lang, toggleLang } = useLanguage();
+  const { lang, t, toggleLang } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setVisible(window.scrollY > 400);
@@ -26,6 +27,10 @@ export const FloatingActions = () => {
     <S.Wrap data-visible={visible}>
       <S.Button onClick={() => router.push('/notice')} aria-label="Notice">
         <NotificationsNoneIcon sx={{ fontSize: 18 }} />
+      </S.Button>
+      {/* 이 묶음은 테두리형 아이콘이라 트로피도 같은 테두리형으로 맞춘다. */}
+      <S.Button onClick={() => router.push('/ranking')} aria-label={t.header.ranking}>
+        <EmojiEventsOutlinedIcon sx={{ fontSize: 18 }} />
       </S.Button>
       <S.LinkButton
         href="https://github.com/git-tiers/gittiers"
