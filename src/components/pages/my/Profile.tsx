@@ -81,15 +81,16 @@ export const Profile = () => {
             <S.SecondaryButton onClick={handleGitLogout}>
               {t.myPage.logout}
             </S.SecondaryButton>
-            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)} disabled={isPreview}>
+            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)}>
               {t.myPage.withdraw}
             </S.DangerButton>
           </S.Actions>
         </S.DetailInner>
       </S.Expandable>
 
-      {session?.loginId && !isPreview && (
+      {session?.loginId && (
         <WithdrawDialog
+          preview={isPreview}
           open={withdrawOpen}
           loginId={session.loginId}
           onClose={() => setWithdrawOpen(false)}

@@ -13,6 +13,8 @@ interface WithdrawDialogProps {
   readonly open: boolean;
   readonly loginId: string;
   readonly onClose: () => void;
+  /** 개발 미리보기: 확인창은 그대로 보여 주되 실제로 탈퇴하지 않는다. */
+  readonly preview?: boolean;
 }
 
 /**
@@ -21,7 +23,7 @@ interface WithdrawDialogProps {
  * (프로필 카드의 backdrop-filter·overflow 에 잘리지 않고, Esc·포커스 가두기를 기본 제공).
  * 실수로 탈퇴하지 않도록 GitHub 아이디를 직접 입력해야 버튼이 켜진다.
  */
-export const WithdrawDialog = ({ open, loginId, onClose }: WithdrawDialogProps) => {
+export const WithdrawDialog = ({ open, loginId, onClose, preview = false }: WithdrawDialogProps) => {
   const { t } = useLanguage();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [typed, setTyped] = useState('');
@@ -45,6 +47,12 @@ export const WithdrawDialog = ({ open, loginId, onClose }: WithdrawDialogProps) 
   const handleWithdraw = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!canWithdraw) return;
+
+    if (preview) {
+      toast('개발 미리보기라 실제로 탈퇴하지 않았습니다.');
+      handleClose();
+      return;
+    }
 
     setPending(true);
     try {

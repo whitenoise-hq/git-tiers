@@ -49,7 +49,7 @@ const MyPageContent = () => {
         <S.PreviewBanner role="status" data-error={previewError}>
           {previewError
             ? '개발 미리보기를 불러오지 못했습니다. 아이디와 .env.local 의 GITHUB_TOKEN 을 확인하세요.'
-            : `개발 미리보기: ${previewData?.profile.loginId ?? '불러오는 중'} · 옵션은 저장되지 않고 탈퇴도 할 수 없습니다.`}
+            : `개발 미리보기: ${previewData?.profile.loginId ?? '불러오는 중'} · 옵션은 저장되지 않고, 탈퇴는 확인창까지만 열립니다.`}
         </S.PreviewBanner>
       )}
       {isPreview && previewLoading ? (
