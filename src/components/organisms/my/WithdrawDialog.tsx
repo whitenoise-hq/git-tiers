@@ -159,7 +159,8 @@ const S = {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-left: 18px;
+    padding-left: 0;
+    list-style-position: inside;
     margin-bottom: 12px;
     font-size: 14px;
     line-height: 1.55;
