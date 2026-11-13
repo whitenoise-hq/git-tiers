@@ -51,6 +51,8 @@ export const RefreshButton = ({
 
     if (result === 'refreshed') toast.success(t.ranking.refreshed);
     if (result === 'failed') toast.error(t.ranking.refreshFailed);
+    if (result === 'preview')
+      toast('개발 미리보기라 실제로 갱신하지 않았습니다.');
   };
 
   const label = pending

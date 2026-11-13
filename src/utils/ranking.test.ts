@@ -126,9 +126,21 @@ describe('buildTierDistribution', () => {
 
 describe('getNextTier', () => {
   it('바로 위 세부 단계까지 남은 수', () => {
-    expect(getNextTier(2736)).toEqual({ tierText: 'Master 1', remaining: 164 });
-    expect(getNextTier(0)).toEqual({ tierText: 'Iron 3', remaining: 50 });
-    expect(getNextTier(150)).toEqual({ tierText: 'Bronze 4', remaining: 50 });
+    expect(getNextTier(2736)).toEqual({
+      tierText: 'Master 1',
+      remaining: 164,
+      progress: 0.45,
+    });
+    expect(getNextTier(0)).toEqual({
+      tierText: 'Iron 3',
+      remaining: 50,
+      progress: 0,
+    });
+    expect(getNextTier(150)).toEqual({
+      tierText: 'Bronze 4',
+      remaining: 50,
+      progress: 0,
+    });
   });
 
   it('가장 높은 단계면 null', () => {
@@ -151,7 +163,7 @@ describe('findMyRank', () => {
       tierName: 'Silver',
       tierText: 'Silver 2',
       tierImage: '/tiers/3_silver.png',
-      next: { tierText: 'Silver 1', remaining: 50 },
+      next: { tierText: 'Silver 1', remaining: 50, progress: 0 },
     });
   });
 

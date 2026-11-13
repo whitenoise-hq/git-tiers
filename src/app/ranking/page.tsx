@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import styled from '@emotion/styled';
 import { PageContainer } from '@/components/common/PageContainer';
@@ -17,9 +17,18 @@ import { Color } from '@/styles/color';
 
 /** 로그인 없이 볼 수 있는 랭킹. 상위 3명은 가린 아이디와 티어만 보여 준다. */
 export default function RankingPage() {
+  // 개발 미리보기 파라미터(useSearchParams)를 쓰므로 Suspense 로 감싼다.
+  return (
+    <Suspense fallback={null}>
+      <RankingContent />
+    </Suspense>
+  );
+}
+
+const RankingContent = () => {
   const { t } = useLanguage();
   const { data: session } = useSession();
-  const { data, refresh } = useRankingData();
+  const { data, refresh, previewLogin } = useRankingData();
 
   return (
     <>
@@ -28,6 +37,12 @@ export default function RankingPage() {
         <S.PageLabel>{t.ranking.label}</S.PageLabel>
         <S.PageTitle>{t.ranking.title}</S.PageTitle>
         <S.Subtitle>{t.ranking.subtitle}</S.Subtitle>
+        {previewLogin && (
+          <S.PreviewBanner role="status">
+            개발 미리보기: {previewLogin} 로 로그인한 것처럼 보여 줍니다. 갱신은
+            하지 않습니다.
+          </S.PreviewBanner>
+        )}
 
         {data.status === 'error' && (
           <S.Error role="alert">{t.ranking.loadFailed}</S.Error>
@@ -42,7 +57,7 @@ export default function RankingPage() {
               <MyRankCard
                 status="ranked"
                 me={data.my.me}
-                loginId={session?.loginId ?? ''}
+                loginId={previewLogin ?? session?.loginId ?? ''}
                 refreshAvailableAt={data.my.refreshAvailableAt}
                 onRefresh={refresh}
               />
@@ -69,7 +84,7 @@ export default function RankingPage() {
       <LoadingSpinner loading={data.status === 'loading'} />
     </>
   );
-}
+};
 
 const riseIn = keyframes`
   from {
@@ -169,6 +184,15 @@ const S = {
       rgba(255, 255, 255, 0.04)
     );
     box-shadow: 0 0 10px rgba(100, 172, 255, 0.12);
+  `,
+
+  PreviewBanner: styled.p`
+    margin: -24px 0 24px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: ${Color.Orange100};
+    background: rgba(234, 152, 47, 0.12);
+    border-radius: 12px;
   `,
 
   Note: styled.p`
