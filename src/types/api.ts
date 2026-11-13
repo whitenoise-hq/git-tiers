@@ -32,10 +32,18 @@ export function isValidImageOptions(value: unknown): value is ImageOptions {
   );
 }
 
+/**
+ * users 컬렉션 문서. 문서 ID 는 GitHub 숫자 ID(아이디를 바꿔도 유지된다).
+ * 2026-11 이전 문서는 GitHub 아이디(login)가 문서 ID 였다(legacy).
+ */
 export interface UserData {
+  github_id?: number;
+  /** 현재 GitHub 아이디. 다른 사람이 이 아이디를 가져가면 null 이 된다. */
+  login_id?: string | null;
+  /** 대소문자 무시 조회용 */
+  login_lower?: string | null;
   lastUpdated?: string;
   imageSettings?: ImageSettings;
-  loginId?: string;
   first_login?: string;
   last_login?: string;
 }

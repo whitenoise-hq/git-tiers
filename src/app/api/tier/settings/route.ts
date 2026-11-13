@@ -1,26 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { usersCollection } from '../../../../../firebase/admin';
-import { UserData } from '@/types/api';
+import { getImageSettings } from '../../../../../firebase/users';
 
 export async function GET(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-  if (!token?.loginId) {
+  if (!token?.githubId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const loginId = token.loginId as string;
-
   try {
-    const userDoc = await usersCollection().doc(loginId).get();
-
-    if (!userDoc.exists) {
-      return NextResponse.json({ imageSettings: null });
-    }
-
-    const userData = userDoc.data() as UserData;
-    return NextResponse.json({ imageSettings: userData.imageSettings || null });
+    const imageSettings = await getImageSettings(token.githubId as string);
+    return NextResponse.json({ imageSettings });
   } catch {
     return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }

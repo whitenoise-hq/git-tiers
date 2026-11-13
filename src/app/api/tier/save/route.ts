@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { usersCollection } from '../../../../../firebase/admin';
+import { saveImageSettings } from '../../../../../firebase/users';
 import { ImageSettings, isValidImageOptions } from '@/types/api';
 import { getContributeCount } from '@/utils/github';
 
 export async function POST(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-  if (!token?.loginId || !token?.accessToken) {
+  if (!token?.githubId || !token?.loginId || !token?.accessToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const githubId = token.githubId as string;
   const loginId = token.loginId as string;
 
   let body: unknown;
@@ -44,13 +45,7 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    await usersCollection().doc(loginId).set(
-      {
-        lastUpdated: new Date().toISOString(),
-        imageSettings,
-      },
-      { merge: true },
-    );
+    await saveImageSettings({ githubId, login: loginId, imageSettings });
 
     return NextResponse.json({ success: true, contributeCount });
   } catch {

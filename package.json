@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "migrate:user-keys": "node --env-file=.env.local scripts/migrate-user-doc-keys.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

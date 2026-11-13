@@ -4,14 +4,13 @@ import { NextRequest } from 'next/server';
 const mocks = vi.hoisted(() => ({
   getToken: vi.fn(),
   getContributeCount: vi.fn(),
-  set: vi.fn(),
-  doc: vi.fn(),
+  saveImageSettings: vi.fn(),
 }));
 
 vi.mock('next-auth/jwt', () => ({ getToken: mocks.getToken }));
 vi.mock('@/utils/github', () => ({ getContributeCount: mocks.getContributeCount }));
-vi.mock('../../../../../firebase/admin', () => ({
-  usersCollection: () => ({ doc: mocks.doc }),
+vi.mock('../../../../../firebase/users', () => ({
+  saveImageSettings: mocks.saveImageSettings,
 }));
 
 const { POST } = await import('./route');
@@ -27,9 +26,12 @@ const options = { isCard: 'card', isText: 'exist', isMode: 'dark' };
 describe('POST /api/tier/save', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.doc.mockReturnValue({ set: mocks.set });
-    mocks.set.mockResolvedValue(undefined);
-    mocks.getToken.mockResolvedValue({ loginId: 'octocat', accessToken: 'gho_test' });
+    mocks.saveImageSettings.mockResolvedValue(undefined);
+    mocks.getToken.mockResolvedValue({
+      githubId: '583231',
+      loginId: 'octocat',
+      accessToken: 'gho_test',
+    });
     mocks.getContributeCount.mockResolvedValue(1234);
   });
 
@@ -37,13 +39,17 @@ describe('POST /api/tier/save', () => {
     mocks.getToken.mockResolvedValue(null);
     const res = await POST(request({ imageSettings: options }));
     expect(res.status).toBe(401);
-    expect(mocks.set).not.toHaveBeenCalled();
+    expect(mocks.saveImageSettings).not.toHaveBeenCalled();
   });
 
-  it('토큰에 accessToken 이 없으면 401 이다', async () => {
-    mocks.getToken.mockResolvedValue({ loginId: 'octocat' });
+  it.each([
+    ['accessToken', { githubId: '583231', loginId: 'octocat' }],
+    ['githubId', { loginId: 'octocat', accessToken: 'gho_test' }],
+  ])('토큰에 %s 가 없으면 401 이다', async (_missing, token) => {
+    mocks.getToken.mockResolvedValue(token);
     const res = await POST(request({ imageSettings: options }));
     expect(res.status).toBe(401);
+    expect(mocks.saveImageSettings).not.toHaveBeenCalled();
   });
 
   it('클라이언트가 보낸 contributeCount 는 무시하고 서버 조회값을 저장한다', async () => {
@@ -57,12 +63,11 @@ describe('POST /api/tier/save', () => {
       accessToken: 'gho_test',
       loginId: 'octocat',
     });
-    expect(mocks.doc).toHaveBeenCalledWith('octocat');
-
-    const [saved, setOptions] = mocks.set.mock.calls[0];
-    expect(saved.imageSettings).toEqual({ ...options, contributeCount: 1234 });
-    expect(saved.imageSettings).not.toHaveProperty('admin');
-    expect(setOptions).toEqual({ merge: true });
+    expect(mocks.saveImageSettings).toHaveBeenCalledWith({
+      githubId: '583231',
+      login: 'octocat',
+      imageSettings: { ...options, contributeCount: 1234 },
+    });
   });
 
   it('잘못된 옵션이면 400 이고 GitHub 조회도 하지 않는다', async () => {
@@ -80,11 +85,11 @@ describe('POST /api/tier/save', () => {
     mocks.getContributeCount.mockResolvedValue('ERROR');
     const res = await POST(request({ imageSettings: options }));
     expect(res.status).toBe(502);
-    expect(mocks.set).not.toHaveBeenCalled();
+    expect(mocks.saveImageSettings).not.toHaveBeenCalled();
   });
 
   it('저장이 실패하면 500 이다', async () => {
-    mocks.set.mockRejectedValue(new Error('firestore down'));
+    mocks.saveImageSettings.mockRejectedValue(new Error('firestore down'));
     const res = await POST(request({ imageSettings: options }));
     expect(res.status).toBe(500);
   });

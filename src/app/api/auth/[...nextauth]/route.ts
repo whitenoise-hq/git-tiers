@@ -1,6 +1,27 @@
 import GitHubProvider from "next-auth/providers/github";
 import NextAuth from 'next-auth';
-import { usersCollection } from '../../../../../firebase/admin';
+import { upsertUserOnLogin } from '../../../../../firebase/users';
+
+interface GithubProfile {
+  id: number;
+  login: string;
+  company?: string | null;
+  location?: string | null;
+  bio?: string | null;
+}
+
+const fetchGithubProfile = async (accessToken: string): Promise<GithubProfile | null> => {
+  try {
+    const res = await fetch('https://api.github.com/user', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data?.id === 'number' && typeof data?.login === 'string' ? data : null;
+  } catch {
+    return null;
+  }
+};
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -17,47 +38,37 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, account }) {
-      if (account?.access_token) {
+      const isSignIn = !!account?.access_token;
+      if (isSignIn) {
         token.accessToken = account.access_token;
+      }
 
-        const res = await fetch("https://api.github.com/user", {
-          headers: {
-            Authorization: `Bearer ${account.access_token}`,
-          },
-        });
-        if (res.ok) {
-          try {
-            const userData = await res.json();
-            token.loginId = userData?.login || null;
-            token.company = userData?.company || null;
-            token.location = userData?.location || null;
-            token.bio = userData?.bio || null;
+      // 로그인할 때, 그리고 숫자 ID 도입 전에 만들어진 세션(githubId 없음)은 한 번 더 GitHub 정보를 채운다.
+      const needsProfile = isSignIn || (!token.githubId && !!token.accessToken);
+      if (!needsProfile) {
+        return token;
+      }
 
-            if(userData?.login){
-              try{
-                const userRef = usersCollection().doc(userData.login);
-                const userDoc = await userRef.get();
-                if(!userDoc.exists){
-                  await userRef.set({
-                    login_id: userData.login,
-                    first_login: new Date().toISOString(),
-                    last_login: new Date().toISOString(),
-                  })
-                }else{
-                  await userRef.set({
-                    last_login: new Date().toISOString(),
-                  }, { merge: true });
-                }
+      const profile = await fetchGithubProfile(token.accessToken as string);
+      if (!profile) {
+        return token;
+      }
 
-              }catch{
-                // Firebase write failed, continue without persisting
-              }
-            }
-          } catch {
-            // GitHub user data parse failed, continue with partial token
-          }
+      const githubId = String(profile.id);
+      token.githubId = githubId;
+      token.loginId = profile.login;
+      token.company = profile.company ?? null;
+      token.location = profile.location ?? null;
+      token.bio = profile.bio ?? null;
+
+      if (isSignIn) {
+        try {
+          await upsertUserOnLogin({ githubId, login: profile.login });
+        } catch {
+          // 저장에 실패해도 로그인은 계속한다.
         }
       }
+
       return token;
     },
     async session({ session, token }) {
