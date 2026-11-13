@@ -14,9 +14,9 @@ import { Color } from '@/styles/color';
 export const HowToCont = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const titleFade = useScrollFadeIn({ delay: 0 });
-  const gridFade = useScrollFadeIn({ delay: 200 });
-  const ctaFade = useScrollFadeIn({ delay: 400 });
+  const [titleRef, titleVisible] = useScrollFadeIn({ delay: 0 });
+  const [gridRef, gridVisible] = useScrollFadeIn({ delay: 200 });
+  const [ctaRef, ctaVisible] = useScrollFadeIn({ delay: 400 });
   const { t } = useLanguage();
 
   const handleGetStarted = async () => {
@@ -37,13 +37,13 @@ export const HowToCont = () => {
   return (
     <S.Section>
       <S.Inner>
-        <S.Label ref={titleFade.ref} data-visible={titleFade.isVisible}>
+        <S.Label ref={titleRef} data-visible={titleVisible}>
           {t.howTo.label}
         </S.Label>
-        <S.Title ref={titleFade.ref} data-visible={titleFade.isVisible}>
+        <S.Title ref={titleRef} data-visible={titleVisible}>
           {t.howTo.title}
         </S.Title>
-        <S.Grid ref={gridFade.ref} data-visible={gridFade.isVisible}>
+        <S.Grid ref={gridRef} data-visible={gridVisible}>
           {steps.map((step) => (
             <S.Card key={step.step}>
               <S.StepBadge>STEP {step.step}</S.StepBadge>
@@ -52,7 +52,7 @@ export const HowToCont = () => {
             </S.Card>
           ))}
         </S.Grid>
-        <S.CTAGroup ref={ctaFade.ref} data-visible={ctaFade.isVisible}>
+        <S.CTAGroup ref={ctaRef} data-visible={ctaVisible}>
           <S.CTAPrimary onClick={handleGetStarted}>
             {t.hero.getStarted}
           </S.CTAPrimary>

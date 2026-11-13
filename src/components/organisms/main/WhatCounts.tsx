@@ -18,7 +18,7 @@ const KEYS = [
 ] as const;
 
 export const WhatCounts = () => {
-  const titleFade = useScrollFadeIn({ delay: 0 });
+  const [titleRef, titleVisible] = useScrollFadeIn({ delay: 0 });
   const { t } = useLanguage();
 
   const contributionTypes = KEYS.map((key, i) => ({
@@ -30,13 +30,13 @@ export const WhatCounts = () => {
   return (
     <S.Section>
       <S.Inner>
-        <S.Label ref={titleFade.ref} data-visible={titleFade.isVisible}>
+        <S.Label ref={titleRef} data-visible={titleVisible}>
           {t.whatCounts.label}
         </S.Label>
-        <S.Title ref={titleFade.ref} data-visible={titleFade.isVisible}>
+        <S.Title ref={titleRef} data-visible={titleVisible}>
           {t.whatCounts.title}
         </S.Title>
-        <S.Subtitle ref={titleFade.ref} data-visible={titleFade.isVisible}>
+        <S.Subtitle ref={titleRef} data-visible={titleVisible}>
           {t.whatCounts.subtitle}
         </S.Subtitle>
 
@@ -57,10 +57,10 @@ const WhatCountsItem = ({
   readonly item: { icon: string; title: string; description: string };
   readonly index: number;
 }) => {
-  const fade = useScrollFadeIn({ delay: index * 100 });
+  const [fadeRef, fadeVisible] = useScrollFadeIn({ delay: index * 100 });
 
   return (
-    <S.Card ref={fade.ref} data-visible={fade.isVisible}>
+    <S.Card ref={fadeRef} data-visible={fadeVisible}>
       <S.CardIcon>{item.icon}</S.CardIcon>
       <S.CardTitle>{item.title}</S.CardTitle>
       <S.CardDesc>{item.description}</S.CardDesc>

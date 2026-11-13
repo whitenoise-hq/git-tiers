@@ -1,5 +1,5 @@
 import { signOut, useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useEffectEvent, useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
@@ -15,39 +15,30 @@ import { Color } from '@/styles/color';
 export const MakeTier = () => {
   const { data: session } = useSession();
   const { t } = useLanguage();
+  const loginId = session?.loginId;
   const [contributeCount, setContributeCount] = useState<number>(0);
-  const [tierImage, setTierImage] = useState<string>('');
-  const [tierText, setTierText] = useState<string>('');
   const [isCard, setIsCard] = useState<CardType>('card');
   const [isText, setIsText] = useState<TextVisibility>('exist');
   const [isMode, setIsMode] = useState<string>('light');
   const [loading, setLoading] = useState<boolean>(true);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const [userImageUrl, setUserImageUrl] = useState<string>('');
   const [hasSaved, setHasSaved] = useState<boolean>(false);
 
-  const handleGithubData = async () => {
-    if (session?.loginId) {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/github/contributions');
-        if (!res.ok) {
-          throw new Error('Failed to fetch');
-        }
-        const data = await res.json();
-        setContributeCount(data.contributions);
-      } catch {
-        toast.error(t.toast.error);
-        await signOut({ callbackUrl: '/' });
-        return;
-      } finally {
-        setTimeout(() => setLoading(false), 500);
-      }
-    }
-  };
+  // 기여 수에서 바로 계산한다(0 이어도 Iron 4 가 보이도록).
+  const tierImage = getTierImage(contributeCount);
+  const tierText = getTierText(contributeCount);
+
+  // 개발 모드에서 로그인 없이 /my 를 열면 로딩 화면 없이 기본값으로 보여준다.
+  const isDevPreview = process.env.NODE_ENV === 'development' && !loginId;
+
+  // effect 의존성에 t(언어)를 넣지 않기 위해 Effect Event 로 분리한다.
+  const handleLoadError = useEffectEvent(async () => {
+    toast.error(t.toast.error);
+    await signOut({ callbackUrl: '/' });
+  });
 
   const handleSaveImage = async () => {
-    if (!session?.loginId) {
+    if (!loginId) {
       toast.error(t.toast.loginFirst);
       return;
     }
@@ -76,9 +67,6 @@ export const MakeTier = () => {
         setContributeCount(data.contributeCount);
       }
 
-      const baseUrl = window.location.origin;
-      setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
-
       setHasSaved(true);
       toast.success(t.toast.imageSaved);
     } catch {
@@ -89,56 +77,75 @@ export const MakeTier = () => {
   };
 
   const copyToClipboard = () => {
-    if (userImageUrl) {
-      navigator.clipboard.writeText(
-        `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
-      );
-      toast.success(t.toast.tagCopied);
-    }
+    if (!loginId) return;
+    const userImageUrl = `${window.location.origin}/api/tier/${loginId}`;
+    navigator.clipboard.writeText(
+      `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
+    );
+    toast.success(t.toast.tagCopied);
   };
 
-  const handleController = async () => {
-    try {
-      const res = await fetch('/api/tier/settings');
-      if (!res.ok) return;
-      const data = await res.json();
-      const settings = data.imageSettings;
+  // 기여 수 조회
+  useEffect(() => {
+    if (!loginId) return undefined;
 
-      if (settings) {
-        setIsCard(settings.isCard as CardType);
-        setIsText(settings.isText as TextVisibility);
-        setIsMode(settings.isMode);
-        setHasSaved(true);
+    let cancelled = false;
+    let spinnerTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const load = async () => {
+      try {
+        const res = await fetch('/api/github/contributions');
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        if (!cancelled) setContributeCount(data.contributions);
+      } catch {
+        if (!cancelled) await handleLoadError();
+        return;
       }
-    } catch {
-      // Settings load failure is non-critical, use defaults
-    }
-  };
+      // 스피너가 깜빡이지 않게 잠깐 유지한다.
+      spinnerTimer = setTimeout(() => {
+        if (!cancelled) setLoading(false);
+      }, 500);
+    };
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && !session?.loginId) {
-      setLoading(false);
-      return;
-    }
-    handleGithubData();
-  }, [session?.loginId]);
+    load();
 
-  useEffect(() => {
-    if (contributeCount) {
-      const imgUrl = getTierImage(contributeCount);
-      const text = getTierText(contributeCount);
-      setTierImage(imgUrl);
-      setTierText(text);
-    }
-  }, [contributeCount]);
+    return () => {
+      cancelled = true;
+      clearTimeout(spinnerTimer);
+    };
+  }, [loginId]);
 
+  // 저장된 표시 옵션 불러오기
   useEffect(() => {
-    if (session?.loginId) {
-      handleController();
-      const baseUrl = window.location.origin;
-      setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
-    }
-  }, [session?.loginId]);
+    if (!loginId) return undefined;
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const res = await fetch('/api/tier/settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        const settings = data.imageSettings;
+
+        if (settings && !cancelled) {
+          setIsCard(settings.isCard as CardType);
+          setIsText(settings.isText as TextVisibility);
+          setIsMode(settings.isMode);
+          setHasSaved(true);
+        }
+      } catch {
+        // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 무시한다.
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loginId]);
 
   return (
     <>
@@ -185,7 +192,7 @@ export const MakeTier = () => {
       </S.TableLink>
 
     </S.Card>
-    <LoadingSpinner loading={loading} />
+    <LoadingSpinner loading={loading && !isDevPreview} />
     </>
   );
 };

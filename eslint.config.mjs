@@ -13,10 +13,6 @@ export default defineConfig([
     rules: {
       eqeqeq: 'error',
       'no-var': 'error',
-      // react-hooks 7 에서 새로 생긴 규칙. 기존 화면 코드(useScrollFadeIn ref 사용, effect 안 setState)가
-      // 걸려 있어 일단 경고로 두고, 컴포넌트를 고친 뒤 error 로 올린다.
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
     },
   },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts']),

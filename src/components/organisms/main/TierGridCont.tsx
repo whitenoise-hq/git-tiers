@@ -13,11 +13,11 @@ import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
 
 export const TierGridCont = () => {
-  const fade = useScrollFadeIn({ threshold: 0.1 });
+  const [fadeRef, fadeVisible] = useScrollFadeIn({ threshold: 0.1 });
   const { t } = useLanguage();
 
   return (
-    <S.Section ref={fade.ref} data-visible={fade.isVisible}>
+    <S.Section ref={fadeRef} data-visible={fadeVisible}>
       <S.Inner>
         <S.Label>{t.tierGrid.label}</S.Label>
         <S.Title>{t.tierGrid.title}</S.Title>

@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 
 export const useAuth = () => {
   const { data: session, status } = useSession();
-  const [isLogin, setIsLogin] = useState(false);
-  const [userImg, setUserImg] = useState('');
 
-  useEffect(() => {
-    if (status === 'authenticated' && session) {
-      setIsLogin(true);
-      setUserImg(session?.user?.image ?? '');
-    } else {
-      setIsLogin(false);
-      setUserImg('');
-    }
-  }, [status, session]);
+  // 세션에서 바로 계산한다(별도 state·effect 로 복사하지 않는다).
+  const isLogin = status === 'authenticated' && !!session;
+  const userImg = isLogin ? (session?.user?.image ?? '') : '';
 
   const handleGitLogin = async () => {
     await signIn('github', { callbackUrl: '/my' });
