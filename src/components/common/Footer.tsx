@@ -24,7 +24,6 @@ export const Footer = () => {
           </S.BrandBlock>
 
           <S.Nav aria-label="Footer">
-            <S.NavLink href="/notice">{t.notice.title}</S.NavLink>
             <S.NavLink href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
               <GitHubIcon sx={{ fontSize: 15 }} />
               GitHub
