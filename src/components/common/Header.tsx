@@ -258,17 +258,16 @@ const S = {
     }
   `,
 
+  // 랜딩 외 페이지: 투명 배경으로 맨 위에만 두고 스크롤하면 본문과 함께 올라간다.
+  // 본문(Container)이 헤더 높이만큼 위 여백을 두므로 흐름에서 빼(absolute) 겹치지 않게 한다.
   Nav: styled.nav`
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
     padding: 0 24px;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
   `,
 
   Inner: styled.div`
