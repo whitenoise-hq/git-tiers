@@ -23,7 +23,7 @@ import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useMyAccount } from '@/components/pages/my/MyAccountContext';
-import { CardType, DEFAULT_IMAGE_OPTIONS, TextVisibility } from '@/types/api';
+import { CardType, DEFAULT_IMAGE_OPTIONS, ImageOptions, TextVisibility } from '@/types/api';
 import { Color } from '@/styles/color';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
@@ -101,19 +101,43 @@ export const MakeTier = () => {
     toast.success(t.toast.tagCopied);
   };
 
-  // 기여 수 조회(배지와 같은 값)
+  // 기여 수(배지와 같은 값)와 저장된 표시 옵션을 함께 불러온 뒤에 스피너를 끈다.
+  // 둘 중 하나만 먼저 끝나면 스피너가 사라진 뒤 배경색 등이 바뀌어 보이기 때문이다.
   useEffect(() => {
     if (!loginId || isPreview) return undefined;
 
     let cancelled = false;
     let spinnerTimer: ReturnType<typeof setTimeout> | undefined;
 
+    const fetchContributions = async (): Promise<number> => {
+      const res = await fetch('/api/github/contributions');
+      if (!res.ok) throw new Error('Failed to fetch contributions');
+      const data: { contributions: number } = await res.json();
+      return data.contributions;
+    };
+
+    // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 실패는 null 로 둔다.
+    const fetchSettings = async (): Promise<ImageOptions | null> => {
+      try {
+        const res = await fetch('/api/tier/settings');
+        if (!res.ok) return null;
+        const data: { imageSettings: ImageOptions | null } = await res.json();
+        return data.imageSettings;
+      } catch {
+        return null;
+      }
+    };
+
     const load = async () => {
       try {
-        const res = await fetch('/api/github/contributions');
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data = await res.json();
-        if (!cancelled) setContributeCount(data.contributions);
+        const [count, settings] = await Promise.all([fetchContributions(), fetchSettings()]);
+        if (cancelled) return;
+        setContributeCount(count);
+        if (settings) {
+          setIsCard(settings.isCard);
+          setIsText(settings.isText);
+          setIsMode(settings.isMode);
+        }
       } catch {
         if (!cancelled) await handleLoadError();
         return;
@@ -121,7 +145,7 @@ export const MakeTier = () => {
       // 스피너가 깜빡이지 않게 잠깐 유지한다.
       spinnerTimer = setTimeout(() => {
         if (!cancelled) setLoading(false);
-      }, 500);
+      }, 300);
     };
 
     load();
@@ -129,36 +153,6 @@ export const MakeTier = () => {
     return () => {
       cancelled = true;
       clearTimeout(spinnerTimer);
-    };
-  }, [loginId, isPreview]);
-
-  // 저장된 표시 옵션 불러오기
-  useEffect(() => {
-    if (!loginId || isPreview) return undefined;
-
-    let cancelled = false;
-
-    const load = async () => {
-      try {
-        const res = await fetch('/api/tier/settings');
-        if (!res.ok) return;
-        const data = await res.json();
-        const settings = data.imageSettings;
-
-        if (settings && !cancelled) {
-          setIsCard(settings.isCard as CardType);
-          setIsText(settings.isText as TextVisibility);
-          setIsMode(settings.isMode);
-        }
-      } catch {
-        // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 무시한다.
-      }
-    };
-
-    load();
-
-    return () => {
-      cancelled = true;
     };
   }, [loginId, isPreview]);
 
