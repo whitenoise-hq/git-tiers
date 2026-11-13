@@ -62,6 +62,7 @@ const ko: PolicyContent = {
         'GitHub 계정을 이용한 로그인과 본인 확인',
         'GitHub 기여 수에 따른 티어 산정과 README 뱃지 이미지 제공',
         '마이페이지에서 프로필과 뱃지 설정 표시',
+        '랭킹 화면 제공(상위 순위에는 일부를 가린 GitHub 아이디와 티어만 표시하며 기여 수는 공개하지 않음)',
       ],
       paragraphs: ['위 목적 외의 용도(마케팅, 프로필 분석 등)로는 이용하지 않습니다.'],
     },
@@ -79,6 +80,7 @@ const ko: PolicyContent = {
       paragraphs: [
         '서비스는 이용자의 개인정보를 제3자에게 제공하지 않습니다.',
         '다만 이용자가 README에 넣은 뱃지 이미지는 GitHub 아이디로 누구나 볼 수 있으며, 뱃지에는 티어와 최근 1년 기여 수(GitHub에 이미 공개된 정보)가 표시됩니다.',
+        '랭킹 화면에는 상위 3명의 일부를 가린 GitHub 아이디(예: dev***ie)와 티어가 표시되며, 누구나 볼 수 있습니다.',
       ],
     },
     {
@@ -162,6 +164,7 @@ const en: PolicyContent = {
         'Signing in and identifying you with your GitHub account',
         'Calculating your tier from GitHub contributions and serving your README badge',
         'Showing your profile and badge settings on My Page',
+        'Providing the Ranking page (top ranks show only a partially hidden GitHub username and tier; contribution counts are not shown)',
       ],
       paragraphs: ['We do not use your information for any other purpose, such as marketing or profiling.'],
     },
@@ -179,6 +182,7 @@ const en: PolicyContent = {
       paragraphs: [
         'We do not provide your personal information to third parties.',
         'Badge images you add to your README can be viewed by anyone via your GitHub username. Badges show your tier and contributions in the last year, which GitHub already makes public.',
+        'The Ranking page shows the partially hidden GitHub username (e.g. dev***ie) and tier of the top 3 users, and anyone can view it.',
       ],
     },
     {

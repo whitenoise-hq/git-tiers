@@ -60,3 +60,57 @@ export const getContributionCount = async (
 
   return count;
 };
+
+/** 한 번에 GitHub 에 보내는 요청 수 */
+const REFRESH_CONCURRENCY = 5;
+
+export interface RefreshSummary {
+  readonly updated: number;
+  readonly failed: number;
+  readonly skipped: number;
+}
+
+/**
+ * 모든 사용자의 기여 수를 캐시와 상관없이 새로 조회해 저장한다(매일 예약 작업).
+ * 랭킹 순서가 뱃지 조회 여부와 상관없이 같은 날 기준이 되도록 한다.
+ */
+export const refreshAllContributions = async (now: number = Date.now()): Promise<RefreshSummary> => {
+  const serverToken = process.env.GITHUB_TOKEN;
+  if (!serverToken) {
+    throw new Error('GITHUB_TOKEN is not configured');
+  }
+
+  const snapshot = await usersCollection().get();
+  const targets = snapshot.docs.flatMap((doc) => {
+    const login = (doc.data() as UserRecord['data']).login_id;
+    return login ? [{ docId: doc.id, login }] : [];
+  });
+  const updatedAt = new Date(now).toISOString();
+
+  const results: boolean[] = [];
+  for (let i = 0; i < targets.length; i += REFRESH_CONCURRENCY) {
+    const batch = targets.slice(i, i + REFRESH_CONCURRENCY);
+    const batchResults = await Promise.all(
+      batch.map(async ({ docId, login }) => {
+        const count = await getContributeCount({ accessToken: serverToken, loginId: login });
+        if (count === 'ERROR') return false;
+        try {
+          await usersCollection()
+            .doc(docId)
+            .set({ contributions: { count, updatedAt } }, { merge: true });
+          return true;
+        } catch {
+          return false;
+        }
+      }),
+    );
+    results.push(...batchResults);
+  }
+
+  const updated = results.filter(Boolean).length;
+  return {
+    updated,
+    failed: results.length - updated,
+    skipped: snapshot.docs.length - targets.length,
+  };
+};

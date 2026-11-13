@@ -5,12 +5,15 @@ const mocks = vi.hoisted(() => ({
   getContributeCount: vi.fn(),
   set: vi.fn(),
   doc: vi.fn(),
+  getAll: vi.fn(),
 }));
 
-vi.mock('./admin', () => ({ usersCollection: () => ({ doc: mocks.doc }) }));
+vi.mock('./admin', () => ({ usersCollection: () => ({ doc: mocks.doc, get: mocks.getAll }) }));
 vi.mock('../src/utils/github', () => ({ getContributeCount: mocks.getContributeCount }));
 
-const { getContributionCount, CONTRIBUTIONS_TTL_MS } = await import('./contributions');
+const { getContributionCount, refreshAllContributions, CONTRIBUTIONS_TTL_MS } = await import(
+  './contributions'
+);
 
 const NOW = Date.parse('2026-11-13T12:00:00.000Z');
 const minutesAgo = (m: number) => new Date(NOW - m * 60 * 1000).toISOString();
@@ -118,5 +121,60 @@ describe('getContributionCount', () => {
   it('캐시 저장이 실패해도 조회한 값은 돌려준다', async () => {
     mocks.set.mockRejectedValue(new Error('firestore down'));
     expect(await getContributionCount(user({ login_id: 'octocat' }), NOW)).toBe(1500);
+  });
+});
+
+describe('refreshAllContributions', () => {
+  const docs = (items: { id: string; data: UserData }[]) => ({
+    docs: items.map(({ id, data }) => ({ id, data: () => data })),
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'ghp_server');
+    mocks.doc.mockReturnValue({ set: mocks.set });
+    mocks.set.mockResolvedValue(undefined);
+    mocks.getContributeCount.mockResolvedValue(1500);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('아이디가 있는 모든 사용자를 캐시와 상관없이 새로 조회해 저장한다', async () => {
+    mocks.getAll.mockResolvedValue(
+      docs([
+        { id: '1', data: { login_id: 'a', contributions: { count: 1, updatedAt: minutesAgo(1) } } },
+        { id: '2', data: { login_id: 'b' } },
+        { id: '3', data: { login_id: null } },
+      ]),
+    );
+
+    const summary = await refreshAllContributions(NOW);
+
+    expect(summary).toEqual({ updated: 2, failed: 0, skipped: 1 });
+    expect(mocks.getContributeCount).toHaveBeenCalledTimes(2);
+    expect(mocks.set).toHaveBeenCalledWith(
+      { contributions: { count: 1500, updatedAt: new Date(NOW).toISOString() } },
+      { merge: true },
+    );
+  });
+
+  it('GitHub 조회나 저장이 실패한 사람은 failed 로 센다', async () => {
+    mocks.getAll.mockResolvedValue(
+      docs([
+        { id: '1', data: { login_id: 'a' } },
+        { id: '2', data: { login_id: 'b' } },
+      ]),
+    );
+    mocks.getContributeCount.mockResolvedValueOnce('ERROR').mockResolvedValueOnce(10);
+    mocks.set.mockRejectedValueOnce(new Error('write failed'));
+
+    expect(await refreshAllContributions(NOW)).toEqual({ updated: 0, failed: 2, skipped: 0 });
+  });
+
+  it('GITHUB_TOKEN 이 없으면 오류', async () => {
+    vi.stubEnv('GITHUB_TOKEN', '');
+    await expect(refreshAllContributions(NOW)).rejects.toThrow('GITHUB_TOKEN');
   });
 });

@@ -52,8 +52,27 @@
     "learnMore": "Learn more"
   },
   "header": {
+    "ranking": "Ranking",
     "myPage": "My Page",
     "getStarted": "Get Started"
+  },
+  "ranking": {
+    "label": "Ranking",
+    "title": "Ranking",
+    "subtitle": "Based on GitHub contributions in the last year · Updated daily",
+    "podiumEmpty": "No rankings yet",
+    "myRank": "My rank",
+    "rankOf": "#{rank} of {total}",
+    "topPercent": "Top {percent}%",
+    "nextTier": "{remaining} to {tier}",
+    "topTier": "You're at the highest level",
+    "notRanked": "No rank yet. It will appear within a day.",
+    "loginPrompt": "Sign in to see your rank",
+    "login": "Sign in with GitHub",
+    "distribution": "Tier distribution",
+    "people": "{count}",
+    "privacyNote": "Usernames are partially hidden and contribution counts are not shown.",
+    "loadFailed": "Couldn't load the ranking."
   },
   "footer": {
     "privacy": "Privacy Policy"
