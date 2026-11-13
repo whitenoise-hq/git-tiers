@@ -18,6 +18,9 @@ export interface ImageSettings extends ImageOptions {
   contributeCount: number;
 }
 
+/** #RGB 또는 #RRGGBB 만 허용한다(4·5자리는 SVG 에서 잘못된 색으로 나온다). */
+const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
 export function isValidImageOptions(value: unknown): value is ImageOptions {
   if (!value || typeof value !== 'object') return false;
   const obj = value as Record<string, unknown>;
@@ -25,7 +28,7 @@ export function isValidImageOptions(value: unknown): value is ImageOptions {
     CARD_TYPES.includes(obj.isCard as CardType) &&
     TEXT_VISIBILITIES.includes(obj.isText as TextVisibility) &&
     typeof obj.isMode === 'string' &&
-    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || /^#[0-9a-fA-F]{3,6}$/.test(obj.isMode))
+    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || HEX_COLOR_REGEX.test(obj.isMode))
   );
 }
 
