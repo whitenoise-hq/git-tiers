@@ -62,13 +62,18 @@ export const MakeTier = () => {
             isCard,
             isText,
             isMode,
-            contributeCount,
           },
         }),
       });
 
       if (!res.ok) {
         throw new Error('Failed to save');
+      }
+
+      // 서버가 GitHub 에서 다시 조회해 저장한 값으로 화면을 맞춘다.
+      const data: { contributeCount?: number } = await res.json();
+      if (typeof data.contributeCount === 'number') {
+        setContributeCount(data.contributeCount);
       }
 
       const baseUrl = window.location.origin;

@@ -6,23 +6,26 @@ export const CARD_TYPES: readonly CardType[] = ['card', 'image'] as const;
 export const TEXT_VISIBILITIES: readonly TextVisibility[] = ['exist', 'none'] as const;
 export const BACKGROUND_MODES: readonly BackgroundMode[] = ['light', 'dark', 'green', 'red', 'blue'] as const;
 
-export interface ImageSettings {
+/** 사용자가 고르는 표시 옵션. 클라이언트에서 받는 값은 이것뿐이다. */
+export interface ImageOptions {
   isCard: CardType;
   isText: TextVisibility;
   isMode: BackgroundMode | string; // string for custom hex colors
+}
+
+/** 저장되는 설정. contributeCount 는 서버가 GitHub 에서 직접 조회한 값만 넣는다. */
+export interface ImageSettings extends ImageOptions {
   contributeCount: number;
 }
 
-export function isValidImageSettings(value: unknown): value is ImageSettings {
+export function isValidImageOptions(value: unknown): value is ImageOptions {
   if (!value || typeof value !== 'object') return false;
   const obj = value as Record<string, unknown>;
   return (
     CARD_TYPES.includes(obj.isCard as CardType) &&
     TEXT_VISIBILITIES.includes(obj.isText as TextVisibility) &&
     typeof obj.isMode === 'string' &&
-    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || /^#[0-9a-fA-F]{3,6}$/.test(obj.isMode)) &&
-    typeof obj.contributeCount === 'number' &&
-    obj.contributeCount >= 0
+    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || /^#[0-9a-fA-F]{3,6}$/.test(obj.isMode))
   );
 }
 
