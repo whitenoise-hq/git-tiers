@@ -1,5 +1,5 @@
 import { signOut, useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useEffectEvent, useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
@@ -9,131 +9,156 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { CardType, TextVisibility } from '@/types/api';
+import { CardType, DEFAULT_IMAGE_OPTIONS, TextVisibility } from '@/types/api';
 import { Color } from '@/styles/color';
+
+/** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
+const AUTO_SAVE_DELAY_MS = 700;
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export const MakeTier = () => {
   const { data: session } = useSession();
   const { t } = useLanguage();
+  const loginId = session?.loginId;
   const [contributeCount, setContributeCount] = useState<number>(0);
-  const [tierImage, setTierImage] = useState<string>('');
-  const [tierText, setTierText] = useState<string>('');
-  const [isCard, setIsCard] = useState<CardType>('card');
-  const [isText, setIsText] = useState<TextVisibility>('exist');
-  const [isMode, setIsMode] = useState<string>('light');
+  const [isCard, setIsCard] = useState<CardType>(DEFAULT_IMAGE_OPTIONS.isCard);
+  const [isText, setIsText] = useState<TextVisibility>(DEFAULT_IMAGE_OPTIONS.isText);
+  const [isMode, setIsMode] = useState<string>(DEFAULT_IMAGE_OPTIONS.isMode);
   const [loading, setLoading] = useState<boolean>(true);
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const [userImageUrl, setUserImageUrl] = useState<string>('');
-  const [hasSaved, setHasSaved] = useState<boolean>(false);
+  // 사용자가 옵션을 바꾼 횟수. 0 이면(불러오기만 한 상태) 저장하지 않는다.
+  const [editVersion, setEditVersion] = useState<number>(0);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
-  const handleGithubData = async () => {
-    if (session?.loginId) {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/github/contributions');
-        if (!res.ok) {
-          throw new Error('Failed to fetch');
-        }
-        const data = await res.json();
-        setContributeCount(data.contributions);
-      } catch {
-        toast.error(t.toast.error);
-        await signOut({ callbackUrl: '/' });
-        return;
-      } finally {
-        setTimeout(() => setLoading(false), 500);
-      }
-    }
-  };
+  // 기여 수에서 바로 계산한다(0 이어도 Iron 4 가 보이도록).
+  const tierImage = getTierImage(contributeCount);
+  const tierText = getTierText(contributeCount);
 
-  const handleSaveImage = async () => {
-    if (!session?.loginId) {
-      toast.error(t.toast.loginFirst);
-      return;
-    }
+  // 개발 모드에서 로그인 없이 /my 를 열면 로딩 화면 없이 기본값으로 보여준다.
+  const isDevPreview = process.env.NODE_ENV === 'development' && !loginId;
 
-    setSaveLoading(true);
-    try {
-      const res = await fetch('/api/tier/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageSettings: {
-            isCard,
-            isText,
-            isMode,
-            contributeCount,
-          },
-        }),
-      });
+  // effect 의존성에 t(언어)를 넣지 않기 위해 Effect Event 로 분리한다.
+  const handleLoadError = useEffectEvent(async () => {
+    toast.error(t.toast.error);
+    await signOut({ callbackUrl: '/' });
+  });
+  const handleSaveError = useEffectEvent(() => {
+    toast.error(t.toast.saveFailed);
+  });
 
-      if (!res.ok) {
-        throw new Error('Failed to save');
-      }
-
-      const baseUrl = window.location.origin;
-      setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
-
-      setHasSaved(true);
-      toast.success(t.toast.imageSaved);
-    } catch {
-      toast.error(t.toast.saveFailed);
-    } finally {
-      setSaveLoading(false);
-    }
-  };
+  /** 사용자가 바꾼 옵션만 자동 저장 대상으로 표시한다. */
+  const editable =
+    <T,>(setter: Dispatch<SetStateAction<T>>): Dispatch<SetStateAction<T>> =>
+    (value) => {
+      setter(value);
+      setEditVersion((version) => version + 1);
+    };
 
   const copyToClipboard = () => {
-    if (userImageUrl) {
-      navigator.clipboard.writeText(
-        `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
-      );
-      toast.success(t.toast.tagCopied);
-    }
+    if (!loginId) return;
+    const userImageUrl = `${window.location.origin}/api/tier/${loginId}`;
+    navigator.clipboard.writeText(
+      `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`,
+    );
+    toast.success(t.toast.tagCopied);
   };
 
-  const handleController = async () => {
-    try {
-      const res = await fetch('/api/tier/settings');
-      if (!res.ok) return;
-      const data = await res.json();
-      const settings = data.imageSettings;
+  // 기여 수 조회(배지와 같은 값)
+  useEffect(() => {
+    if (!loginId) return undefined;
 
-      if (settings) {
-        setIsCard(settings.isCard as CardType);
-        setIsText(settings.isText as TextVisibility);
-        setIsMode(settings.isMode);
-        setHasSaved(true);
+    let cancelled = false;
+    let spinnerTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const load = async () => {
+      try {
+        const res = await fetch('/api/github/contributions');
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        if (!cancelled) setContributeCount(data.contributions);
+      } catch {
+        if (!cancelled) await handleLoadError();
+        return;
       }
-    } catch {
-      // Settings load failure is non-critical, use defaults
-    }
-  };
+      // 스피너가 깜빡이지 않게 잠깐 유지한다.
+      spinnerTimer = setTimeout(() => {
+        if (!cancelled) setLoading(false);
+      }, 500);
+    };
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && !session?.loginId) {
-      setLoading(false);
-      return;
-    }
-    handleGithubData();
-  }, [session?.loginId]);
+    load();
 
-  useEffect(() => {
-    if (contributeCount) {
-      const imgUrl = getTierImage(contributeCount);
-      const text = getTierText(contributeCount);
-      setTierImage(imgUrl);
-      setTierText(text);
-    }
-  }, [contributeCount]);
+    return () => {
+      cancelled = true;
+      clearTimeout(spinnerTimer);
+    };
+  }, [loginId]);
 
+  // 저장된 표시 옵션 불러오기
   useEffect(() => {
-    if (session?.loginId) {
-      handleController();
-      const baseUrl = window.location.origin;
-      setUserImageUrl(`${baseUrl}/api/tier/${session.loginId}`);
-    }
-  }, [session?.loginId]);
+    if (!loginId) return undefined;
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const res = await fetch('/api/tier/settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        const settings = data.imageSettings;
+
+        if (settings && !cancelled) {
+          setIsCard(settings.isCard as CardType);
+          setIsText(settings.isText as TextVisibility);
+          setIsMode(settings.isMode);
+        }
+      } catch {
+        // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 무시한다.
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loginId]);
+
+  // 옵션을 바꾸면 잠시 뒤 자동 저장한다. README 배지에도 이 옵션이 쓰인다.
+  useEffect(() => {
+    if (!loginId || editVersion === 0) return undefined;
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setSaveStatus('saving');
+      try {
+        const res = await fetch('/api/tier/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageSettings: { isCard, isText, isMode } }),
+        });
+        if (!res.ok) throw new Error('Failed to save');
+        if (!cancelled) setSaveStatus('saved');
+      } catch {
+        if (!cancelled) {
+          setSaveStatus('error');
+          handleSaveError();
+        }
+      }
+    }, AUTO_SAVE_DELAY_MS);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [loginId, editVersion, isCard, isText, isMode]);
+
+  const saveStatusText = {
+    idle: t.myPage.autoSaveHint,
+    saving: t.myPage.saving,
+    saved: t.myPage.saved,
+    error: t.myPage.saveError,
+  }[saveStatus];
 
   return (
     <>
@@ -155,20 +180,23 @@ export const MakeTier = () => {
           isCard={isCard}
           isText={isText}
           isMode={isMode}
-          setIsCard={setIsCard}
-          setIsText={setIsText}
-          setIsMode={setIsMode}
+          setIsCard={editable(setIsCard)}
+          setIsText={editable(setIsText)}
+          setIsMode={editable(setIsMode)}
         />
       </S.TierWrap>
 
+      <S.SaveStatus role="status" aria-live="polite" data-status={saveStatus}>
+        {saveStatusText}
+      </S.SaveStatus>
+
       <S.Actions>
-        <S.PrimaryButton onClick={handleSaveImage} disabled={saveLoading}>
-          {saveLoading ? t.myPage.saving : t.myPage.saveImage}
-        </S.PrimaryButton>
-        <S.SecondaryButton onClick={copyToClipboard} disabled={!hasSaved}>
+        <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
           {t.myPage.copyTag}
-        </S.SecondaryButton>
+        </S.PrimaryButton>
       </S.Actions>
+
+      <S.AutoUpdateNote>{t.myPage.autoUpdateNote}</S.AutoUpdateNote>
 
       <S.TableLink>
         <Link
@@ -180,7 +208,7 @@ export const MakeTier = () => {
       </S.TableLink>
 
     </S.Card>
-    <LoadingSpinner loading={loading} />
+    <LoadingSpinner loading={loading && !isDevPreview} />
     </>
   );
 };
@@ -252,26 +280,21 @@ const S = {
     }
   `,
 
-  SecondaryButton: styled.button`
-    padding: 10px 28px;
-    font-size: 14px;
-    font-weight: 600;
+  SaveStatus: styled.p`
+    margin: 0 0 12px;
+    font-size: 13px;
     color: ${Color.Gray300};
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 980px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
 
-    &:hover:not(:disabled) {
-      border-color: rgba(255, 255, 255, 0.25);
-      color: ${Color.TextLight};
+    &[data-status='error'] {
+      color: ${Color.Red100};
     }
+  `,
 
-    &:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
+  AutoUpdateNote: styled.p`
+    margin: 0 0 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: ${Color.Gray300};
   `,
 
   TableLink: styled.div`

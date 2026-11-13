@@ -17,6 +17,8 @@ The more you contribute, the more splendid your tier becomes.
 
 Git TIERS ranks your GitHub activity into tiers — from **Iron** to **Challenger**. Contributions include commits, issues, pull requests, code reviews, and wikis.
 
+Contributions are counted over the **last 12 months** — the same number shown on your GitHub profile.
+
 Generate a tier badge and embed it in your GitHub README to showcase your contribution level.
 
 ## How To Use
@@ -25,8 +27,10 @@ Generate a tier badge and embed it in your GitHub README to showcase your contri
 |------|-------------|
 | **1** | Sign in with your GitHub account |
 | **2** | Check your tier on My Page |
-| **3** | Customize the type and background color |
-| **4** | Click **Save Image**, then **Copy Tag** and paste it into your README |
+| **3** | Customize the type and background color — changes are saved automatically |
+| **4** | Click **Copy Tag** and paste it into your README |
+
+That's it. The badge fetches your contribution count from GitHub whenever it is shown, so it **keeps itself up to date** — no need to come back and save again. (Counts are cached for a few hours, so new contributions may take a little while to appear.)
 
 ## Embed Example
 
@@ -37,6 +41,8 @@ Generate a tier badge and embed it in your GitHub README to showcase your contri
 ```
 
 ## Tier Table
+
+> Contributions over the last 12 months. Thresholds are defined in `src/constants/tierThresholds.ts`.
 
 ### Challenger
 | Contributions | Tier |

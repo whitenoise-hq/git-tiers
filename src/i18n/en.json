@@ -34,7 +34,7 @@
   "showcase": {
     "label": "Showcase",
     "title": "Show it off on GitHub.",
-    "subtitle": "Generate a beautiful tier badge and embed it in your README.",
+    "subtitle": "Add it to your README once — your tier badge updates automatically as you contribute.",
     "mockBio": "Full-stack developer who loves open source.",
     "techStack": "Tech Stack"
   },
@@ -44,16 +44,19 @@
     "step1Title": "Sign in with GitHub",
     "step1Desc": "Log in with your GitHub account. No sign-up needed — get started instantly.",
     "step2Title": "Check Your Tier",
-    "step2Desc": "Your tier is automatically calculated based on your total contributions. View it on My Page.",
-    "step3Title": "Customize & Save",
-    "step3Desc": "Pick your background color and card style, then save the image. You must save before copying the tag.",
+    "step2Desc": "Your tier is automatically calculated based on your contributions over the last year. View it on My Page.",
+    "step3Title": "Customize",
+    "step3Desc": "Pick your background color and card style — changes are saved automatically and applied to your README badge.",
     "step4Title": "Copy Tag & Share",
-    "step4Desc": "Use the Copy Tag button to grab your image tag, then paste it into your GitHub README to show off your tier.",
+    "step4Desc": "Copy your badge tag with the Copy Tag button and paste it into your GitHub README. Once it's there, your tier updates automatically as you contribute.",
     "learnMore": "Learn more"
   },
   "header": {
     "myPage": "My Page",
     "getStarted": "Get Started"
+  },
+  "footer": {
+    "privacy": "Privacy Policy"
   },
   "notice": {
     "label": "Announcements",
@@ -64,10 +67,20 @@
     "title": "My Page",
     "myGithub": "My GitHub",
     "logout": "Logout",
-    "totalContributions": "Total Contributions",
+    "totalContributions": "Contributions (last year)",
     "saving": "Saving...",
-    "saveImage": "Save Image",
+    "saved": "Changes saved.",
+    "saveError": "Couldn't save. Try changing an option again.",
+    "autoSaveHint": "Changes are saved automatically.",
+    "autoUpdateNote": "Your README badge updates its contribution count automatically — no need to come back. (Updates may take a few hours.)",
     "copyTag": "Copy Tag",
+    "withdraw": "Delete account",
+    "withdrawTitle": "Delete your account?",
+    "withdrawPoints": ["Your saved data (GitHub username, badge settings, contribution records) is deleted immediately and cannot be recovered.", "Badges in your README will show “Sign in to Git TIERS” instead.", "Git TIERS will be disconnected from your GitHub account. Signing in again creates a new account."],
+    "withdrawConfirmLabel": "Type your GitHub username to confirm",
+    "withdrawConfirm": "Delete account",
+    "withdrawing": "Deleting...",
+    "cancel": "Cancel",
     "viewTierTable": "View Tier Table"
   },
   "tierController": {
@@ -88,17 +101,26 @@
     "error": "An error occurred. Please try again later.",
     "loginFirst": "Please log in first.",
     "imageTooLarge": "Image is too large. Please try with simpler settings.",
-    "imageSaved": "Image saved successfully!",
-    "saveFailed": "Failed to save image. Please try again.",
-    "tagCopied": "Image tag copied to clipboard!"
+    "saveFailed": "Couldn't save your settings. Please try again later.",
+    "tagCopied": "Image tag copied to clipboard!",
+    "withdrawn": "Your account has been deleted. Thank you for using Git TIERS.",
+    "withdrawFailed": "Couldn't delete your account. Please try again later.",
+    "withdrawRevokeManual": "We couldn't disconnect GitHub automatically. You can revoke Git TIERS in GitHub Settings > Applications."
   },
   "noticeData": [
+    {
+      "id": 5,
+      "title": "Auto-Update, Account Deletion, and Security Improvements",
+      "content": "Your README tier badge now updates automatically.\n\nWhat's new:\n- Automatic badge updates (your contributions are reflected without visiting My Page)\n- Badge settings are saved automatically (the Save button has been removed)\n- Account deletion (available from your profile on My Page; your data is deleted immediately)\n- New Privacy Policy page\n\nSecurity improvements:\n- Contributions are now fetched on the server, so tiers can no longer be manipulated.\n- The database can now be accessed only from our servers.\n\nContribution counts now match the number shown on your GitHub profile, so some users may see a slightly different count.\nBadges already in your README keep working as they are.",
+      "date": "2026.11.13",
+      "isNew": true
+    },
     {
       "id": 4,
       "title": "Dark Theme Applied",
       "content": "Dark theme has been applied to the Notice and My Page.\n\nChanges:\n- Notice page dark theme applied\n- My Page profile card dark theme applied\n- Tier creation area dark theme applied\n- Tier controller (type/text/background settings) dark theme applied\n- Color picker dark theme applied\n\nThe entire page now has a unified dark theme for a cleaner look.",
       "date": "2026.05.22",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": 3,

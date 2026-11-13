@@ -10,24 +10,24 @@ import { Color } from '@/styles/color';
 import { TierImage } from '@/components/organisms/my/TierImage';
 
 export const Showcase = () => {
-  const labelFade = useScrollFadeIn({ delay: 0 });
-  const cardFade = useScrollFadeIn({ delay: 200 });
+  const [labelRef, labelVisible] = useScrollFadeIn({ delay: 0 });
+  const [cardRef, cardVisible] = useScrollFadeIn({ delay: 200 });
   const { t } = useLanguage();
 
   return (
     <S.Section>
       <S.Inner>
-        <S.Label ref={labelFade.ref} data-visible={labelFade.isVisible}>
+        <S.Label ref={labelRef} data-visible={labelVisible}>
           {t.showcase.label}
         </S.Label>
-        <S.Title ref={labelFade.ref} data-visible={labelFade.isVisible}>
+        <S.Title ref={labelRef} data-visible={labelVisible}>
           {t.showcase.title}
         </S.Title>
-        <S.Subtitle ref={labelFade.ref} data-visible={labelFade.isVisible}>
+        <S.Subtitle ref={labelRef} data-visible={labelVisible}>
           {t.showcase.subtitle}
         </S.Subtitle>
 
-        <S.CardWrapper ref={cardFade.ref} data-visible={cardFade.isVisible}>
+        <S.CardWrapper ref={cardRef} data-visible={cardVisible}>
           <S.MockReadme>
             {/* Mock GitHub README header */}
             <S.ReadmeHeader>

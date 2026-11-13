@@ -3,6 +3,7 @@ import { signOut, useSession } from 'next-auth/react';
 import styled from '@emotion/styled';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
+import { WithdrawDialog } from '@/components/organisms/my/WithdrawDialog';
 import Avatar from '@mui/material/Avatar';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -12,6 +13,7 @@ export const Profile = () => {
   const { data: session } = useSession();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   const handleGitLogout = async () => {
     await signOut();
@@ -78,9 +80,20 @@ export const Profile = () => {
             <S.SecondaryButton onClick={handleGitLogout}>
               {t.myPage.logout}
             </S.SecondaryButton>
+            <S.DangerButton type="button" onClick={() => setWithdrawOpen(true)}>
+              {t.myPage.withdraw}
+            </S.DangerButton>
           </S.Actions>
         </S.DetailInner>
       </S.Expandable>
+
+      {session?.loginId && (
+        <WithdrawDialog
+          open={withdrawOpen}
+          loginId={session.loginId}
+          onClose={() => setWithdrawOpen(false)}
+        />
+      )}
     </S.Card>
   );
 };
@@ -265,6 +278,7 @@ const S = {
 
   Actions: styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
   `,
 
@@ -302,6 +316,24 @@ const S = {
     &:hover {
       border-color: rgba(255, 255, 255, 0.25);
       color: ${Color.TextLight};
+    }
+  `,
+
+  DangerButton: styled.button`
+    margin-left: auto;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: ${Color.Red100};
+    background: rgba(249, 68, 57, 0.08);
+    border: 1px solid rgba(249, 68, 57, 0.4);
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background: rgba(249, 68, 57, 0.16);
+      border-color: ${Color.Red100};
     }
   `,
 };

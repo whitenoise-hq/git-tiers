@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getTierImage, getTierText } from './getTier';
 import { getTierBg, isLightColor } from './getTierBg';
-import { ImageSettings } from '@/types/api';
+import { ImageOptions } from '@/types/api';
 import { Color } from '@/styles/color';
 
 const iconCache = new Map<string, string>();
@@ -21,9 +21,26 @@ function getIconBase64(tierImagePath: string): string {
   return result;
 }
 
+/**
+ * 아직 티어를 저장하지 않았거나 없는 사용자용 배지.
+ * README 에 깨진 이미지 대신 이 배지가 보이게 한다.
+ */
+export function generatePlaceholderSvg(): string {
+  const width = 222;
+  const height = 100;
+  const r = 12;
+  const font = '-apple-system,Helvetica,Arial,sans-serif';
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${Color.TierBgLight}" stroke="rgba(0,0,0,0.1)" stroke-width="1" />
+  <text x="${width / 2}" y="44" font-family="${font}" font-size="13" font-weight="700" fill="${Color.TextPrimary}" text-anchor="middle" letter-spacing="0.7">NOT RANKED YET</text>
+  <text x="${width / 2}" y="64" font-family="${font}" font-size="11" fill="${Color.TextSecondary}" text-anchor="middle">Sign in to Git TIERS</text>
+</svg>`;
+}
+
 interface TierSvgParams {
   contributeCount: number;
-  settings: ImageSettings;
+  settings: ImageOptions;
 }
 
 export function generateTierSvg({ contributeCount, settings }: TierSvgParams): string {

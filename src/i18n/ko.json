@@ -34,7 +34,7 @@
   "showcase": {
     "label": "쇼케이스",
     "title": "GitHub에서 자랑하세요.",
-    "subtitle": "티어 뱃지를 생성하고 README에 삽입하세요.",
+    "subtitle": "README에 한 번 넣어 두면, 기여할 때마다 티어 뱃지가 자동으로 갱신됩니다.",
     "mockBio": "오픈소스를 사랑하는 풀스택 개발자.",
     "techStack": "기술 스택"
   },
@@ -44,16 +44,19 @@
     "step1Title": "GitHub 로그인",
     "step1Desc": "GitHub 계정으로 간편하게 로그인하세요. 별도 회원가입 없이 바로 시작할 수 있습니다.",
     "step2Title": "내 티어 확인",
-    "step2Desc": "총 기여 수를 기반으로 자동 산정된 티어를 마이페이지에서 확인하세요.",
-    "step3Title": "커스터마이즈 & 저장",
-    "step3Desc": "배경색과 카드 스타일을 원하는 대로 설정한 후 이미지를 저장하세요. 저장해야 태그 복사가 가능합니다.",
+    "step2Desc": "최근 1년간의 기여 수를 기반으로 자동 산정된 티어를 마이페이지에서 확인하세요.",
+    "step3Title": "커스터마이즈",
+    "step3Desc": "배경색과 카드 스타일을 고르면 바로 자동 저장되고, README 뱃지에도 그대로 반영됩니다.",
     "step4Title": "태그 복사 & 공유",
-    "step4Desc": "Copy Tag 버튼으로 이미지 태그를 복사한 뒤, GitHub README에 붙여넣어 티어를 공유하세요.",
+    "step4Desc": "태그 복사 버튼으로 뱃지 태그를 복사해 GitHub README에 붙여넣으세요. 한 번 넣어 두면 기여할 때마다 티어가 자동으로 갱신됩니다.",
     "learnMore": "자세히 보기"
   },
   "header": {
     "myPage": "마이페이지",
     "getStarted": "시작하기"
+  },
+  "footer": {
+    "privacy": "개인정보 처리방침"
   },
   "notice": {
     "label": "",
@@ -64,10 +67,20 @@
     "title": "마이페이지",
     "myGithub": "내 GitHub",
     "logout": "로그아웃",
-    "totalContributions": "총 기여 수",
+    "totalContributions": "최근 1년 기여 수",
     "saving": "저장 중...",
-    "saveImage": "이미지 저장",
+    "saved": "변경 사항이 저장되었습니다.",
+    "saveError": "저장하지 못했습니다. 옵션을 다시 바꿔 보세요.",
+    "autoSaveHint": "옵션을 바꾸면 자동으로 저장됩니다.",
+    "autoUpdateNote": "README에 넣은 뱃지는 기여 수가 자동으로 갱신되니 다시 들어오지 않아도 됩니다. (반영까지 몇 시간 걸릴 수 있어요)",
     "copyTag": "태그 복사",
+    "withdraw": "회원 탈퇴",
+    "withdrawTitle": "정말 탈퇴하시겠어요?",
+    "withdrawPoints": ["저장된 정보(GitHub 아이디, 뱃지 설정, 기여 수 기록)가 바로 삭제되며 되돌릴 수 없습니다.", "README에 넣은 뱃지는 「Sign in to Git TIERS」 안내로 바뀝니다.", "GitHub 계정과 Git TIERS의 연결도 해제됩니다. 다시 로그인하면 새로 가입됩니다."],
+    "withdrawConfirmLabel": "확인을 위해 GitHub 아이디를 입력하세요",
+    "withdrawConfirm": "탈퇴하기",
+    "withdrawing": "탈퇴 중...",
+    "cancel": "취소",
     "viewTierTable": "티어 표 보기"
   },
   "tierController": {
@@ -88,17 +101,26 @@
     "error": "오류가 발생했습니다. 나중에 다시 시도해주세요.",
     "loginFirst": "먼저 로그인해주세요.",
     "imageTooLarge": "이미지가 너무 큽니다. 더 간단한 설정으로 시도해주세요.",
-    "imageSaved": "이미지가 저장되었습니다!",
-    "saveFailed": "이미지 저장에 실패했습니다. 다시 시도해주세요.",
-    "tagCopied": "이미지 태그가 클립보드에 복사되었습니다!"
+    "saveFailed": "설정을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
+    "tagCopied": "이미지 태그가 클립보드에 복사되었습니다!",
+    "withdrawn": "탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.",
+    "withdrawFailed": "탈퇴하지 못했습니다. 잠시 후 다시 시도해주세요.",
+    "withdrawRevokeManual": "GitHub 연결은 해제하지 못했습니다. GitHub 설정 > Applications에서 Git TIERS를 직접 해제할 수 있습니다."
   },
   "noticeData": [
+    {
+      "id": 5,
+      "title": "자동 갱신·회원 탈퇴 추가 및 보안 강화 안내",
+      "content": "README 티어 뱃지가 이제 자동으로 갱신됩니다.\n\n추가된 기능:\n- 티어 뱃지 자동 갱신 (마이페이지에 들어오지 않아도 기여 수가 반영됩니다)\n- 뱃지 설정 자동 저장 (저장 버튼이 없어졌습니다)\n- 회원 탈퇴 (마이페이지 프로필에서 할 수 있으며, 저장된 정보는 즉시 삭제됩니다)\n- 개인정보 처리방침 페이지 추가\n\n보안 강화:\n- 기여 수를 서버에서 직접 조회해 티어를 임의로 바꿀 수 없도록 했습니다.\n- 데이터베이스는 서버에서만 접근하도록 막았습니다.\n\n기여 수는 GitHub 프로필에 보이는 숫자와 같게 맞춰져, 일부 이용자는 숫자가 조금 달라질 수 있습니다.\n이미 README에 넣은 뱃지는 그대로 두셔도 됩니다.",
+      "date": "2026.11.13",
+      "isNew": true
+    },
     {
       "id": 4,
       "title": "다크 테마 적용",
       "content": "공지사항 및 마이페이지에 다크 테마가 적용되었습니다.\n\n변경 사항:\n- 공지사항 페이지 다크 테마 적용\n- 마이페이지 프로필 카드 다크 테마 적용\n- 티어 생성 영역 다크 테마 적용\n- 티어 컨트롤러 (타입/텍스트/배경 설정) 다크 테마 적용\n- 컬러 피커 다크 테마 적용\n\n전체 페이지가 통일된 다크 테마로 더 깔끔해졌습니다.",
       "date": "2026.05.22",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": 3,
