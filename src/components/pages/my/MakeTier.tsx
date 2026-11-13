@@ -6,10 +6,16 @@ import React, {
   useEffectEvent,
   useState,
 } from 'react';
-import Link from 'next/link';
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloudDoneOutlinedIcon from '@mui/icons-material/CloudDoneOutlined';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import SyncIcon from '@mui/icons-material/Sync';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import { getTierImage, getTierText } from '@/utils/getTier';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -24,6 +30,23 @@ import { Color } from '@/styles/color';
 const AUTO_SAVE_DELAY_MS = 700;
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const META_ICON_SX = { fontSize: 14 } as const;
+
+const SAVE_STATUS_ICONS = {
+  idle: CloudDoneOutlinedIcon,
+  saving: SyncIcon,
+  saved: CheckCircleOutlineIcon,
+  error: ErrorOutlineIcon,
+} as const;
+
+const TIER_TABLE_URL = 'https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table';
 
 export const MakeTier = () => {
   const { loginId, isPreview, previewData } = useMyAccount();
@@ -167,13 +190,15 @@ export const MakeTier = () => {
   }, [loginId, isPreview, editVersion, isCard, isText, isMode]);
 
   const saveStatusText = isPreview
-    ? '개발 미리보기 — 바꾼 옵션은 저장되지 않습니다.'
+    ? '미리보기라 저장되지 않음'
     : {
         idle: t.myPage.autoSaveHint,
         saving: t.myPage.saving,
         saved: t.myPage.saved,
         error: t.myPage.saveError,
       }[saveStatus];
+
+  const SaveStatusIcon = isPreview ? VisibilityOutlinedIcon : SAVE_STATUS_ICONS[saveStatus];
 
   return (
     <>
@@ -199,29 +224,26 @@ export const MakeTier = () => {
           />
         </S.TierWrap>
 
-        <S.SaveStatus role="status" aria-live="polite" data-status={saveStatus}>
-          {saveStatusText}
-        </S.SaveStatus>
-
         <S.Actions>
           <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
             {t.myPage.copyTag}
           </S.PrimaryButton>
+          <S.SecondaryButton href={TIER_TABLE_URL} rel="noopener noreferrer" target="_blank">
+            {t.myPage.viewTierTable}
+            <OpenInNewIcon sx={META_ICON_SX} aria-hidden />
+          </S.SecondaryButton>
         </S.Actions>
 
-        <S.AutoUpdateNote>
-          <AutorenewIcon sx={{ fontSize: 14 }} aria-hidden />
-          {t.myPage.autoUpdateNote}
-        </S.AutoUpdateNote>
-
-        <S.TableLink>
-          <Link
-            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
-            rel="noopener noreferrer"
-            target="_blank">
-            {t.myPage.viewTierTable} &rarr;
-          </Link>
-        </S.TableLink>
+        <S.MetaRow>
+          <S.MetaItem role="status" aria-live="polite" data-status={isPreview ? 'preview' : saveStatus}>
+            <SaveStatusIcon sx={META_ICON_SX} aria-hidden />
+            {saveStatusText}
+          </S.MetaItem>
+          <S.MetaItem>
+            <AutorenewIcon sx={META_ICON_SX} aria-hidden />
+            {t.myPage.autoUpdateNote}
+          </S.MetaItem>
+        </S.MetaRow>
       </S.Card>
       <LoadingSpinner loading={loading && !isDevPreview} />
     </>
@@ -262,11 +284,10 @@ const S = {
 
   Actions: styled.div`
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin-top: 8px;
-    margin-bottom: 16px;
   `,
 
   PrimaryButton: styled.button`
@@ -290,40 +311,55 @@ const S = {
     }
   `,
 
-  SaveStatus: styled.p`
-    margin: 0 0 12px;
-    font-size: 13px;
+  SecondaryButton: styled.a`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: ${Color.TextLight};
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 980px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+  `,
+
+  MetaRow: styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 16px;
+    margin-top: 16px;
+  `,
+
+  MetaItem: styled.p`
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1.4;
     color: ${Color.Gray300};
+
+    &[data-status='saved'] {
+      color: #30d158;
+    }
 
     &[data-status='error'] {
       color: ${Color.Red100};
     }
-  `,
 
-  AutoUpdateNote: styled.p`
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0 0 16px;
-    padding: 6px 12px;
-    font-size: 12px;
-    line-height: 1.4;
-    color: ${Color.Gray100};
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 980px;
-  `,
+    &[data-status='preview'] {
+      color: ${Color.Orange100};
+    }
 
-  TableLink: styled.div`
-    a {
-      font-size: 14px;
-      font-weight: 600;
-      color: ${Color.Link};
-      text-decoration: none;
-      transition: color 0.2s ease;
-
-      &:hover {
-        text-decoration: underline;
-      }
+    &[data-status='saving'] svg {
+      animation: ${spin} 1s linear infinite;
     }
   `,
 };
