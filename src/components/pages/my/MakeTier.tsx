@@ -13,7 +13,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloudDoneOutlinedIcon from '@mui/icons-material/CloudDoneOutlined';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SyncIcon from '@mui/icons-material/Sync';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
@@ -29,7 +28,8 @@ import {
   TextVisibility,
 } from '@/types/api';
 import { Color } from '@/styles/color';
-import { GITHUB_REPO_URL, README_URL } from '@/constants/links';
+import Link from 'next/link';
+import { GITHUB_REPO_URL } from '@/constants/links';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
 const AUTO_SAVE_DELAY_MS = 700;
@@ -54,7 +54,6 @@ const SAVE_STATUS_ICONS = {
   error: ErrorOutlineIcon,
 } as const;
 
-const TIER_TABLE_URL = README_URL.tierTable;
 
 interface MakeTierProps {
   /** 기여 수·표시 옵션을 다 불러왔을 때(개발 미리보기는 바로) 한 번 호출된다. */
@@ -248,13 +247,8 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
           <S.PrimaryButton onClick={copyToClipboard} disabled={!loginId}>
             {t.myPage.copyTag}
           </S.PrimaryButton>
-          <S.SecondaryButton
-            href={TIER_TABLE_URL}
-            rel="noopener noreferrer"
-            target="_blank">
-            {t.myPage.viewTierTable}
-            <OpenInNewIcon sx={META_ICON_SX} aria-hidden />
-          </S.SecondaryButton>
+          {/* 사이트 안의 티어 표 페이지 */}
+          <S.SecondaryButton href="/tiers">{t.myPage.viewTierTable}</S.SecondaryButton>
         </S.Actions>
 
         <S.MetaRow>
@@ -341,7 +335,7 @@ const S = {
     }
   `,
 
-  SecondaryButton: styled.a`
+  SecondaryButton: styled(Link)`
     display: inline-flex;
     align-items: center;
     justify-content: center;
