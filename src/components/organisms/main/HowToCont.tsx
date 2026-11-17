@@ -12,6 +12,7 @@ import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
+import { README_URL } from '@/constants/links';
 
 export const HowToCont = () => {
   const { data: session } = useSession();
@@ -63,7 +64,7 @@ export const HowToCont = () => {
           </S.CTAPrimary>
           <S.LinkButton>
             <Link
-              href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#how-to-use"
+              href={README_URL.howToUse}
               rel="noopener noreferrer"
               target="_blank">
               {t.howTo.learnMore} &rarr;

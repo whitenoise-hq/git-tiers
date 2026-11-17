@@ -1,5 +1,5 @@
 import { usersCollection } from './admin';
-import { isLegacyUser, type UserRecord } from './users';
+import type { UserRecord } from './users';
 import { getContributeCount } from '../src/utils/github';
 
 /**
@@ -12,15 +12,12 @@ import { getContributeCount } from '../src/utils/github';
 /** 이 시간 안에 조회한 값은 다시 조회하지 않는다. */
 export const CONTRIBUTIONS_TTL_MS = 3 * 60 * 60 * 1000;
 
-/** 문서에서 조회에 쓸 GitHub 아이디. 예전 문서는 문서 ID 가 아이디다. */
-const loginOf = (user: UserRecord): string | null =>
-  user.data.login_id ?? (isLegacyUser(user.data) ? user.docId : null);
+/** 조회에 쓸 GitHub 아이디(다른 사람이 아이디를 가져가 비었으면 null) */
+const loginOf = (user: UserRecord): string | null => user.data.login_id ?? null;
 
 /** 캐시가 만료됐거나 조회에 실패했을 때 쓸 마지막 값 */
 const lastKnownCount = (user: UserRecord): number | null =>
-  user.data.contributions?.count ??
-  user.data.imageSettings?.contributeCount ??
-  null;
+  user.data.contributions?.count ?? null;
 
 const isFresh = (updatedAt: string | undefined, now: number): boolean => {
   if (!updatedAt) return false;

@@ -19,13 +19,8 @@ export const DEFAULT_IMAGE_OPTIONS: ImageOptions = {
   isMode: 'light',
 };
 
-/**
- * users 문서에 저장된 표시 옵션.
- * contributeCount 는 자동 갱신 도입(2026-11) 전에 저장하던 값으로, 새로 쓰지 않고 캐시가 없을 때 대체값으로만 읽는다.
- */
-export interface ImageSettings extends ImageOptions {
-  contributeCount?: number;
-}
+/** users 문서에 저장된 표시 옵션 */
+export type ImageSettings = ImageOptions;
 
 /** 서버 토큰으로 조회한 기여 수 캐시 */
 export interface ContributionsCache {

@@ -15,9 +15,9 @@ import { Logo } from '@/components/common/Logo';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { Color } from '@/styles/color';
+import { GITHUB_REPO_URL } from '@/constants/links';
 
 const COLLAPSE_THRESHOLD = 200;
-const GITHUB_REPO_URL = 'https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers';
 
 const HeaderActions = ({
   dark,

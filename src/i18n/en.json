@@ -81,6 +81,12 @@
   "footer": {
     "privacy": "Privacy Policy"
   },
+  "notFound": {
+    "title": "Page not found",
+    "description": "This page doesn't exist or has moved.",
+    "home": "Go home",
+    "ranking": "View ranking"
+  },
   "notice": {
     "label": "Announcements",
     "title": "Notice"

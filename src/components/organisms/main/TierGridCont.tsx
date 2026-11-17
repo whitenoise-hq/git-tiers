@@ -12,6 +12,7 @@ import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
+import { README_URL } from '@/constants/links';
 
 export const TierGridCont = () => {
   const [fadeRef, fadeVisible] = useScrollFadeIn({ threshold: 0.1 });
@@ -35,7 +36,7 @@ export const TierGridCont = () => {
         </S.Grid>
         <S.LinkWrap>
           <Link
-            href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table"
+            href={README_URL.tierTable}
             rel="noopener noreferrer"
             target="_blank">
             {t.tierGrid.viewTable} &rarr;

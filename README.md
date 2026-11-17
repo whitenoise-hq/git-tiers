@@ -35,7 +35,7 @@ That's it. The badge fetches your contribution count from GitHub whenever it is 
 ## Embed Example
 
 ```html
-<a href="https://github.com/git-tiers/gittiers">
+<a href="https://github.com/whitenoise-hq/git-tiers">
   <img src="https://git-tiers.devwoodie.com/api/tier/YOUR_GITHUB_ID" alt="Git-TIERS" />
 </a>
 ```
