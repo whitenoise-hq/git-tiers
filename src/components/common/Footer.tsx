@@ -30,6 +30,8 @@ export const Footer = () => {
               <GitHubIcon sx={{ fontSize: 15 }} />
               GitHub
             </S.NavLink>
+            <S.NavLink href="/tiers">{t.tiersPage.title}</S.NavLink>
+            <S.NavLink href="/ranking">{t.ranking.title}</S.NavLink>
             <S.NavLink href="/privacy">{t.footer.privacy}</S.NavLink>
           </S.Nav>
         </S.Top>

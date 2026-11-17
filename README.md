@@ -1,38 +1,59 @@
 <div align="center">
 
+<img src="public/tiers/9_challenger.png" width="96" alt="Challenger" />
+
 # Git TIERS
 
-**Your GitHub. Your Tier.**
+### Your GitHub. Your Tier.
 
-Prove your skills with daily commits.
-The more you contribute, the more splendid your tier becomes.
+Turn your GitHub contributions into a tier — from **Iron** to **Challenger**.<br/>
+Drop one tag in your README and it **updates itself** every time you contribute.
 
-[Website](https://git-tiers.devwoodie.com) | [한국어](./README.ko.md)
+<br/>
+
+<a href="https://git-tiers.devwoodie.com"><img src="https://img.shields.io/badge/Get_your_tier-0071e3?style=for-the-badge&logoColor=white" alt="Get your tier" /></a>
+<a href="https://git-tiers.devwoodie.com/ranking"><img src="https://img.shields.io/badge/Ranking-1c1c1e?style=for-the-badge" alt="Ranking" /></a>
+<a href="https://git-tiers.devwoodie.com/tiers"><img src="https://img.shields.io/badge/Tier_table-1c1c1e?style=for-the-badge" alt="Tier table" /></a>
+
+<br/><br/>
+
+<a href="https://github.com/whitenoise-hq/git-tiers/actions/workflows/ci.yml"><img src="https://github.com/whitenoise-hq/git-tiers/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+<img src="https://img.shields.io/github/package-json/v/whitenoise-hq/git-tiers?color=0071e3&label=version" alt="version" />
+
+**English** · [한국어](./README.ko.md)
 
 </div>
 
----
+<br/>
 
-## What is Git TIERS?
+<div align="center">
 
-Git TIERS ranks your GitHub activity into tiers — from **Iron** to **Challenger**. Contributions include commits, issues, pull requests, code reviews, and wikis.
+<a href="https://git-tiers.devwoodie.com"><img src="https://git-tiers.devwoodie.com/api/tier/devwoodie" alt="Git TIERS badge example" /></a>
 
-Contributions are counted over the **last 12 months** — the same number shown on your GitHub profile.
+<sub>A live badge — this one is fetched from GitHub right now.</sub>
 
-Generate a tier badge and embed it in your GitHub README to showcase your contribution level.
+</div>
+
+<br/>
+
+## Why Git TIERS?
+
+| | |
+| --- | --- |
+| 🔄 **Always up to date** | The badge asks GitHub for your contributions whenever it's shown. Add it once, never come back to save again. |
+| 🎨 **Make it yours** | Card or emblem-only, with or without text, preset or **any custom background color**. Changes save automatically. |
+| 🏆 **Ranking** | See where you stand among Git TIERS users and how many contributions you need for the next level. |
+| 🔒 **Privacy first** | No contribution counts or total user numbers on the public ranking — just a partially hidden username and tier. |
+
+Contributions are counted over the **last 12 months** — the exact number shown on your GitHub profile (commits, issues, pull requests, code reviews and more).
+
+<br/>
 
 ## How To Use
 
-| Step | Description |
-|------|-------------|
-| **1** | Sign in with your GitHub account |
-| **2** | Check your tier on My Page |
-| **3** | Customize the type and background color — changes are saved automatically |
-| **4** | Click **Copy Tag** and paste it into your README |
-
-That's it. The badge fetches your contribution count from GitHub whenever it is shown, so it **keeps itself up to date** — no need to come back and save again. (Counts are cached for a few hours, so new contributions may take a little while to appear.)
-
-## Embed Example
+**1. Sign in** with GitHub at [git-tiers.devwoodie.com](https://git-tiers.devwoodie.com)<br/>
+**2. Customize** your badge on My Page — it's saved as you go<br/>
+**3. Copy Tag** and paste it into your profile README
 
 ```html
 <a href="https://github.com/whitenoise-hq/git-tiers">
@@ -40,94 +61,53 @@ That's it. The badge fetches your contribution count from GitHub whenever it is 
 </a>
 ```
 
+That's it. New contributions show up on their own (counts are cached for a few hours).
+
+<br/>
+
 ## Tier Table
 
-> Contributions over the last 12 months. Thresholds are defined in `src/constants/tierThresholds.ts`.
+9 tiers, 4 levels each — 36 steps from your first commit to the top.
 
-### Challenger
-| Contributions | Tier |
-|--------------|------|
-| 6,300+ | Challenger 1 |
-| 5,800 ~ 6,299 | Challenger 2 |
-| 5,300 ~ 5,799 | Challenger 3 |
-| 4,800 ~ 5,299 | Challenger 4 |
+| | Tier | 4 | 3 | 2 | 1 |
+| :-: | --- | --: | --: | --: | --: |
+| <img src="public/tiers/9_challenger.png" width="32" /> | **Challenger** | 4,800 | 5,300 | 5,800 | 6,300+ |
+| <img src="public/tiers/8_grandmaster.png" width="32" /> | **Grandmaster** | 3,200 | 3,600 | 4,000 | 4,400 |
+| <img src="public/tiers/7_master.png" width="32" /> | **Master** | 2,000 | 2,300 | 2,600 | 2,900 |
+| <img src="public/tiers/6_diamond.png" width="32" /> | **Diamond** | 1,200 | 1,400 | 1,600 | 1,800 |
+| <img src="public/tiers/5_platinum.png" width="32" /> | **Platinum** | 800 | 900 | 1,000 | 1,100 |
+| <img src="public/tiers/4_gold.png" width="32" /> | **Gold** | 600 | 650 | 700 | 750 |
+| <img src="public/tiers/3_silver.png" width="32" /> | **Silver** | 400 | 450 | 500 | 550 |
+| <img src="public/tiers/2_bronze.png" width="32" /> | **Bronze** | 200 | 250 | 300 | 350 |
+| <img src="public/tiers/1_iron.png" width="32" /> | **Iron** | 0 | 50 | 100 | 150 |
 
-### Grandmaster
-| Contributions | Tier |
-|--------------|------|
-| 4,400 ~ 4,799 | Grandmaster 1 |
-| 4,000 ~ 4,399 | Grandmaster 2 |
-| 3,600 ~ 3,999 | Grandmaster 3 |
-| 3,200 ~ 3,599 | Grandmaster 4 |
+<sub>Minimum contributions in the last 12 months for each level. See the full table with ranges at <a href="https://git-tiers.devwoodie.com/tiers">git-tiers.devwoodie.com/tiers</a>.</sub>
 
-### Master
-| Contributions | Tier |
-|--------------|------|
-| 2,900 ~ 3,199 | Master 1 |
-| 2,600 ~ 2,899 | Master 2 |
-| 2,300 ~ 2,599 | Master 3 |
-| 2,000 ~ 2,299 | Master 4 |
+<br/>
 
-### Diamond
-| Contributions | Tier |
-|--------------|------|
-| 1,800 ~ 1,999 | Diamond 1 |
-| 1,600 ~ 1,799 | Diamond 2 |
-| 1,400 ~ 1,599 | Diamond 3 |
-| 1,200 ~ 1,399 | Diamond 4 |
+## Under the Hood
 
-### Platinum
-| Contributions | Tier |
-|--------------|------|
-| 1,100 ~ 1,199 | Platinum 1 |
-| 1,000 ~ 1,099 | Platinum 2 |
-| 900 ~ 999 | Platinum 3 |
-| 800 ~ 899 | Platinum 4 |
+- **Next.js 16** (App Router) · **TypeScript** · **Emotion**
+- Badges are rendered as **SVG on demand** and cached at the edge
+- Contributions come from the **GitHub GraphQL API** on the server — the browser never sends counts
+- **Firebase Firestore** via the Admin SDK only; direct client access is blocked
+- Daily refresh for everyone with **GitHub Actions**, plus CI on every pull request
+- Hosted on **Vercel**
 
-### Gold
-| Contributions | Tier |
-|--------------|------|
-| 750 ~ 799 | Gold 1 |
-| 700 ~ 749 | Gold 2 |
-| 650 ~ 699 | Gold 3 |
-| 600 ~ 649 | Gold 4 |
 
-### Silver
-| Contributions | Tier |
-|--------------|------|
-| 550 ~ 599 | Silver 1 |
-| 500 ~ 549 | Silver 2 |
-| 450 ~ 499 | Silver 3 |
-| 400 ~ 449 | Silver 4 |
-
-### Bronze
-| Contributions | Tier |
-|--------------|------|
-| 350 ~ 399 | Bronze 1 |
-| 300 ~ 349 | Bronze 2 |
-| 250 ~ 299 | Bronze 3 |
-| 200 ~ 249 | Bronze 4 |
-
-### Iron
-| Contributions | Tier |
-|--------------|------|
-| 150 ~ 199 | Iron 1 |
-| 100 ~ 149 | Iron 2 |
-| 50 ~ 99 | Iron 3 |
-| 0 ~ 49 | Iron 4 |
-
-## Tech Stack
-
-`Next.js` `TypeScript` `Emotion` `Firebase` `NextAuth` `Vercel`
+<br/>
 
 ## License
 
-MIT
+© 2025–2026 devwoodie. **All rights reserved.**
 
----
+The source code is shared for reference only. Copying, modifying, redistributing or using it to run another service is not permitted.<br/>
+You're free to put **your own Git TIERS badge** (the tag from My Page) in any README or website. See [LICENSE](./LICENSE).
 
 <div align="center">
 
-Made by [devwoodie](https://github.com/devwoodie)
+<br/>
+
+Made by [devwoodie](https://github.com/devwoodie) · Questions and ideas are welcome in [Issues](https://github.com/whitenoise-hq/git-tiers/issues)
 
 </div>

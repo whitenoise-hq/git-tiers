@@ -4,6 +4,5 @@ export const GITHUB_REPO_URL = 'https://github.com/whitenoise-hq/git-tiers';
 /** README 의 각 절로 바로 가는 주소 */
 export const README_URL = {
   intro: `${GITHUB_REPO_URL}?tab=readme-ov-file#git-tiers`,
-  tierTable: `${GITHUB_REPO_URL}?tab=readme-ov-file#tier-table`,
   howToUse: `${GITHUB_REPO_URL}?tab=readme-ov-file#how-to-use`,
 } as const;

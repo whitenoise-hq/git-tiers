@@ -87,6 +87,14 @@
     "home": "Go home",
     "ranking": "View ranking"
   },
+  "tiersPage": {
+    "label": "Tier Table",
+    "title": "Tier Table",
+    "subtitle": "Your contributions over the last year place you in one of 9 tiers and 36 levels.",
+    "mine": "You",
+    "note": "Counts match the last-year contributions on your GitHub profile. We'll announce any threshold changes on the Notice page.",
+    "cta": "Check my tier"
+  },
   "notice": {
     "label": "Announcements",
     "title": "Notice"
