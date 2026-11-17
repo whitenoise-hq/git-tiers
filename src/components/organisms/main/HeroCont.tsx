@@ -9,6 +9,7 @@ import { keyframes } from '@emotion/react';
 import { HeroTierCard } from '@/components/organisms/main/HeroTierCard';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
+import { README_URL } from '@/constants/links';
 
 export const HeroCont = () => {
   const { data: session } = useSession();
@@ -65,7 +66,7 @@ export const HeroCont = () => {
               </S.CTAPrimary>
             )}
             <S.CTASecondary
-              href="https://github.com/git-tiers/gittiers?tab=readme-ov-file#git-tiers"
+              href={README_URL.intro}
               target="_blank"
               rel="noopener noreferrer">
               {t.hero.learnMore} &rarr;

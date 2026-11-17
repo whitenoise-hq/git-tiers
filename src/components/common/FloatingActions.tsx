@@ -9,6 +9,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
+import { GITHUB_REPO_URL } from '@/constants/links';
 
 export const FloatingActions = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ export const FloatingActions = () => {
         <EmojiEventsOutlinedIcon sx={{ fontSize: 18 }} />
       </S.Button>
       <S.LinkButton
-        href="https://github.com/git-tiers/gittiers"
+        href={GITHUB_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="GitHub">

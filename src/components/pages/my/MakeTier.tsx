@@ -29,6 +29,7 @@ import {
   TextVisibility,
 } from '@/types/api';
 import { Color } from '@/styles/color';
+import { GITHUB_REPO_URL, README_URL } from '@/constants/links';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
 const AUTO_SAVE_DELAY_MS = 700;
@@ -53,8 +54,7 @@ const SAVE_STATUS_ICONS = {
   error: ErrorOutlineIcon,
 } as const;
 
-const TIER_TABLE_URL =
-  'https://github.com/git-tiers/gittiers?tab=readme-ov-file#tier-table';
+const TIER_TABLE_URL = README_URL.tierTable;
 
 interface MakeTierProps {
   /** 기여 수·표시 옵션을 다 불러왔을 때(개발 미리보기는 바로) 한 번 호출된다. */
@@ -108,7 +108,7 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
     if (!loginId) return;
     const userImageUrl = `${window.location.origin}/api/tier/${loginId}`;
     navigator.clipboard.writeText(
-      `<a href="https://github.com/git-tiers/gittiers"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`
+      `<a href="${GITHUB_REPO_URL}"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`
     );
     toast.success(t.toast.tagCopied);
   };

@@ -6,8 +6,8 @@ import styled from '@emotion/styled';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
+import { GITHUB_REPO_URL } from '@/constants/links';
 
-const GITHUB_REPO_URL = 'https://github.com/git-tiers/gittiers';
 const AUTHOR_GITHUB_URL = 'https://github.com/devwoodie';
 const CURRENT_YEAR = new Date().getFullYear();
 /** 빌드할 때 package.json 의 version 이 들어간다(next.config.ts). */

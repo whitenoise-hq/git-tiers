@@ -1,6 +1,6 @@
 {
   "name": "gittiers",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "packageManager": "yarn@1.22.22",
   "engines": {
@@ -13,8 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "migrate:user-keys": "node --env-file=.env.local scripts/migrate-user-doc-keys.mjs"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -35,7 +35,7 @@ Git TIERS는 GitHub 활동을 기반으로 **Iron**부터 **Challenger**까지 �
 ## 삽입 예시
 
 ```html
-<a href="https://github.com/git-tiers/gittiers">
+<a href="https://github.com/whitenoise-hq/git-tiers">
   <img src="https://git-tiers.devwoodie.com/api/tier/YOUR_GITHUB_ID" alt="Git-TIERS" />
 </a>
 ```

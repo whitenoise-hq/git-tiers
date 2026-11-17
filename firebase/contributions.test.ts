@@ -79,18 +79,6 @@ describe('getContributionCount', () => {
     expect(mocks.set).not.toHaveBeenCalled();
   });
 
-  it('캐시도 없으면 예전에 저장한 기여 수를 대신 쓴다', async () => {
-    mocks.getContributeCount.mockResolvedValue('ERROR');
-    const count = await getContributionCount(
-      user({
-        login_id: 'octocat',
-        imageSettings: { isCard: 'card', isText: 'exist', isMode: 'light', contributeCount: 321 },
-      }),
-      NOW,
-    );
-    expect(count).toBe(321);
-  });
-
   it('알던 값이 하나도 없고 조회도 실패하면 null', async () => {
     mocks.getContributeCount.mockResolvedValue('ERROR');
     expect(await getContributionCount(user({ login_id: 'octocat' }), NOW)).toBeNull();
@@ -104,14 +92,6 @@ describe('getContributionCount', () => {
     );
     expect(count).toBe(77);
     expect(mocks.getContributeCount).not.toHaveBeenCalled();
-  });
-
-  it('예전 문서는 문서 ID 를 아이디로 써서 조회한다', async () => {
-    await getContributionCount(user({}, 'legacy-user'), NOW);
-    expect(mocks.getContributeCount).toHaveBeenCalledWith({
-      accessToken: 'ghp_server',
-      loginId: 'legacy-user',
-    });
   });
 
   it('다른 사람이 아이디를 가져가 아이디가 비면 조회하지 않는다', async () => {

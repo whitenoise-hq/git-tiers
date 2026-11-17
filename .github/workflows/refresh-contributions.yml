@@ -4,8 +4,9 @@ name: Refresh contributions
 # 실제 갱신은 운영 API(/api/cron/refresh-contributions)가 하고, 여기서는 CRON_SECRET 으로 호출만 한다.
 on:
   schedule:
-    # 매일 UTC 18:00 = KST 03:00 (GitHub 사정으로 몇 분 늦을 수 있음)
-    - cron: '0 18 * * *'
+    # 매일 UTC 18:17 = KST 03:17
+    # 정각(:00) 예약은 GitHub 에서 몇 시간씩 밀리기 쉬워 어중간한 분으로 둔다.
+    - cron: '17 18 * * *'
   # Actions 탭의 "Run workflow" 버튼으로 바로 실행
   workflow_dispatch:
 
