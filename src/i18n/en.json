@@ -126,6 +126,7 @@
     "type": "Type",
     "simple": "Simple",
     "card": "Card",
+    "compact": "Compact",
     "tierText": "Tier Text",
     "show": "Show",
     "hide": "Hide",
@@ -148,12 +149,20 @@
   },
   "noticeData": [
     {
+      "id": 9,
+      "version": "v1.6.0",
+      "title": "Compact Badge and Tier Table Page",
+      "content": "A compact badge that fits your README badge row and a new Tier Table page are here.\n\nWhat's new:\n- Compact badge: choose \"Compact\" as the type on My Page to get a horizontal badge the same height as other README badges\n- The right side uses your tier color, and hiding the tier text shows only your contribution count\n- The left side follows your background setting (Light, Dark or a custom color)\n- Tier Table page: see all 9 tiers and 36 levels on the site (your level is highlighted when signed in)\n\nThe tag already in your README keeps working. Just change the type and your badge updates.",
+      "date": "2026.11.17",
+      "isNew": true
+    },
+    {
       "id": 6,
       "version": "v1.5.0",
       "title": "New Ranking Page",
       "content": "A new Ranking page shows how Git TIERS users rank by tier.\n\nHighlights:\n- The top 3 users are shown with their tiers (usernames are partially hidden, e.g. dev***ie)\n- Contribution counts and the total number of users are not shown\n- Sign in to see your rank and how many contributions you need for the next tier\n- Use the refresh button on your rank card to update your contributions right away (once per minute)\n- Everyone's contributions are refreshed automatically every day at 3 AM (KST)\n\nTap the trophy icon at the top to check it out.\nThe Privacy Policy has been updated to reflect the ranking display.",
       "date": "2026.11.13",
-      "isNew": true
+      "isNew": false
     },
     {
       "id": 7,

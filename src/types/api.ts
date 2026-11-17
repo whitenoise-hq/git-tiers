@@ -1,8 +1,9 @@
-export type CardType = 'card' | 'image';
+/** card: 카드형, image: 엠블럼형, compact: README 배지 줄에 맞춘 작은 가로형 */
+export type CardType = 'card' | 'image' | 'compact';
 export type TextVisibility = 'exist' | 'none';
 export type BackgroundMode = 'light' | 'dark' | 'green' | 'red' | 'blue';
 
-export const CARD_TYPES: readonly CardType[] = ['card', 'image'] as const;
+export const CARD_TYPES: readonly CardType[] = ['card', 'image', 'compact'] as const;
 export const TEXT_VISIBILITIES: readonly TextVisibility[] = ['exist', 'none'] as const;
 export const BACKGROUND_MODES: readonly BackgroundMode[] = ['light', 'dark', 'green', 'red', 'blue'] as const;
 

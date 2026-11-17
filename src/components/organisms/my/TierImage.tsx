@@ -3,6 +3,14 @@ import styled from '@emotion/styled';
 import { getTierBg, isLightColor } from '@/utils/getTierBg';
 import { CardType, TextVisibility } from '@/types/api';
 import { Color } from '@/styles/color';
+import type { TierName } from '@/constants/tierThresholds';
+import {
+  COMPACT_FONT,
+  COMPACT_HEIGHT,
+  COMPACT_LABEL,
+  compactValueText,
+  getCompactColors,
+} from '@/utils/compactBadge';
 
 type TierImageProps = {
   isMode: string;
@@ -22,6 +30,18 @@ export const TierImage = ({
   contributeCount,
 }: TierImageProps) => {
   const isLight = isLightColor(isMode);
+
+  if (isCard === 'compact') {
+    return (
+      <CompactPreview
+        isMode={isMode}
+        showTier={isText === 'exist'}
+        tierImage={tierImage}
+        tierText={tierText}
+        contributeCount={contributeCount}
+      />
+    );
+  }
 
   return (
     <div style={{ minHeight: '140px' }}>
@@ -48,7 +68,88 @@ export const TierImage = ({
   );
 };
 
+/**
+ * 작은 가로형 배지 미리보기. 실제 배지(SVG)와 같은 색·문구를 쓰고,
+ * 화면에서 잘 보이도록 1.6배로 키워 보여 준다.
+ */
+const CompactPreview = ({
+  isMode,
+  showTier,
+  tierImage,
+  tierText,
+  contributeCount,
+}: {
+  isMode: string;
+  showTier: boolean;
+  tierImage: string;
+  tierText: string;
+  contributeCount: number;
+}) => {
+  const colors = getCompactColors(isMode, tierText.split(' ')[0] as TierName);
+  const value = compactValueText(tierText, contributeCount || 0, showTier);
+
+  return (
+    <S.CompactStage>
+      <S.Compact
+        style={{ borderColor: colors.border }}
+        role="img"
+        aria-label={`Git TIERS: ${value}`}>
+        <S.CompactLeft
+          style={{ background: colors.leftBg, color: colors.leftText }}>
+          {tierImage && <img src={tierImage} alt="" />}
+          {COMPACT_LABEL}
+        </S.CompactLeft>
+        <S.CompactRight
+          style={{ background: colors.rightBg, color: colors.rightText }}>
+          {value}
+        </S.CompactRight>
+      </S.Compact>
+    </S.CompactStage>
+  );
+};
+
 const S = {
+  CompactStage: styled.div`
+    display: grid;
+    place-items: center;
+    min-height: 140px;
+  `,
+
+  Compact: styled.div`
+    display: inline-flex;
+    height: ${COMPACT_HEIGHT}px;
+    overflow: hidden;
+    border: 1px solid;
+    border-radius: 4px;
+    font-family: ${COMPACT_FONT} !important;
+    font-size: 11px;
+    line-height: ${COMPACT_HEIGHT - 2}px;
+    white-space: nowrap;
+    transform: scale(1.6);
+
+    * {
+      font-family: inherit !important;
+    }
+  `,
+
+  CompactLeft: styled.span`
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px 0 5px;
+
+    img {
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+    }
+  `,
+
+  CompactRight: styled.span`
+    padding: 0 6px;
+    font-weight: 700;
+  `,
+
   Card: styled.div<{ $form?: string; $mode?: string }>`
     background-color: ${(props) => getTierBg(props.$mode || 'light')};
     border: 1px solid
@@ -98,7 +199,8 @@ const S = {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: ${(props) => (props.$light ? Color.TextSubtle : 'rgba(255, 255, 255)')};
+    color: ${(props) =>
+      props.$light ? Color.TextSubtle : 'rgba(255, 255, 255)'};
   `,
 
   LoginId: styled.p<{ $light: boolean }>`

@@ -39,6 +39,7 @@ export const TierController = ({
   const typeOptions = [
     { value: 'image', label: t.tierController.simple },
     { value: 'card', label: t.tierController.card },
+    { value: 'compact', label: t.tierController.compact },
   ];
   const textOptions = [
     { value: 'exist', label: t.tierController.show },

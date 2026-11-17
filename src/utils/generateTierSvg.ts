@@ -4,6 +4,8 @@ import { getTierImage, getTierText } from './getTier';
 import { getTierBg, isLightColor } from './getTierBg';
 import { ImageOptions } from '@/types/api';
 import { Color } from '@/styles/color';
+import type { TierName } from '@/constants/tierThresholds';
+import { generateCompactSvg } from './compactBadge';
 
 const iconCache = new Map<string, string>();
 
@@ -58,6 +60,18 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
   const contribFormatted = contributeCount.toLocaleString();
 
   const r = 12; // border-radius
+
+  // 작은 가로형 — README 배지 줄(높이 20px)에 맞춘다.
+  if (isCard === 'compact') {
+    return generateCompactSvg({
+      iconHref: iconBase64,
+      tierName: tierText.split(' ')[0] as TierName,
+      tierText,
+      contributeCount,
+      isMode,
+      showTier: isText === 'exist',
+    });
+  }
 
   // Card mode — match TierImage.tsx: padding 6px 12px, icon 88px, gap 10px
   if (isCard === 'card') {
