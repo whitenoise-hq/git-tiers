@@ -56,7 +56,7 @@ README에 태그 하나만 넣어 두면, 기여할 때마다 **티어가 알아
 **3. 태그 복사** — 프로필 README에 붙여 넣기
 
 ```html
-<a href="https://github.com/whitenoise-hq/git-tiers">
+<a href="https://git-tiers.devwoodie.com/?ref=badge">
   <img src="https://git-tiers.devwoodie.com/api/tier/내_GitHub_아이디" alt="Git-TIERS" />
 </a>
 ```

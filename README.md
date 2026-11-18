@@ -56,7 +56,7 @@ Contributions are counted over the **last 12 months** — the exact number shown
 **3. Copy Tag** and paste it into your profile README
 
 ```html
-<a href="https://github.com/whitenoise-hq/git-tiers">
+<a href="https://git-tiers.devwoodie.com/?ref=badge">
   <img src="https://git-tiers.devwoodie.com/api/tier/YOUR_GITHUB_ID" alt="Git-TIERS" />
 </a>
 ```
