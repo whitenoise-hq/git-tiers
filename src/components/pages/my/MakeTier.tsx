@@ -29,7 +29,7 @@ import {
 } from '@/types/api';
 import { Color } from '@/styles/color';
 import Link from 'next/link';
-import { GITHUB_REPO_URL } from '@/constants/links';
+import { buildBadgeTag } from '@/utils/badgeTag';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
 const AUTO_SAVE_DELAY_MS = 700;
@@ -105,10 +105,8 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
 
   const copyToClipboard = () => {
     if (!loginId) return;
-    const userImageUrl = `${window.location.origin}/api/tier/${loginId}`;
-    navigator.clipboard.writeText(
-      `<a href="${GITHUB_REPO_URL}"><img src="${userImageUrl}" alt="Git-TIERS" /></a>`
-    );
+    // 배지를 누르면 사이트로 오게 한다(README 를 본 사람이 바로 자기 티어를 확인하러 오도록).
+    navigator.clipboard.writeText(buildBadgeTag(window.location.origin, loginId));
     toast.success(t.toast.tagCopied);
   };
 
