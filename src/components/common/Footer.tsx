@@ -3,10 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { GITHUB_REPO_URL } from '@/constants/links';
+import {
+  GitHubIcon,
+} from '@/components/common/icons';
 
 const AUTHOR_GITHUB_URL = 'https://github.com/devwoodie';
 const CURRENT_YEAR = new Date().getFullYear();
@@ -27,7 +29,7 @@ export const Footer = () => {
 
           <S.Nav aria-label="Footer">
             <S.NavLink href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
-              <GitHubIcon sx={{ fontSize: 15 }} />
+              <GitHubIcon size={15} />
               GitHub
             </S.NavLink>
             <S.NavLink href="/tiers">{t.tiersPage.title}</S.NavLink>

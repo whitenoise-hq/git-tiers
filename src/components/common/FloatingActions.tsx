@@ -3,13 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { GITHUB_REPO_URL } from '@/constants/links';
+import {
+  EmojiEventsOutlinedIcon,
+  GitHubIcon,
+  KeyboardArrowUpIcon,
+  NotificationsNoneIcon,
+} from '@/components/common/icons';
 
 export const FloatingActions = () => {
   const router = useRouter();
@@ -27,24 +29,24 @@ export const FloatingActions = () => {
   return (
     <S.Wrap data-visible={visible}>
       <S.Button onClick={() => router.push('/notice')} aria-label="Notice">
-        <NotificationsNoneIcon sx={{ fontSize: 18 }} />
+        <NotificationsNoneIcon size={18} />
       </S.Button>
       {/* 이 묶음은 테두리형 아이콘이라 트로피도 같은 테두리형으로 맞춘다. */}
       <S.Button onClick={() => router.push('/ranking')} aria-label={t.header.ranking}>
-        <EmojiEventsOutlinedIcon sx={{ fontSize: 18 }} />
+        <EmojiEventsOutlinedIcon size={18} />
       </S.Button>
       <S.LinkButton
         href={GITHUB_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="GitHub">
-        <GitHubIcon sx={{ fontSize: 18 }} />
+        <GitHubIcon size={18} />
       </S.LinkButton>
       <S.LangButton onClick={toggleLang} aria-label="Toggle language">
         {lang === 'en' ? 'KO' : 'EN'}
       </S.LangButton>
       <S.Button onClick={scrollToTop} aria-label="Back to top">
-        <KeyboardArrowUpIcon sx={{ fontSize: 18 }} />
+        <KeyboardArrowUpIcon size={18} />
       </S.Button>
     </S.Wrap>
   );

@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import toast from 'react-hot-toast';
-import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { useLanguage } from '@/i18n/LanguageContext';
 import { Color } from '@/styles/color';
 import { formatMessage } from '@/utils/formatMessage';
 import type { RefreshResult } from './useRankingData';
+import {
+  RefreshIcon,
+} from '@/components/common/icons';
 
 interface RefreshButtonProps {
   /** 다시 누를 수 있는 시각(epoch ms, 서버가 정함) */
@@ -68,7 +70,7 @@ export const RefreshButton = ({
       disabled={pending || coolingDown}
       data-pending={pending}
       aria-live="polite">
-      <RefreshIcon sx={{ fontSize: 16 }} aria-hidden />
+      <RefreshIcon size={16} aria-hidden />
       <span>{label}</span>
     </S.Button>
   );
