@@ -47,6 +47,41 @@ describe('GET /api/tier/[userId]', () => {
     expect(svg).toContain('fill="#FFFFFF"'); // 기본 배경 light
   });
 
+  it('받은 테두리를 끼웠으면 리스를 두르고 캔버스를 넓힌다', async () => {
+    mocks.findUserByLogin.mockResolvedValue(
+      user({
+        login_id: 'octocat',
+        frames: ['xmas-2026'],
+        imageSettings: {
+          isCard: 'card',
+          isText: 'exist',
+          isMode: 'light',
+          frame: 'xmas-2026',
+        },
+      })
+    );
+    const svg = await (await call('octocat')).text();
+    expect(svg).toContain('<use href="#n');
+    expect(svg).toMatch(/^<svg[^>]*width="246"/);
+  });
+
+  it('설정에 테두리가 있어도 받지 않았으면 그리지 않는다', async () => {
+    mocks.findUserByLogin.mockResolvedValue(
+      user({
+        login_id: 'octocat',
+        imageSettings: {
+          isCard: 'card',
+          isText: 'exist',
+          isMode: 'light',
+          frame: 'xmas-2026',
+        },
+      })
+    );
+    const svg = await (await call('octocat')).text();
+    expect(svg).not.toContain('<use href="#n');
+    expect(svg).toMatch(/^<svg[^>]*width="222"/);
+  });
+
   it('기여 수는 저장값이 아니라 매번 getContributionCount 로 가져온다(자동 갱신)', async () => {
     const record = user({
       login_id: 'octocat',

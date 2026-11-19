@@ -65,7 +65,10 @@ describe('users 저장소', () => {
 
     await upsertUserOnLogin({ githubId: '583231', login: 'octo-renamed' });
 
-    expect(await getImageSettings('583231')).toEqual(settings);
+    expect(await getImageSettings('583231')).toEqual({
+      ...settings,
+      frame: null,
+    });
     expect((await findUserByLogin('octo-renamed'))?.docId).toBe('583231');
     expect(await findUserByLogin('octocat')).toBeNull();
   });
@@ -104,7 +107,10 @@ describe('users 저장소', () => {
       login_id: 'Answer',
       login_lower: 'answer',
     });
-    expect(store.get('42')?.imageSettings).toEqual(settings);
+    expect(store.get('42')?.imageSettings).toEqual({
+      ...settings,
+      frame: null,
+    });
   });
 });
 

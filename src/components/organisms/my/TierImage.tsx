@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getTierBg, isLightColor } from '@/utils/getTierBg';
 import { CardType, TextVisibility } from '@/types/api';
@@ -11,6 +11,9 @@ import {
   compactValueText,
   getCompactColors,
 } from '@/utils/compactBadge';
+import { supportsFrame, type FrameId } from '@/utils/frames/catalog';
+import { renderFrame } from '@/utils/frames/render';
+import { FrameOverlay } from './FrameOverlay';
 
 type TierImageProps = {
   isMode: string;
@@ -19,6 +22,36 @@ type TierImageProps = {
   tierImage: string;
   tierText: string;
   contributeCount: number;
+  /** 두른 테두리(작은 배지에서는 무시) */
+  frame?: FrameId | null;
+};
+
+interface Size {
+  readonly width: number;
+  readonly height: number;
+}
+
+/** 요소의 바깥 크기(테두리 선 포함)를 따라간다. */
+const useElementSize = <T extends HTMLElement>() => {
+  // 콜백 ref 로 받아, 작은 배지 → 카드처럼 요소가 새로 생겨도 다시 잰다.
+  const [el, ref] = useState<T | null>(null);
+  const [size, setSize] = useState<Size | null>(null);
+
+  useEffect(() => {
+    if (!el) return undefined;
+    const observer = new ResizeObserver(() => {
+      const rect = el.getBoundingClientRect();
+      setSize((prev) =>
+        prev && prev.width === rect.width && prev.height === rect.height
+          ? prev
+          : { width: rect.width, height: rect.height }
+      );
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [el]);
+
+  return { ref, size };
 };
 
 export const TierImage = ({
@@ -28,8 +61,13 @@ export const TierImage = ({
   tierImage,
   tierText,
   contributeCount,
+  frame = null,
 }: TierImageProps) => {
   const isLight = isLightColor(isMode);
+  const { ref: cardRef, size } = useElementSize<HTMLDivElement>();
+  const shownFrame = frame && supportsFrame(isCard) ? frame : null;
+  // 테두리가 바깥으로 나가는 만큼 자리를 비워 둔다(위 글자와 겹치지 않게).
+  const pad = shownFrame ? renderFrame(shownFrame, 1, 1).pad : null;
 
   if (isCard === 'compact') {
     return (
@@ -44,8 +82,21 @@ export const TierImage = ({
   }
 
   return (
-    <div style={{ minHeight: '140px' }}>
-      <S.Card id="tierCard" $form={isCard} $mode={isMode}>
+    <div
+      style={{
+        minHeight: '140px',
+        padding: pad
+          ? `${pad.top}px ${pad.right}px ${pad.bottom}px ${pad.left}px`
+          : undefined,
+      }}>
+      <S.Card id="tierCard" ref={cardRef} $form={isCard} $mode={isMode}>
+        {shownFrame && size && (
+          <FrameOverlay
+            frame={shownFrame}
+            width={size.width}
+            height={size.height}
+          />
+        )}
         <S.IconWrap>
           {tierImage && <img src={tierImage} alt="tier-image" />}
           {isText === 'exist' && isCard === 'image' && (
