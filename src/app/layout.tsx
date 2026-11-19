@@ -27,6 +27,10 @@ export const metadata: Metadata = {
     '개발자 티어',
   ],
   metadataBase: new URL('https://git-tiers.devwoodie.com'),
+  // Google Search Console 소유 확인(URL 접두어 속성)
+  verification: {
+    google: 'gOc9MsuJBZvW1tTaIOZGA2NyC9bjs5ikNcjr5BO0Hiw',
+  },
   openGraph: {
     title: '깃티어 | Git TIERS - GitHub 커밋 기반 티어 시스템',
     description:
