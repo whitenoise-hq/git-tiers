@@ -76,7 +76,12 @@ describe('GET /api/dev/preview', () => {
         bio: null,
       },
       contributions: 321,
-      imageSettings: { isCard: 'image', isText: 'none', isMode: 'dark' },
+      imageSettings: {
+        isCard: 'image',
+        isText: 'none',
+        isMode: 'dark',
+        frame: null,
+      },
     });
     expect(mocks.getContributeCount).toHaveBeenCalledWith({
       accessToken: 'server-token',

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { getImageSettings, saveImageSettings } from '../../../../../firebase/users';
-import { ImageOptions, isValidImageOptions } from '@/types/api';
+import { getUserById, saveImageSettings } from '../../../../../firebase/users';
+import { isValidImageOptions, toImageOptions } from '@/types/api';
+import { ownedFrameIds } from '@/utils/frames/catalog';
 
 const readSession = async (request: NextRequest) => {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -9,7 +10,7 @@ const readSession = async (request: NextRequest) => {
   return { githubId: token.githubId as string, login: token.loginId as string };
 };
 
-/** 저장된 표시 옵션(카드 형태·텍스트·배경) */
+/** 저장된 표시 옵션(카드 형태·텍스트·배경·테두리)과 가진 테두리 */
 export async function GET(request: NextRequest) {
   const session = await readSession(request);
   if (!session) {
@@ -17,11 +18,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const settings = await getImageSettings(session.githubId);
-    const imageSettings = settings
-      ? { isCard: settings.isCard, isText: settings.isText, isMode: settings.isMode }
-      : null;
-    return NextResponse.json({ imageSettings });
+    const user = await getUserById(session.githubId);
+    const settings = user?.data.imageSettings;
+    return NextResponse.json({
+      imageSettings: settings ? toImageOptions(settings) : null,
+      frames: ownedFrameIds(user?.data.frames),
+    });
   } catch {
     return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }
@@ -50,13 +52,17 @@ export async function POST(request: NextRequest) {
   }
 
   // 허용한 필드만 골라 저장한다(요청 본문의 다른 필드는 버린다).
-  const options: ImageOptions = {
-    isCard: requested.isCard,
-    isText: requested.isText,
-    isMode: requested.isMode,
-  };
+  const options = toImageOptions(requested);
 
   try {
+    // 받지 않은 테두리는 끼울 수 없다.
+    if (options.frame) {
+      const user = await getUserById(session.githubId);
+      if (!ownedFrameIds(user?.data.frames).includes(options.frame)) {
+        return NextResponse.json({ error: 'Frame not owned' }, { status: 403 });
+      }
+    }
+
     await saveImageSettings({ githubId: session.githubId, login: session.login, options });
     return NextResponse.json({ success: true });
   } catch {

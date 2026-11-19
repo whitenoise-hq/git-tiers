@@ -7,6 +7,7 @@ import '@/styles/reset.css';
 import { Header } from '@/components/common/Header';
 import { Container } from '@/components/common/Container';
 import { Footer } from '@/components/common/Footer';
+import { FrameClaimer } from '@/components/common/FrameClaimer';
 import { GoogleAdSense } from '@/components/common/GoogleAdSense';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -64,6 +65,8 @@ export default function RootLayout({
           <Header />
           <Container>{children}</Container>
           <Footer />
+          {/* 이벤트 기간에 로그인한 채로 들어오면 테두리를 받는다 */}
+          <FrameClaimer />
           <GoogleAdSense />
           {/* 방문 통계(쿠키 없는 익명 집계) — Vercel Web Analytics */}
           <Analytics />

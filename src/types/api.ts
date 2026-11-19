@@ -1,3 +1,5 @@
+import { isFrameId, type FrameId } from '@/utils/frames/catalog';
+
 /** card: 카드형, image: 엠블럼형, compact: README 배지 줄에 맞춘 작은 가로형 */
 export type CardType = 'card' | 'image' | 'compact';
 export type TextVisibility = 'exist' | 'none';
@@ -12,13 +14,24 @@ export interface ImageOptions {
   isCard: CardType;
   isText: TextVisibility;
   isMode: BackgroundMode | string; // string for custom hex colors
+  /** 끼운 테두리(없으면 null). 예전 클라이언트는 보내지 않는다. */
+  frame?: FrameId | null;
 }
 
 export const DEFAULT_IMAGE_OPTIONS: ImageOptions = {
   isCard: 'card',
   isText: 'exist',
   isMode: 'light',
+  frame: null,
 };
+
+/** 허용한 필드만 골라 새 객체로 만든다(Firestore 는 undefined 를 못 받으므로 frame 은 null). */
+export const toImageOptions = (value: ImageOptions): ImageOptions => ({
+  isCard: value.isCard,
+  isText: value.isText,
+  isMode: value.isMode,
+  frame: value.frame ?? null,
+});
 
 /** users 문서에 저장된 표시 옵션 */
 export type ImageSettings = ImageOptions;
@@ -40,7 +53,8 @@ export function isValidImageOptions(value: unknown): value is ImageOptions {
     CARD_TYPES.includes(obj.isCard as CardType) &&
     TEXT_VISIBILITIES.includes(obj.isText as TextVisibility) &&
     typeof obj.isMode === 'string' &&
-    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || HEX_COLOR_REGEX.test(obj.isMode))
+    (BACKGROUND_MODES.includes(obj.isMode as BackgroundMode) || HEX_COLOR_REGEX.test(obj.isMode)) &&
+    (obj.frame === undefined || obj.frame === null || isFrameId(obj.frame))
   );
 }
 
@@ -57,6 +71,8 @@ export interface UserData {
   lastUpdated?: string;
   imageSettings?: ImageSettings;
   contributions?: ContributionsCache;
+  /** 이벤트로 받은 테두리 id 목록 */
+  frames?: string[];
   first_login?: string;
   last_login?: string;
 }

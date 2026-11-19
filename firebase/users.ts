@@ -1,4 +1,5 @@
 import { usersCollection } from './admin';
+import { toImageOptions } from '../src/types/api';
 import type { ImageOptions, ImageSettings, UserData } from '../src/types/api';
 
 /**
@@ -92,11 +93,7 @@ export const saveImageSettings = async ({
   login: string;
   options: ImageOptions;
 }): Promise<void> => {
-  const imageSettings: ImageOptions = {
-    isCard: options.isCard,
-    isText: options.isText,
-    isMode: options.isMode,
-  };
+  const imageSettings = toImageOptions(options);
 
   await usersCollection().doc(githubId).set(
     {
