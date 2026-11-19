@@ -7,6 +7,7 @@ import type { AdminStatsResponse } from '@/app/api/admin/stats/route';
 import { AuroraBackdrop } from '@/components/common/AuroraBackdrop';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { PageContainer } from '@/components/common/PageContainer';
+import { AdminNav } from '@/components/pages/admin/AdminNav';
 import { Color } from '@/styles/color';
 
 type State =
@@ -17,6 +18,9 @@ type State =
 
 const sum = (values: readonly number[]) => values.reduce((a, b) => a + b, 0);
 const shortDate = (date: string) => date.slice(5).replace('-', '/');
+/** 양 끝 막대의 툴팁이 패널 밖으로 잘리지 않게 붙는 쪽을 바꾼다. */
+const tipAlign = (index: number, length: number) =>
+  index < 4 ? 'start' : index >= length - 4 ? 'end' : 'center';
 
 /** 관리자 통계 — 배지 유입 · 가입 · 매일 갱신 결과. 관리자 GitHub ID 로만 열린다(프록시·API 이중 확인). */
 export default function AdminStatsPage() {
@@ -51,6 +55,7 @@ export default function AdminStatsPage() {
       <S.Wrapper>
         <S.PageLabel>Admin</S.PageLabel>
         <S.PageTitle>통계</S.PageTitle>
+        <AdminNav />
 
         {state.status === 'denied' && (
           <S.Message>페이지를 찾을 수 없습니다.</S.Message>
@@ -92,10 +97,17 @@ const StatsView = ({ data }: { data: AdminStatsResponse }) => {
           </S.Legend>
         </S.PanelHead>
         <S.Chart>
-          {data.daily.map((d) => (
-            <S.Day
-              key={d.date}
-              title={`${d.date} · 유입 ${d.badgeVisits} · 가입 ${d.signups}`}>
+          {data.daily.map((d, i) => (
+            <S.Day key={d.date} data-align={tipAlign(i, data.daily.length)}>
+              <S.Tip role="tooltip">
+                <strong>{d.date}</strong>
+                <span data-kind="visit">
+                  배지 유입 {d.badgeVisits.toLocaleString()}
+                </span>
+                <span data-kind="signup">
+                  새 가입 {d.signups.toLocaleString()}
+                </span>
+              </S.Tip>
               <S.Bars>
                 <S.Bar
                   data-kind="visit"
@@ -160,7 +172,7 @@ const S = {
     font-weight: 700;
     color: ${Color.TextLight};
     letter-spacing: -0.03em;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
   `,
 
   Content: styled.div`
@@ -255,11 +267,96 @@ const S = {
   `,
 
   Day: styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
     min-width: 0;
+    cursor: default;
+
+    &:hover > div:last-of-type {
+      opacity: 0.75;
+    }
+
+    &:hover > [role='tooltip'] {
+      opacity: 1;
+      transform: translate(var(--tip-x), 0);
+    }
+
+    &[data-align='center'] {
+      --tip-x: -50%;
+    }
+
+    &[data-align='start'] {
+      --tip-x: 0;
+    }
+
+    &[data-align='end'] {
+      --tip-x: 0;
+    }
+  `,
+
+  Tip: styled.div`
+    position: absolute;
+    bottom: calc(100% + 8px);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: ${Color.Gray100};
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(20, 22, 28, 0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(var(--tip-x), 4px);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+
+    [data-align='center'] > & {
+      left: 50%;
+    }
+
+    [data-align='start'] > & {
+      left: 0;
+    }
+
+    [data-align='end'] > & {
+      right: 0;
+    }
+
+    strong {
+      font-size: 11px;
+      font-weight: 600;
+      color: ${Color.TextLight};
+    }
+
+    span {
+      font-variant-numeric: tabular-nums;
+    }
+
+    span::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
+      border-radius: 2px;
+    }
+
+    [data-kind='visit']::before {
+      background: ${VISIT};
+    }
+
+    [data-kind='signup']::before {
+      background: ${SIGNUP};
+    }
   `,
 
   Bars: styled.div`

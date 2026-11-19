@@ -2,6 +2,7 @@ import GitHubProvider from "next-auth/providers/github";
 import NextAuth from 'next-auth';
 import { upsertUserOnLogin } from '../../../../../firebase/users';
 import { incrementDaily } from '../../../../../firebase/stats';
+import { isAdminGithubId } from '@/utils/admin';
 
 interface GithubProfile {
   id: number;
@@ -75,6 +76,8 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       session.loginId = token.loginId as string;
+      // 헤더에 관리자 메뉴를 보여 줄지만 알린다. 실제 접근은 프록시·API 가 따로 확인한다.
+      session.isAdmin = isAdminGithubId(token.githubId);
       session.user = {
         ...session.user,
         company: token.company as string | null,

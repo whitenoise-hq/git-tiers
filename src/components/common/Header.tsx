@@ -10,6 +10,8 @@ import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { useSession } from 'next-auth/react';
 
 import { Logo } from '@/components/common/Logo';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -32,6 +34,7 @@ const HeaderActions = ({
 }) => {
   const router = useRouter();
   const { lang, t, toggleLang } = useLanguage();
+  const { data: session } = useSession();
   const iconColor = dark ? Color.TextLight : Color.TextPrimary;
 
   return (
@@ -58,6 +61,12 @@ const HeaderActions = ({
         <S.LangToggleLight onClick={toggleLang}>
           {lang === 'en' ? 'KO' : 'EN'}
         </S.LangToggleLight>
+      )}
+      {/* 관리자에게만 보이는 메뉴. 다른 사람이 주소로 들어와도 프록시·API 가 막는다. */}
+      {isLogin && session?.isAdmin && (
+        <IconButton onClick={() => router.push('/admin/stats')} size="small" aria-label="Admin">
+          <AdminPanelSettingsIcon sx={{ color: iconColor, fontSize: 20 }} />
+        </IconButton>
       )}
       {isLogin ? (
         <IconButton onClick={() => router.push('/my')} size="small">
