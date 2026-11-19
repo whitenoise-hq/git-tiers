@@ -8,6 +8,7 @@ import { Header } from '@/components/common/Header';
 import { Container } from '@/components/common/Container';
 import { Footer } from '@/components/common/Footer';
 import { GoogleAdSense } from '@/components/common/GoogleAdSense';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: '깃티어 | Git TIERS - GitHub 커밋 기반 티어 시스템',
@@ -64,6 +65,8 @@ export default function RootLayout({
           <Container>{children}</Container>
           <Footer />
           <GoogleAdSense />
+          {/* 방문 통계(쿠키 없는 익명 집계) — Vercel Web Analytics */}
+          <Analytics />
         </Providers>
       </body>
     </html>

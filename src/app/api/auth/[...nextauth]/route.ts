@@ -1,6 +1,7 @@
 import GitHubProvider from "next-auth/providers/github";
 import NextAuth from 'next-auth';
 import { upsertUserOnLogin } from '../../../../../firebase/users';
+import { incrementDaily } from '../../../../../firebase/stats';
 
 interface GithubProfile {
   id: number;
@@ -63,7 +64,8 @@ const handler = NextAuth({
 
       if (isSignIn) {
         try {
-          await upsertUserOnLogin({ githubId, login: profile.login });
+          const { created } = await upsertUserOnLogin({ githubId, login: profile.login });
+          if (created) await incrementDaily('signups');
         } catch {
           // 저장에 실패해도 로그인은 계속한다.
         }

@@ -36,6 +36,7 @@ export const findUserByLogin = async (login: string): Promise<UserRecord | null>
  * 로그인할 때 호출한다.
  * 1) 숫자 ID 문서에 현재 아이디와 로그인 시각을 기록한다(처음이면 만든다).
  * 2) 같은 아이디를 들고 있는 다른 사용자 문서(아이디를 바꾼 예전 주인)는 아이디를 비운다.
+ * @returns created — 처음 가입한 사용자인지(가입 수 집계용)
  */
 export const upsertUserOnLogin = async ({
   githubId,
@@ -43,7 +44,7 @@ export const upsertUserOnLogin = async ({
 }: {
   githubId: string;
   login: string;
-}): Promise<void> => {
+}): Promise<{ created: boolean }> => {
   const users = usersCollection();
   const userRef = users.doc(githubId);
   const loginLower = login.toLowerCase();
@@ -69,6 +70,8 @@ export const upsertUserOnLogin = async ({
       .filter((doc) => doc.id !== githubId)
       .map((doc) => doc.ref.set({ login_id: null, login_lower: null }, { merge: true })),
   );
+
+  return { created: !current.exists };
 };
 
 export const getImageSettings = async (githubId: string): Promise<ImageSettings | null> => {

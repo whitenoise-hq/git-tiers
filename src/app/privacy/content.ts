@@ -92,7 +92,7 @@ const ko: PolicyContent = {
         head: ['받는 자', '국가', '항목', '목적', '보유 기간'],
         rows: [
           ['Google LLC (Firebase Cloud Firestore)', '미국 등 Google Cloud 데이터센터', '회원 정보, 서비스 이용 정보', '데이터 저장', '회원 탈퇴 시까지'],
-          ['Vercel Inc.', '미국 등', '요청 처리 중 회원·세션 정보', '웹 서비스 운영(서버 실행)', '요청 처리 중 일시적'],
+          ['Vercel Inc.', '미국 등', '요청 처리 중 회원·세션 정보, 방문 통계(접속 페이지·유입 경로·국가·기기, 쿠키 없이 익명 집계)', '웹 서비스 운영(서버 실행), 방문 통계 분석', '요청 처리 중 일시적(방문 통계는 Vercel 보관 정책에 따름)'],
           ['GitHub, Inc.', '미국', 'GitHub 아이디, 접근 토큰', '로그인 인증, 기여 수 조회', '서비스는 별도 보관하지 않음'],
         ],
       },
@@ -194,7 +194,7 @@ const en: PolicyContent = {
         head: ['Recipient', 'Country', 'Items', 'Purpose', 'Retention'],
         rows: [
           ['Google LLC (Firebase Cloud Firestore)', 'United States and other Google Cloud regions', 'Account and usage information', 'Data storage', 'Until account deletion'],
-          ['Vercel Inc.', 'United States and others', 'Account and session information during requests', 'Running the web service', 'Temporarily while handling requests'],
+          ['Vercel Inc.', 'United States and others', 'Account and session information during requests; visit statistics (pages, referrers, country, device — anonymous, no cookies)', 'Running the web service; analyzing visit statistics', 'Temporarily while handling requests (visit statistics per Vercel retention policy)'],
           ['GitHub, Inc.', 'United States', 'GitHub username, access token', 'Sign-in, fetching contributions', 'Not stored by the Service'],
         ],
       },
