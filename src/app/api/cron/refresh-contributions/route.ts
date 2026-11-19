@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { refreshAllContributions } from '../../../../../firebase/contributions';
+import { recordRefreshRun } from '../../../../../firebase/stats';
 
 /** 사용자가 많아져도 한 번에 끝나도록 함수 실행 시간을 늘린다(Vercel Hobby 최대 60초). */
 export const maxDuration = 60;
@@ -16,6 +17,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const summary = await refreshAllContributions();
+    await recordRefreshRun(summary);
     return NextResponse.json(summary);
   } catch {
     return NextResponse.json(

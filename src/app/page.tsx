@@ -11,6 +11,7 @@ import { WhatCounts } from '@/components/organisms/main/WhatCounts';
 import { Showcase } from '@/components/organisms/main/Showcase';
 import { HowToCont } from '@/components/organisms/main/HowToCont';
 import { FloatingActions } from '@/components/common/FloatingActions';
+import { BadgeVisitTracker } from '@/components/common/BadgeVisitTracker';
 
 export default function MainPage() {
   return (
@@ -22,6 +23,7 @@ export default function MainPage() {
       <Showcase />
       <HowToCont />
       <FloatingActions />
+      <BadgeVisitTracker />
     </S.Page>
   );
 }
