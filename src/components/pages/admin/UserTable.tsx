@@ -135,10 +135,6 @@ const UserDetail = ({ user }: { user: AdminUserRow }) => {
               : '숨김'
             : '기본(표시)'}
         </Field>
-        <Field label="테두리">
-          {user.frames.length ? user.frames.join(', ') : '-'}
-          {settings?.frame ? ` (착용: ${settings.frame})` : ''}
-        </Field>
         <Field label="배경">
           {settings ? (
             <S.Swatch>

@@ -6,8 +6,6 @@ import { ImageOptions } from '@/types/api';
 import { Color } from '@/styles/color';
 import type { TierName } from '@/constants/tierThresholds';
 import { generateCompactSvg } from './compactBadge';
-import { supportsFrame } from './frames/catalog';
-import { BADGE_RADIUS, toBadgeSvg } from './frames/render';
 
 const iconCache = new Map<string, string>();
 
@@ -49,8 +47,6 @@ interface TierSvgParams {
 
 export function generateTierSvg({ contributeCount, settings }: TierSvgParams): string {
   const { isCard, isText, isMode } = settings;
-  // 테두리는 카드 · 심플에만 두른다(작은 배지는 무시).
-  const frame = settings.frame && supportsFrame(isCard) ? settings.frame : null;
   const bgColor = getTierBg(isMode);
   const isLight = isLightColor(isMode);
   const tierImagePath = getTierImage(contributeCount);
@@ -63,7 +59,7 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
 
   const contribFormatted = contributeCount.toLocaleString();
 
-  const r = BADGE_RADIUS;
+  const r = 12; // border-radius
 
   // 작은 가로형 — README 배지 줄(높이 20px)에 맞춘다.
   if (isCard === 'compact') {
@@ -95,13 +91,14 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
     const tierLabelY = isText === 'exist' ? centerY - 4 : centerY + 4;
     const contribY = isText === 'exist' ? centerY + 14 : centerY + 4;
 
-    const body = `<rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
   <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
   ${isText === 'exist' ? `<text x="${textX}" y="${tierLabelY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${subColor}" letter-spacing="0.7">${tierLabel}</text>` : ''}
   <text x="${textX}" y="${contribY}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="${subColor}">
     <tspan font-weight="700" fill="${mainColor}">${contribFormatted}</tspan> contributions
-  </text>`;
-    return toBadgeSvg({ width, height, body }, frame);
+  </text>
+</svg>`;
   }
 
   // Simple mode — match TierImage.tsx: padding 6px 12px, icon 88px
@@ -112,8 +109,9 @@ export function generateTierSvg({ contributeCount, settings }: TierSvgParams): s
   const width = iconSize + padX * 2;
   const height = hasText ? iconSize + pad + 24 : iconSize + pad * 2;
 
-  const body = `<rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="${width}" height="${height}" rx="${r}" ry="${r}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1" />
   <image href="${iconBase64}" x="${padX}" y="${pad}" width="${iconSize}" height="${iconSize}" />
-  ${hasText ? `<text x="${width / 2}" y="${iconSize + pad + 16}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${mainColor}" text-anchor="middle" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}`;
-  return toBadgeSvg({ width, height, body }, frame);
+  ${hasText ? `<text x="${width / 2}" y="${iconSize + pad + 16}" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="${mainColor}" text-anchor="middle" letter-spacing="0.7">${tierText.toUpperCase()}</text>` : ''}
+</svg>`;
 }

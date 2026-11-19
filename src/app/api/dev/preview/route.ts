@@ -3,7 +3,7 @@ import { findUserByLogin } from '../../../../../firebase/users';
 import { getContributeCount } from '@/utils/github';
 import { isDevPreviewEnabled, parsePreviewLogin } from '@/utils/devPreview';
 import type { DevPreviewData, DevPreviewProfile } from '@/types/devPreview';
-import { toImageOptions, type ImageOptions } from '@/types/api';
+import type { ImageOptions } from '@/types/api';
 
 interface GithubUserResponse {
   login: string;
@@ -49,7 +49,13 @@ const readImageSettings = async (
 ): Promise<ImageOptions | null> => {
   try {
     const settings = (await findUserByLogin(login))?.data.imageSettings;
-    return settings ? toImageOptions(settings) : null;
+    return settings
+      ? {
+          isCard: settings.isCard,
+          isText: settings.isText,
+          isMode: settings.isMode,
+        }
+      : null;
   } catch {
     return null;
   }

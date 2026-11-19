@@ -137,15 +137,6 @@
     "green": "Green",
     "red": "Red"
   },
-  "frames": {
-    "title": "Frame",
-    "none": "None",
-    "granted": "You got the {name} frame! Put it on your badge in My Page.",
-    "compactHint": "Frames aren't available for the compact badge.",
-    "names": {
-      "xmas-2026": "Christmas Wreath"
-    }
-  },
   "toast": {
     "error": "An error occurred. Please try again later.",
     "loginFirst": "Please log in first.",
@@ -158,20 +149,12 @@
   },
   "noticeData": [
     {
-      "id": 10,
-      "version": "v1.7.0",
-      "title": "Badge Frames & Christmas Event",
-      "content": "You can now collect frames to put around your badge by joining events.\n\nChristmas event:\n- Period: December 1 – December 25 (KST)\n- Visit Git TIERS while signed in during the event to get the 「Christmas Wreath」 frame\n- Put frames on or take them off under 「Frame」 in My Page\n- Frames you got stay yours after the event ends\n\nFrames apply to the card and simple badges, not the compact badge.\nYou can keep the tag already in your README. Your badge changes as soon as you put on a frame.",
-      "date": "2026.11.19",
-      "isNew": true
-    },
-    {
       "id": 9,
       "version": "v1.6.0",
       "title": "Compact Badge and Tier Table Page",
       "content": "A compact badge that fits your README badge row and a new Tier Table page are here.\n\nWhat's new:\n- Compact badge: choose \"Compact\" as the type on My Page to get a horizontal badge the same height as other README badges\n- The right side uses your tier color, and hiding the tier text shows only your contribution count\n- The left side follows your background setting (Light, Dark or a custom color)\n- Tier Table page: see all 9 tiers and 36 levels on the site (your level is highlighted when signed in)\n\nThe tag already in your README keeps working. Just change the type and your badge updates.",
       "date": "2026.11.17",
-      "isNew": false
+      "isNew": true
     },
     {
       "id": 6,
