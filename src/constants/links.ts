@@ -6,3 +6,6 @@ export const README_URL = {
   intro: `${GITHUB_REPO_URL}?tab=readme-ov-file#git-tiers`,
   howToUse: `${GITHUB_REPO_URL}?tab=readme-ov-file#how-to-use`,
 } as const;
+
+/** 운영 사이트 주소(robots.txt · sitemap.xml 에 쓴다) */
+export const SITE_URL = 'https://git-tiers.devwoodie.com';
