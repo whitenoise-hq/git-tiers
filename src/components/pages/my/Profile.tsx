@@ -6,10 +6,12 @@ import { Color } from '@/styles/color';
 import { WithdrawDialog } from '@/components/organisms/my/WithdrawDialog';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { useMyAccount } from '@/components/pages/my/MyAccountContext';
-import Avatar from '@mui/material/Avatar';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Avatar } from '@/components/common/Avatar';
+import {
+  AlternateEmailIcon,
+  ApartmentIcon,
+  LocationOnIcon,
+} from '@/components/common/icons';
 
 export const Profile = () => {
   const { session, isPreview } = useMyAccount();
@@ -27,7 +29,7 @@ export const Profile = () => {
       <S.Header onClick={() => setOpen((prev) => !prev)}>
         {!open && (
           <S.HeaderLeft>
-            <S.ProfileImg alt="profile-image" src={session?.user.image} />
+            <S.ProfileImg alt="profile-image" src={session?.user.image} size={36} />
             <S.Name>{session?.user.name || ''}</S.Name>
           </S.HeaderLeft>
         )}
@@ -49,7 +51,7 @@ export const Profile = () => {
       <S.Expandable $isOpen={open}>
         <S.DetailInner>
           <S.DetailTop>
-            <S.ProfileImgLarge alt="profile-image" src={session?.user.image} />
+            <S.ProfileImgLarge alt="profile-image" src={session?.user.image} size={64} />
             <S.Info>
               <S.NameLarge>{session?.user.name || ''}</S.NameLarge>
               <S.LoginId>{session?.loginId || ''}</S.LoginId>
@@ -59,15 +61,15 @@ export const Profile = () => {
 
           <S.Meta>
             <S.MetaItem>
-              <ApartmentIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
+              <ApartmentIcon size={16} style={{ color: Color.Gray300 }} />
               <span>{session?.user.company || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <AlternateEmailIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
+              <AlternateEmailIcon size={16} style={{ color: Color.Gray300 }} />
               <span>{session?.user.email || '-'}</span>
             </S.MetaItem>
             <S.MetaItem>
-              <LocationOnIcon sx={{ fontSize: 16, color: Color.Gray300 }} />
+              <LocationOnIcon size={16} style={{ color: Color.Gray300 }} />
               <span>{session?.user.location || '-'}</span>
             </S.MetaItem>
           </S.Meta>
@@ -189,8 +191,6 @@ const S = {
   `,
 
   ProfileImg: styled(Avatar)`
-    width: 36px !important;
-    height: 36px !important;
     border: 1.5px solid rgba(255, 255, 255, 0.12);
     flex-shrink: 0;
   `,
@@ -295,8 +295,6 @@ const S = {
   `,
 
   ProfileImgLarge: styled(Avatar)`
-    width: 64px !important;
-    height: 64px !important;
     border: 2px solid rgba(255, 255, 255, 0.12);
     flex-shrink: 0;
   `,

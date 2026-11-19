@@ -2,12 +2,6 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
-import type { SvgIconComponent } from '@mui/icons-material';
-import CommitIcon from '@mui/icons-material/Commit';
-import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
-import CallMergeIcon from '@mui/icons-material/CallMerge';
-import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 
 import { SpotlightCard } from '@/components/common/SpotlightCard';
 
@@ -15,8 +9,16 @@ import { useScrollFadeIn } from '@/hooks/useScrollFadeIn';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { fadeInStyle } from '@/styles/animations';
 import { Color } from '@/styles/color';
+import {
+  BugReportOutlinedIcon,
+  CallMergeIcon,
+  CommitIcon,
+  MenuBookOutlinedIcon,
+  RateReviewOutlinedIcon,
+  type IconComponent,
+} from '@/components/common/icons';
 
-const ICONS: readonly SvgIconComponent[] = [
+const ICONS: readonly IconComponent[] = [
   CommitIcon,
   BugReportOutlinedIcon,
   CallMergeIcon,
@@ -68,7 +70,7 @@ const WhatCountsItem = ({
   item,
   index,
 }: {
-  readonly item: { icon: SvgIconComponent; title: string; description: string };
+  readonly item: { icon: IconComponent; title: string; description: string };
   readonly index: number;
 }) => {
   const [fadeRef, fadeVisible] = useScrollFadeIn({ delay: index * 100 });
@@ -78,7 +80,7 @@ const WhatCountsItem = ({
     <S.Item ref={fadeRef} data-visible={fadeVisible}>
       <S.Card>
         <S.CardIcon>
-          <Icon sx={{ fontSize: 24 }} />
+          <Icon size={24} />
         </S.CardIcon>
         <S.CardTitle>{item.title}</S.CardTitle>
         <S.CardDesc>{item.description}</S.CardDesc>

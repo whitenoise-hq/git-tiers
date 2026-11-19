@@ -2,10 +2,12 @@
 
 import React from 'react';
 import styled from '@emotion/styled';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 import { Color } from '@/styles/color';
 import { parseNoticeContent } from '@/utils/noticeContent';
+import {
+  CheckRoundedIcon,
+} from '@/components/common/icons';
 
 /** 공지 본문: 소제목·체크 목록·문단으로 정돈해 보여 준다. */
 export const NoticeBody = ({ content }: { readonly content: string }) => (
@@ -19,7 +21,7 @@ export const NoticeBody = ({ content }: { readonly content: string }) => (
           <S.List key={i}>
             {block.items.map((item) => (
               <li key={item}>
-                <CheckRoundedIcon sx={{ fontSize: 15 }} aria-hidden />
+                <CheckRoundedIcon size={15} aria-hidden />
                 <span>{item}</span>
               </li>
             ))}

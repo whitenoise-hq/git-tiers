@@ -4,15 +4,16 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { css } from '@emotion/react';
 import { useSession } from 'next-auth/react';
 
+import { Avatar } from '@/components/common/Avatar';
+import {
+  AdminPanelSettingsIcon,
+  EmojiEventsIcon,
+  GitHubIcon,
+  NotificationsIcon,
+} from '@/components/common/icons';
 import { Logo } from '@/components/common/Logo';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,6 +21,24 @@ import { Color } from '@/styles/color';
 import { GITHUB_REPO_URL } from '@/constants/links';
 
 const COLLAPSE_THRESHOLD = 200;
+
+/** 헤더의 동그란 아이콘 버튼(알림·랭킹·GitHub·관리자·프로필) */
+const iconButtonStyle = css`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+`;
 
 const HeaderActions = ({
   dark,
@@ -38,21 +57,20 @@ const HeaderActions = ({
   const iconColor = dark ? Color.TextLight : Color.TextPrimary;
 
   return (
-    <S.Actions>
-      <IconButton onClick={() => router.push('/notice')} size="small">
-        <Badge badgeContent={1} color="error">
-          <NotificationsIcon sx={{ color: iconColor, fontSize: 20 }} />
-        </Badge>
-      </IconButton>
+    <S.Actions style={{ color: iconColor }}>
+      <S.IconButton type="button" onClick={() => router.push('/notice')} aria-label="Notice">
+        <S.BadgeWrap>
+          <NotificationsIcon size={20} />
+          <S.BadgeCount aria-hidden>1</S.BadgeCount>
+        </S.BadgeWrap>
+      </S.IconButton>
       {/* 다른 아이콘(알림·GitHub)처럼 채워진 모양을 써서 크기가 같아 보이게 한다. */}
-      <IconButton onClick={() => router.push('/ranking')} size="small" aria-label={t.header.ranking}>
-        <EmojiEventsIcon sx={{ color: iconColor, fontSize: 20 }} />
-      </IconButton>
-      <Link href={GITHUB_REPO_URL} rel="noopener noreferrer" target="_blank">
-        <IconButton size="small">
-          <GitHubIcon sx={{ color: iconColor, fontSize: 20 }} />
-        </IconButton>
-      </Link>
+      <S.IconButton type="button" onClick={() => router.push('/ranking')} aria-label={t.header.ranking}>
+        <EmojiEventsIcon size={20} />
+      </S.IconButton>
+      <S.IconLink href={GITHUB_REPO_URL} rel="noopener noreferrer" target="_blank" aria-label="GitHub">
+        <GitHubIcon size={20} />
+      </S.IconLink>
       {dark ? (
         <S.LangToggle onClick={toggleLang}>
           {lang === 'en' ? 'KO' : 'EN'}
@@ -64,14 +82,14 @@ const HeaderActions = ({
       )}
       {/* 관리자에게만 보이는 메뉴. 다른 사람이 주소로 들어와도 프록시·API 가 막는다. */}
       {isLogin && session?.isAdmin && (
-        <IconButton onClick={() => router.push('/admin/stats')} size="small" aria-label="Admin">
-          <AdminPanelSettingsIcon sx={{ color: iconColor, fontSize: 20 }} />
-        </IconButton>
+        <S.IconButton type="button" onClick={() => router.push('/admin/stats')} aria-label="Admin">
+          <AdminPanelSettingsIcon size={20} />
+        </S.IconButton>
       )}
       {isLogin ? (
-        <IconButton onClick={() => router.push('/my')} size="small">
-          <Avatar alt="user-profile" src={userImg} sx={{ width: 32, height: 32 }} />
-        </IconButton>
+        <S.IconButton type="button" onClick={() => router.push('/my')} aria-label={t.header.myPage}>
+          <Avatar alt="user-profile" src={userImg} size={32} />
+        </S.IconButton>
       ) : (
         <S.CTA onClick={onLogin}>{t.header.getStarted}</S.CTA>
       )}
@@ -299,5 +317,38 @@ const S = {
     display: flex;
     align-items: center;
     gap: 12px;
+  `,
+
+  IconButton: styled.button`
+    ${iconButtonStyle}
+  `,
+
+  IconLink: styled(Link)`
+    ${iconButtonStyle}
+  `,
+
+  BadgeWrap: styled.span`
+    position: relative;
+    display: inline-flex;
+  `,
+
+  // 읽지 않은 공지 표시. 아이콘 오른쪽 위 모서리에 걸친다.
+  BadgeCount: styled.span`
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    background: ${Color.Red200};
+    border-radius: 10px;
   `,
 };

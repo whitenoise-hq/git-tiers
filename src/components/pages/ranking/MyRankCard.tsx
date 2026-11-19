@@ -4,7 +4,6 @@ import React from 'react';
 import Image from 'next/image';
 import styled from '@emotion/styled';
 import { signIn } from 'next-auth/react';
-import GitHubIcon from '@mui/icons-material/GitHub';
 
 import { SpotlightCard } from '@/components/common/SpotlightCard';
 import { TIER_ACCENTS } from '@/constants/tierAccents';
@@ -14,6 +13,9 @@ import { formatMessage } from '@/utils/formatMessage';
 import type { MyRank } from '@/utils/ranking';
 import { RefreshButton } from './RefreshButton';
 import type { RefreshResult } from './useRankingData';
+import {
+  GitHubIcon,
+} from '@/components/common/icons';
 
 interface RefreshProps {
   readonly refreshAvailableAt: number;
@@ -42,7 +44,7 @@ export const MyRankCard = (props: MyRankCardProps) => {
           <S.LoginButton
             type="button"
             onClick={() => signIn('github', { callbackUrl: '/ranking' })}>
-            <GitHubIcon sx={{ fontSize: 16 }} aria-hidden />
+            <GitHubIcon size={16} aria-hidden />
             {t.ranking.login}
           </S.LoginButton>
         </S.Footer>

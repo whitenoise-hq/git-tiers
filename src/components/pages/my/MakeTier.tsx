@@ -9,12 +9,6 @@ import React, {
 import toast from 'react-hot-toast';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CloudDoneOutlinedIcon from '@mui/icons-material/CloudDoneOutlined';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import SyncIcon from '@mui/icons-material/Sync';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import { getTierImage, getTierText } from '@/utils/getTier';
 import { TierImage } from '@/components/organisms/my/TierImage';
@@ -30,6 +24,14 @@ import {
 import { Color } from '@/styles/color';
 import Link from 'next/link';
 import { buildBadgeTag } from '@/utils/badgeTag';
+import {
+  AutorenewIcon,
+  CheckCircleOutlineIcon,
+  CloudDoneOutlinedIcon,
+  ErrorOutlineIcon,
+  SyncIcon,
+  VisibilityOutlinedIcon,
+} from '@/components/common/icons';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
 const AUTO_SAVE_DELAY_MS = 700;
@@ -45,7 +47,7 @@ const spin = keyframes`
 /** 나란히 놓인 액션 버튼 높이 */
 const ACTION_HEIGHT = 42;
 
-const META_ICON_SX = { fontSize: 14 } as const;
+const META_ICON_SIZE = 14;
 
 const SAVE_STATUS_ICONS = {
   idle: CloudDoneOutlinedIcon,
@@ -254,11 +256,11 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
             role="status"
             aria-live="polite"
             data-status={isPreview ? 'preview' : saveStatus}>
-            <SaveStatusIcon sx={META_ICON_SX} aria-hidden />
+            <SaveStatusIcon size={META_ICON_SIZE} aria-hidden />
             {saveStatusText}
           </S.MetaItem>
           <S.MetaItem>
-            <AutorenewIcon sx={META_ICON_SX} aria-hidden />
+            <AutorenewIcon size={META_ICON_SIZE} aria-hidden />
             {t.myPage.autoUpdateNote}
           </S.MetaItem>
         </S.MetaRow>
