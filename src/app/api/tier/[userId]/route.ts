@@ -3,7 +3,6 @@ import { findUserByLogin } from '../../../../../firebase/users';
 import { getContributionCount } from '../../../../../firebase/contributions';
 import { DEFAULT_IMAGE_OPTIONS } from '@/types/api';
 import { generatePlaceholderSvg, generateTierSvg } from '@/utils/generateTierSvg';
-import { ownedFrameIds } from '@/utils/frames/catalog';
 
 const GITHUB_USERNAME_REGEX = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/;
 
@@ -49,15 +48,11 @@ export async function GET(
       return svgResponse(generatePlaceholderSvg());
     }
 
-    const settings = user.data.imageSettings ?? DEFAULT_IMAGE_OPTIONS;
-    // 받지 않은 테두리가 설정에 남아 있어도 그리지 않는다.
-    const frame =
-      settings.frame && ownedFrameIds(user.data.frames).includes(settings.frame)
-        ? settings.frame
-        : null;
-
     return svgResponse(
-      generateTierSvg({ contributeCount, settings: { ...settings, frame } })
+      generateTierSvg({
+        contributeCount,
+        settings: user.data.imageSettings ?? DEFAULT_IMAGE_OPTIONS,
+      }),
     );
   } catch {
     return new NextResponse('Internal server error', { status: 500 });

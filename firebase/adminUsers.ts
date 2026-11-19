@@ -1,10 +1,8 @@
 import { usersCollection } from './admin';
 import { toRankingEntries } from './ranking';
-import { toImageOptions } from '../src/types/api';
 import type { ImageOptions, UserData } from '../src/types/api';
 import { getTierText } from '../src/utils/getTier';
 import { sortRanking } from '../src/utils/ranking';
-import { ownedFrameIds, type FrameId } from '../src/utils/frames/catalog';
 
 /** 관리자 사용자 목록 한 줄. 토큰 같은 비밀값은 원래 저장하지 않으므로 담을 것도 없다. */
 export interface AdminUserRow {
@@ -19,8 +17,6 @@ export interface AdminUserRow {
   readonly rank: number | null;
   readonly imageSettings: ImageOptions | null;
   readonly settingsUpdatedAt: string | null;
-  /** 이벤트로 받은 테두리 */
-  readonly frames: readonly FrameId[];
 }
 
 /** 문서 → 관리자 행. 순위는 정렬된 랭킹 목록에서 찾는다. */
@@ -42,8 +38,13 @@ export const toAdminUserRows = (
       contributionsUpdatedAt: data.contributions?.updatedAt ?? null,
       tierText: count === null ? null : getTierText(count),
       rank: rankById.get(id) ?? null,
-      imageSettings: settings ? toImageOptions(settings) : null,
-      frames: ownedFrameIds(data.frames),
+      imageSettings: settings
+        ? {
+            isCard: settings.isCard,
+            isText: settings.isText,
+            isMode: settings.isMode,
+          }
+        : null,
       settingsUpdatedAt: data.lastUpdated ?? null,
     };
   });

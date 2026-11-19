@@ -19,7 +19,6 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { getTierImage, getTierText } from '@/utils/getTier';
 import { TierImage } from '@/components/organisms/my/TierImage';
 import { TierController } from '@/components/organisms/my/TierController';
-import { FramePicker } from '@/components/organisms/my/FramePicker';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useMyAccount } from '@/components/pages/my/MyAccountContext';
 import {
@@ -31,22 +30,11 @@ import {
 import { Color } from '@/styles/color';
 import Link from 'next/link';
 import { buildBadgeTag } from '@/utils/badgeTag';
-import {
-  FRAME_IDS,
-  FRAMES_GRANTED_EVENT,
-  supportsFrame,
-  type FrameId,
-} from '@/utils/frames/catalog';
 
 /** 옵션을 바꾼 뒤 이 시간 동안 추가 변경이 없으면 저장한다(색상 피커 드래그 중 연속 저장 방지). */
 const AUTO_SAVE_DELAY_MS = 700;
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-
-interface SettingsResponse {
-  readonly imageSettings: ImageOptions | null;
-  readonly frames: readonly FrameId[];
-}
 
 const spin = keyframes`
   to {
@@ -83,15 +71,6 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
   const [isCard, setIsCard] = useState<CardType>(initialOptions.isCard);
   const [isText, setIsText] = useState<TextVisibility>(initialOptions.isText);
   const [isMode, setIsMode] = useState<string>(initialOptions.isMode);
-  const [frame, setFrame] = useState<FrameId | null>(
-    initialOptions.frame ?? null
-  );
-  // 개발 화면(미리보기 · 로그인 없음)은 테두리를 모두 가진 것으로 보여 준다(저장하지 않는다).
-  const [ownedFrames, setOwnedFrames] = useState<readonly FrameId[]>(() =>
-    process.env.NODE_ENV === 'development' && (!loginId || isPreview)
-      ? [...FRAME_IDS]
-      : []
-  );
   // 사용자가 옵션을 바꾼 횟수. 0 이면(불러오기만 한 상태) 저장하지 않는다.
   const [editVersion, setEditVersion] = useState<number>(0);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -152,11 +131,12 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
     };
 
     // 설정을 못 불러와도 기본값으로 쓸 수 있으므로 실패는 null 로 둔다.
-    const fetchSettings = async (): Promise<SettingsResponse | null> => {
+    const fetchSettings = async (): Promise<ImageOptions | null> => {
       try {
         const res = await fetch('/api/tier/settings');
         if (!res.ok) return null;
-        return (await res.json()) as SettingsResponse;
+        const data: { imageSettings: ImageOptions | null } = await res.json();
+        return data.imageSettings;
       } catch {
         return null;
       }
@@ -170,13 +150,11 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
         ]);
         if (cancelled) return;
         setContributeCount(count);
-        if (settings?.imageSettings) {
-          setIsCard(settings.imageSettings.isCard);
-          setIsText(settings.imageSettings.isText);
-          setIsMode(settings.imageSettings.isMode);
-          setFrame(settings.imageSettings.frame ?? null);
+        if (settings) {
+          setIsCard(settings.isCard);
+          setIsText(settings.isText);
+          setIsMode(settings.isMode);
         }
-        if (settings) setOwnedFrames(settings.frames ?? []);
       } catch {
         if (!cancelled) await handleLoadError();
         return;
@@ -208,9 +186,7 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
         const res = await fetch('/api/tier/settings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            imageSettings: { isCard, isText, isMode, frame },
-          }),
+          body: JSON.stringify({ imageSettings: { isCard, isText, isMode } }),
         });
         if (!res.ok) throw new Error('Failed to save');
         if (!cancelled) setSaveStatus('saved');
@@ -226,20 +202,7 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [loginId, isPreview, editVersion, isCard, isText, isMode, frame]);
-
-  // 이 화면을 보는 중에 이벤트 테두리를 받으면(FrameClaimer) 바로 고를 수 있게 한다.
-  useEffect(() => {
-    const onGranted = (event: Event) => {
-      const granted = (event as CustomEvent<readonly FrameId[]>).detail ?? [];
-      setOwnedFrames((prev) => [
-        ...prev,
-        ...granted.filter((id) => !prev.includes(id)),
-      ]);
-    };
-    window.addEventListener(FRAMES_GRANTED_EVENT, onGranted);
-    return () => window.removeEventListener(FRAMES_GRANTED_EVENT, onGranted);
-  }, []);
+  }, [loginId, isPreview, editVersion, isCard, isText, isMode]);
 
   const saveStatusText = isPreview
     ? '미리보기라 저장되지 않음'
@@ -267,7 +230,6 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
             tierImage={tierImage}
             tierText={tierText}
             contributeCount={contributeCount}
-            frame={frame}
           />
           <TierController
             isCard={isCard}
@@ -277,15 +239,6 @@ export const MakeTier = ({ onReady }: MakeTierProps) => {
             setIsText={editable(setIsText)}
             setIsMode={editable(setIsMode)}
           />
-          {/* 받은 테두리가 하나도 없으면 칸을 숨긴다 */}
-          {ownedFrames.length > 0 && (
-            <FramePicker
-              owned={ownedFrames}
-              frame={frame}
-              setFrame={editable(setFrame)}
-              disabled={!supportsFrame(isCard)}
-            />
-          )}
         </S.TierWrap>
 
         <S.Actions>

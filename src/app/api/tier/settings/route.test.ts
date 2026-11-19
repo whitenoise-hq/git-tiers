@@ -3,13 +3,13 @@ import { NextRequest } from 'next/server';
 
 const mocks = vi.hoisted(() => ({
   getToken: vi.fn(),
-  getUserById: vi.fn(),
+  getImageSettings: vi.fn(),
   saveImageSettings: vi.fn(),
 }));
 
 vi.mock('next-auth/jwt', () => ({ getToken: mocks.getToken }));
 vi.mock('../../../../../firebase/users', () => ({
-  getUserById: mocks.getUserById,
+  getImageSettings: mocks.getImageSettings,
   saveImageSettings: mocks.saveImageSettings,
 }));
 
@@ -25,9 +25,6 @@ const post = (body: unknown) =>
   );
 
 const options = { isCard: 'card', isText: 'none', isMode: '#1a2b3c' };
-/** 저장 · 응답은 테두리 칸(frame)을 늘 채운다 */
-const saved = { ...options, frame: null };
-const userWith = (data: Record<string, unknown>) => ({ docId: '583231', data });
 
 describe('/api/tier/settings', () => {
   beforeEach(() => {
@@ -42,27 +39,16 @@ describe('/api/tier/settings', () => {
       expect((await GET(new NextRequest(url))).status).toBe(401);
     });
 
-    it('표시 옵션과 가진 테두리만 돌려준다(예전에 저장된 기여 수 · 모르는 테두리는 빼고)', async () => {
-      mocks.getUserById.mockResolvedValue(
-        userWith({
-          imageSettings: { ...options, frame: 'xmas-2026', contributeCount: 999 },
-          frames: ['xmas-2026', 'unknown'],
-        }),
-      );
+    it('표시 옵션만 돌려준다(예전에 저장된 기여 수는 빼고)', async () => {
+      mocks.getImageSettings.mockResolvedValue({ ...options, contributeCount: 999 });
       const res = await GET(new NextRequest(url));
-      expect(await res.json()).toEqual({
-        imageSettings: { ...options, frame: 'xmas-2026' },
-        frames: ['xmas-2026'],
-      });
-      expect(mocks.getUserById).toHaveBeenCalledWith('583231');
+      expect(await res.json()).toEqual({ imageSettings: options });
+      expect(mocks.getImageSettings).toHaveBeenCalledWith('583231');
     });
 
-    it('저장한 적이 없으면 null · 빈 테두리 목록', async () => {
-      mocks.getUserById.mockResolvedValue(null);
-      expect(await (await GET(new NextRequest(url))).json()).toEqual({
-        imageSettings: null,
-        frames: [],
-      });
+    it('저장한 적이 없으면 null', async () => {
+      mocks.getImageSettings.mockResolvedValue(null);
+      expect(await (await GET(new NextRequest(url))).json()).toEqual({ imageSettings: null });
     });
   });
 
@@ -79,7 +65,7 @@ describe('/api/tier/settings', () => {
       expect(mocks.saveImageSettings).toHaveBeenCalledWith({
         githubId: '583231',
         login: 'octocat',
-        options: saved,
+        options,
       });
     });
 
@@ -88,7 +74,7 @@ describe('/api/tier/settings', () => {
       expect(mocks.saveImageSettings).toHaveBeenCalledWith({
         githubId: '583231',
         login: 'octocat',
-        options: saved,
+        options,
       });
     });
 
@@ -99,27 +85,6 @@ describe('/api/tier/settings', () => {
     ])('%s 이면 400', async (_label, body) => {
       expect((await post(body)).status).toBe(400);
       expect(mocks.saveImageSettings).not.toHaveBeenCalled();
-    });
-
-    it('가진 테두리는 끼워서 저장한다', async () => {
-      mocks.getUserById.mockResolvedValue(userWith({ frames: ['xmas-2026'] }));
-      const res = await post({ imageSettings: { ...options, frame: 'xmas-2026' } });
-      expect(res.status).toBe(200);
-      expect(mocks.saveImageSettings).toHaveBeenCalledWith({
-        githubId: '583231',
-        login: 'octocat',
-        options: { ...options, frame: 'xmas-2026' },
-      });
-    });
-
-    it('받지 않은 테두리는 403 이고 저장하지 않는다', async () => {
-      mocks.getUserById.mockResolvedValue(userWith({ frames: [] }));
-      expect((await post({ imageSettings: { ...options, frame: 'xmas-2026' } })).status).toBe(403);
-      expect(mocks.saveImageSettings).not.toHaveBeenCalled();
-    });
-
-    it('없는 테두리 id 는 400', async () => {
-      expect((await post({ imageSettings: { ...options, frame: 'gold' } })).status).toBe(400);
     });
 
     it('본문이 JSON 이 아니면 400', async () => {
